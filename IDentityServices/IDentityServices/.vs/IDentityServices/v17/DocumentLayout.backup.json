@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\Hi\\Desktop\\Microservices_UDPT\\IDentityServices\\IDentityServices\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{B9F237E6-C8DB-43B9-A5A0-C973614723BC}|IDentityServices\\IDentityServices.csproj|c:\\users\\hi\\desktop\\microservices_udpt\\identityservices\\identityservices\\identityservices\\controllers\\loginwithuspwcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B9F237E6-C8DB-43B9-A5A0-C973614723BC}|IDentityServices\\IDentityServices.csproj|solutionrelative:identityservices\\controllers\\loginwithuspwcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{B9F237E6-C8DB-43B9-A5A0-C973614723BC}|IDentityServices\\IDentityServices.csproj|c:\\users\\hi\\desktop\\microservices_udpt\\identityservices\\identityservices\\identityservices\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{B9F237E6-C8DB-43B9-A5A0-C973614723BC}|IDentityServices\\IDentityServices.csproj|solutionrelative:identityservices\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
@@ -87,12 +91,25 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "LoginWithUSPWController.cs",
+              "DocumentMoniker": "C:\\Users\\Hi\\Desktop\\Microservices_UDPT\\IDentityServices\\IDentityServices\\IDentityServices\\Controllers\\LoginWithUSPWController.cs",
+              "RelativeDocumentMoniker": "IDentityServices\\Controllers\\LoginWithUSPWController.cs",
+              "ToolTip": "C:\\Users\\Hi\\Desktop\\Microservices_UDPT\\IDentityServices\\IDentityServices\\IDentityServices\\Controllers\\LoginWithUSPWController.cs",
+              "RelativeToolTip": "IDentityServices\\Controllers\\LoginWithUSPWController.cs",
+              "ViewState": "AgIAADEAAAAAAAAAAAAqwGIAAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-03T12:17:43.13Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Hi\\Desktop\\Microservices_UDPT\\IDentityServices\\IDentityServices\\IDentityServices\\Program.cs",
               "RelativeDocumentMoniker": "IDentityServices\\Program.cs",
               "ToolTip": "C:\\Users\\Hi\\Desktop\\Microservices_UDPT\\IDentityServices\\IDentityServices\\IDentityServices\\Program.cs",
               "RelativeToolTip": "IDentityServices\\Program.cs",
-              "ViewState": "AgIAAC8AAAAAAAAAAAAQwDcAAAAlAAAAAAAAAA==",
+              "ViewState": "AgIAAEEAAAAAAAAAAAAQwEoAAAAKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-23T13:17:27.997Z",
               "EditorCaption": ""
