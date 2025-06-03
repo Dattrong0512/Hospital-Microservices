@@ -1,1 +1,96 @@
-[]
+[
+  {
+    "ContainingType": "IDentityServices.Controllers.LoginWithUSPWController",
+    "Method": "Login",
+    "RelativePath": "api/v{version}/account/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "loginRequest",
+        "Type": "IDentityServices.DTO.LoginRequest",
+        "IsRequired": true
+      },
+      {
+        "Name": "version",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "IDentityServices.Controllers.LoginWithUSPWController",
+    "Method": "RefreshToken",
+    "RelativePath": "api/v{version}/account/refresh-token",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "refreshTokenRequest",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "version",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "IDentityServices.Controllers.LoginWithUSPWController",
+    "Method": "RegisterUserDoctor",
+    "RelativePath": "api/v{version}/account/register/user/doctor",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "registerRequest",
+        "Type": "IDentityServices.DTO.RegisterRequest",
+        "IsRequired": true
+      },
+      {
+        "Name": "version",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "IDentityServices.Controllers.LoginWithUSPWController",
+    "Method": "RegisterUserStaff",
+    "RelativePath": "api/v{version}/account/register/user/staff",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "registerRequest",
+        "Type": "IDentityServices.DTO.RegisterRequest",
+        "IsRequired": true
+      },
+      {
+        "Name": "version",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "IDentityServices.Controllers.LoginWithUSPWController",
+    "Method": "Hello",
+    "RelativePath": "Hello",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  }
+]

@@ -3,40 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\Hi\\Desktop\\Microservices_UDPT\\IDentityServices\\IDentityServices\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{B9F237E6-C8DB-43B9-A5A0-C973614723BC}|IDentityServices\\IDentityServices.csproj|c:\\users\\hi\\desktop\\microservices_udpt\\identityservices\\identityservices\\identityservices\\migrations\\applicationdbcontextmodelsnapshot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B9F237E6-C8DB-43B9-A5A0-C973614723BC}|IDentityServices\\IDentityServices.csproj|solutionrelative:identityservices\\migrations\\applicationdbcontextmodelsnapshot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B9F237E6-C8DB-43B9-A5A0-C973614723BC}|IDentityServices\\IDentityServices.csproj|c:\\users\\hi\\desktop\\microservices_udpt\\identityservices\\identityservices\\identityservices\\migrations\\20250523135413_configdatatype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B9F237E6-C8DB-43B9-A5A0-C973614723BC}|IDentityServices\\IDentityServices.csproj|solutionrelative:identityservices\\migrations\\20250523135413_configdatatype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B9F237E6-C8DB-43B9-A5A0-C973614723BC}|IDentityServices\\IDentityServices.csproj|c:\\users\\hi\\desktop\\microservices_udpt\\identityservices\\identityservices\\identityservices\\model\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B9F237E6-C8DB-43B9-A5A0-C973614723BC}|IDentityServices\\IDentityServices.csproj|solutionrelative:identityservices\\model\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B9F237E6-C8DB-43B9-A5A0-C973614723BC}|IDentityServices\\IDentityServices.csproj|c:\\users\\hi\\desktop\\microservices_udpt\\identityservices\\identityservices\\identityservices\\context\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B9F237E6-C8DB-43B9-A5A0-C973614723BC}|IDentityServices\\IDentityServices.csproj|solutionrelative:identityservices\\context\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B9F237E6-C8DB-43B9-A5A0-C973614723BC}|IDentityServices\\IDentityServices.csproj|c:\\users\\hi\\desktop\\microservices_udpt\\identityservices\\identityservices\\identityservices\\identityservices.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}",
-      "RelativeMoniker": "D:0:0:{B9F237E6-C8DB-43B9-A5A0-C973614723BC}|IDentityServices\\IDentityServices.csproj|solutionrelative:identityservices\\identityservices.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B9F237E6-C8DB-43B9-A5A0-C973614723BC}|IDentityServices\\IDentityServices.csproj|c:\\users\\hi\\desktop\\microservices_udpt\\identityservices\\identityservices\\identityservices\\migrations\\20250523134028_initialcreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B9F237E6-C8DB-43B9-A5A0-C973614723BC}|IDentityServices\\IDentityServices.csproj|solutionrelative:identityservices\\migrations\\20250523134028_initialcreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{B9F237E6-C8DB-43B9-A5A0-C973614723BC}|IDentityServices\\IDentityServices.csproj|c:\\users\\hi\\desktop\\microservices_udpt\\identityservices\\identityservices\\identityservices\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{B9F237E6-C8DB-43B9-A5A0-C973614723BC}|IDentityServices\\IDentityServices.csproj|solutionrelative:identityservices\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B9F237E6-C8DB-43B9-A5A0-C973614723BC}|IDentityServices\\IDentityServices.csproj|c:\\users\\hi\\desktop\\microservices_udpt\\identityservices\\identityservices\\identityservices\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{B9F237E6-C8DB-43B9-A5A0-C973614723BC}|IDentityServices\\IDentityServices.csproj|solutionrelative:identityservices\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B9F237E6-C8DB-43B9-A5A0-C973614723BC}|IDentityServices\\IDentityServices.csproj|c:\\users\\hi\\desktop\\microservices_udpt\\identityservices\\identityservices\\identityservices\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{B9F237E6-C8DB-43B9-A5A0-C973614723BC}|IDentityServices\\IDentityServices.csproj|solutionrelative:identityservices\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     }
   ],
   "DocumentGroupContainers": [
@@ -45,8 +13,8 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-          "DockedWidth": 200,
-          "SelectedChildIndex": 23,
+          "DockedWidth": 284,
+          "SelectedChildIndex": 17,
           "Children": [
             {
               "$type": "Bookmark",
@@ -113,145 +81,21 @@
               "Name": "ST:1:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
             },
             {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "20250523135413_ConfigDataType.cs",
-              "DocumentMoniker": "C:\\Users\\Hi\\Desktop\\Microservices_UDPT\\IDentityServices\\IDentityServices\\IDentityServices\\Migrations\\20250523135413_ConfigDataType.cs",
-              "RelativeDocumentMoniker": "IDentityServices\\Migrations\\20250523135413_ConfigDataType.cs",
-              "ToolTip": "C:\\Users\\Hi\\Desktop\\Microservices_UDPT\\IDentityServices\\IDentityServices\\IDentityServices\\Migrations\\20250523135413_ConfigDataType.cs",
-              "RelativeToolTip": "IDentityServices\\Migrations\\20250523135413_ConfigDataType.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-23T13:55:03.577Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "IDentityServices.http",
-              "DocumentMoniker": "C:\\Users\\Hi\\Desktop\\Microservices_UDPT\\IDentityServices\\IDentityServices\\IDentityServices\\IDentityServices.http",
-              "RelativeDocumentMoniker": "IDentityServices\\IDentityServices.http",
-              "ToolTip": "C:\\Users\\Hi\\Desktop\\Microservices_UDPT\\IDentityServices\\IDentityServices\\IDentityServices\\IDentityServices.http",
-              "RelativeToolTip": "IDentityServices\\IDentityServices.http",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003502|",
-              "WhenOpened": "2025-05-23T13:53:37.218Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "20250523134028_InitialCreate.cs",
-              "DocumentMoniker": "C:\\Users\\Hi\\Desktop\\Microservices_UDPT\\IDentityServices\\IDentityServices\\IDentityServices\\Migrations\\20250523134028_InitialCreate.cs",
-              "RelativeDocumentMoniker": "IDentityServices\\Migrations\\20250523134028_InitialCreate.cs",
-              "ToolTip": "C:\\Users\\Hi\\Desktop\\Microservices_UDPT\\IDentityServices\\IDentityServices\\IDentityServices\\Migrations\\20250523134028_InitialCreate.cs",
-              "RelativeToolTip": "IDentityServices\\Migrations\\20250523134028_InitialCreate.cs",
-              "ViewState": "AgIAAFwAAAAAAAAAAAAAABIAAABnAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-23T13:41:08.158Z",
-              "EditorCaption": ""
-            },
-            {
               "$type": "Bookmark",
-              "Name": "ST:51:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:52:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "ApplicationDbContext.cs",
-              "DocumentMoniker": "C:\\Users\\Hi\\Desktop\\Microservices_UDPT\\IDentityServices\\IDentityServices\\IDentityServices\\Context\\ApplicationDbContext.cs",
-              "RelativeDocumentMoniker": "IDentityServices\\Context\\ApplicationDbContext.cs",
-              "ToolTip": "C:\\Users\\Hi\\Desktop\\Microservices_UDPT\\IDentityServices\\IDentityServices\\IDentityServices\\Context\\ApplicationDbContext.cs*",
-              "RelativeToolTip": "IDentityServices\\Context\\ApplicationDbContext.cs*",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-23T13:26:30.711Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "User.cs",
-              "DocumentMoniker": "C:\\Users\\Hi\\Desktop\\Microservices_UDPT\\IDentityServices\\IDentityServices\\IDentityServices\\Model\\User.cs",
-              "RelativeDocumentMoniker": "IDentityServices\\Model\\User.cs",
-              "ToolTip": "C:\\Users\\Hi\\Desktop\\Microservices_UDPT\\IDentityServices\\IDentityServices\\IDentityServices\\Model\\User.cs*",
-              "RelativeToolTip": "IDentityServices\\Model\\User.cs*",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAsAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-23T13:18:36.937Z",
-              "EditorCaption": ""
+              "Name": "ST:54:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "ApplicationDbContextModelSnapshot.cs",
-              "DocumentMoniker": "C:\\Users\\Hi\\Desktop\\Microservices_UDPT\\IDentityServices\\IDentityServices\\IDentityServices\\Migrations\\ApplicationDbContextModelSnapshot.cs",
-              "RelativeDocumentMoniker": "IDentityServices\\Migrations\\ApplicationDbContextModelSnapshot.cs",
-              "ToolTip": "C:\\Users\\Hi\\Desktop\\Microservices_UDPT\\IDentityServices\\IDentityServices\\IDentityServices\\Migrations\\ApplicationDbContextModelSnapshot.cs",
-              "RelativeToolTip": "IDentityServices\\Migrations\\ApplicationDbContextModelSnapshot.cs",
-              "ViewState": "AgIAAA4AAAAAAAAAAAAQwBYAAABNAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-23T13:41:12.116Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Hi\\Desktop\\Microservices_UDPT\\IDentityServices\\IDentityServices\\IDentityServices\\Program.cs",
               "RelativeDocumentMoniker": "IDentityServices\\Program.cs",
-              "ToolTip": "C:\\Users\\Hi\\Desktop\\Microservices_UDPT\\IDentityServices\\IDentityServices\\IDentityServices\\Program.cs*",
-              "RelativeToolTip": "IDentityServices\\Program.cs*",
-              "ViewState": "AgIAAAsAAAAAAAAAAAAgwBYAAAANAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\Hi\\Desktop\\Microservices_UDPT\\IDentityServices\\IDentityServices\\IDentityServices\\Program.cs",
+              "RelativeToolTip": "IDentityServices\\Program.cs",
+              "ViewState": "AgIAAC8AAAAAAAAAAAAQwDcAAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-23T13:17:27.997Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:50:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:49:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Users\\Hi\\Desktop\\Microservices_UDPT\\IDentityServices\\IDentityServices\\IDentityServices\\appsettings.json",
-              "RelativeDocumentMoniker": "IDentityServices\\appsettings.json",
-              "ToolTip": "C:\\Users\\Hi\\Desktop\\Microservices_UDPT\\IDentityServices\\IDentityServices\\IDentityServices\\appsettings.json",
-              "RelativeToolTip": "IDentityServices\\appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-05-23T13:29:52.154Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "launchSettings.json",
-              "DocumentMoniker": "C:\\Users\\Hi\\Desktop\\Microservices_UDPT\\IDentityServices\\IDentityServices\\IDentityServices\\Properties\\launchSettings.json",
-              "RelativeDocumentMoniker": "IDentityServices\\Properties\\launchSettings.json",
-              "ToolTip": "C:\\Users\\Hi\\Desktop\\Microservices_UDPT\\IDentityServices\\IDentityServices\\IDentityServices\\Properties\\launchSettings.json",
-              "RelativeToolTip": "IDentityServices\\Properties\\launchSettings.json",
-              "ViewState": "AgIAACEAAAAAAAAAAAAAAA8AAAAdAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-05-23T13:29:49.011Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:48:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:47:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
             }
           ]
         }
