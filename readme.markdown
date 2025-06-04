@@ -56,7 +56,7 @@ Hướng dẫn này sẽ giúp bạn chạy hai dịch vụ **IdentityServices**
    - **Lưu ý:** Nếu bạn đang dùng Command Prompt trên Windows, lệnh trên sẽ hoạt động trực tiếp. Nếu gặp lỗi, hãy đảm bảo bạn đã cài đặt Docker và Docker Compose.
 
 3. **Kiểm tra dịch vụ:**
-   - File `setup.bat` sẽ tự động khôi phục volume và khởi động các container. Sau khi chạy xong, bạn có thể truy cập Kong Gateway tại `http://localhost:8000` hoặc vào xem trang của **Admin** ở `http://localhost:80022`.
+   - File `setup.bat` sẽ tự động khôi phục volume và khởi động các container. Sau khi chạy xong, bạn có thể truy cập Kong Gateway tại `http://localhost:8000` hoặc vào xem trang của **Admin** ở `http://localhost:8002`.
 
 ---
 
@@ -65,20 +65,19 @@ Hướng dẫn này sẽ giúp bạn chạy hai dịch vụ **IdentityServices**
 Dịch vụ IdentityServices cung cấp các endpoint API sau đây, có thể truy cập tại `http://localhost:8080`:
 
 - **GET /Hello**
-  - Đây là API test dùng để kiểm tra xem dịch vụ có hoạt động không. Khi gọi endpoint này, nó sẽ trả về một phản hồi đơn giản, thường là "Hello" hoặc một thông điệp tương tự.
+  - Đây là API test dùng để kiểm tra xem dịch vụ có hoạt động với identity không, vì chỉ khi người dùng đăng nhập và có accesstoken thì mới call đến api này đượcđược. Khi gọi endpoint này, nó sẽ trả về một phản hồi đơn giản, thường là "Hello" hoặc một thông điệp tương tự.
 
 - **POST /api/{version}/account/register/user/doctor**
-  - Endpoint này được sử dụng để đăng ký một người dùng với vai trò "doctor". Yêu cầu gửi dữ liệu người dùng qua body (thường là JSON) để tạo tài khoản mới.
+  - Endpoint này được sử dụng để đăng ký một người dùng với vai trò "Doctor". Yêu cầu gửi dữ liệu người dùng qua body (thường là JSON) để tạo tài khoản mới.
 
 - **POST /api/{version}/account/register/user/staff**
-  - Endpoint tương tự như trên, nhưng dành cho vai trò "staff". Dữ liệu người dùng cũng được gửi qua body để đăng ký.
+  - Endpoint tương tự như trên, nhưng dành cho vai trò "SStaff". Dữ liệu người dùng cũng được gửi qua body để đăng ký.
 
 - **POST /api/{version}/account/login**
-  - Endpoint này cho phép người dùng đăng nhập bằng thông tin tài khoản (username/password). Yêu cầu gửi dữ liệu đăng nhập qua body và trả về token hoặc thông tin xác thực nếu thành công.
+  - Endpoint này cho phép người dùng đăng nhập bằng thông tin tài khoản (username/password). Yêu cầu gửi dữ liệu đăng nhập qua body và trả về access token và refreshtoken nếu thành công.
 
 - **POST /api/{version}/account/refreshToken**
-  - Endpoint dùng để làm mới (refresh) token xác thực khi token cũ hết hạn. Yêu cầu gửi token cũ qua body để nhận token mới.
+  - Endpoint dùng để làm mới (refresh) token xác thực khi access token cũ hết hạn. Yêu cầu gửi refresh token cũ qua body để nhận access-token và refresh-token mới.
 
-- **{version}**: Là phiên bản của API (ví dụ: v1, v2), được thay thế trong URL tùy theo cấu hình.
+- **{version}**: Là phiên bản của API (ví dụ: v1, v2), được thay thế trong URL tùy theo cấu hình. Hiện tại là v0
 
-Các API này đều yêu cầu dữ liệu đầu vào phù hợp và có thể cần xác thực tùy thuộc vào cấu hình bảo mật của dịch vụ.
