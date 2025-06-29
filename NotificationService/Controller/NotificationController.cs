@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using NotificationService.Models;
 using NotificationService.Services;
 
 namespace NotificationService.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [ApiVersion("0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class NotificationController : ControllerBase
     {
         private readonly INotificationService _notificationService;
@@ -16,7 +18,11 @@ namespace NotificationService.Controllers
             _notificationService = notificationService;
             _logger = logger;
         }
-        // Endpoint để thông báo xác nhận lịch khám
+        /// <summary>
+        /// Gửi thông báo nhắc nhở lịch khám cho bệnh nhân và bác sĩ.
+        /// </summary>
+        /// <param name="request">Thông tin lịch hẹn, email bệnh nhân và bác sĩ.</param>
+        /// <returns>Trả về 200 nếu gửi thành công, 400 nếu dữ liệu không hợp lệ.</returns>
         [HttpPost("send-appointment")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -42,7 +48,11 @@ namespace NotificationService.Controllers
             return Ok("Appointment notifications sent and logged.");
         }
 
-        // Endpoint để thông báo đơn thuốc đã sẵn sàng
+        /// <summary>
+        /// Gửi thông báo đơn thuốc đã sẵn sàng cho bệnh nhân.
+        /// </summary>
+        /// <param name="request">Thông tin đơn thuốc, email và tên bệnh nhân.</param>
+        /// <returns>Trả về 200 nếu gửi thành công, 400 nếu dữ liệu không hợp lệ.</returns>
         [HttpPost("send-prescription-ready")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -65,6 +75,11 @@ namespace NotificationService.Controllers
             return Ok("Prescription ready notification sent and logged.");
         }
 
+        /// <summary>
+        /// Lấy thông tin chi tiết một thông báo theo Id.
+        /// </summary>
+        /// <param name="id">Id của thông báo.</param>
+        /// <returns>Trả về Notification nếu tìm thấy, 404 nếu không tồn tại.</returns>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Notification))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
