@@ -1,0 +1,20 @@
+tags:
+  - Medicine
+summary: Lấy danh sách tất cả các loại thuốc sắp hết hạn
+description: Lấy dánh sách tất cả các loại thuốc sắp hết hạn từ hệ thống, có thể phân trang.
+parameters:
+    - name: page
+      in: query
+      type: integer
+      required: false
+      default: 1
+      description: Số trang hiện tại
+    - name: limit
+      in: query
+      type: integer
+      required: false
+      default: 10
+      description: Số lượng phần tử trên mỗi trang
+responses:
+  201:
+    description: Thành công

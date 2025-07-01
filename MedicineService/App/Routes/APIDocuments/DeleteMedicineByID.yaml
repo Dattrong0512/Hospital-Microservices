@@ -1,0 +1,16 @@
+tags:
+  - Medicine
+summary: Xóa thông tin của thuốc theo ID
+description: Xóa thông tin chi tiết của thuốc dựa trên ID.
+parameters:
+  - name: medicine_id
+    in: path
+    required: true
+    description: ID của thuốc
+    schema:
+      type: integer
+      example: 1
+
+responses:
+  200:
+    description: Thành công

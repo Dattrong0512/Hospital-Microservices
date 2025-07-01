@@ -1,0 +1,27 @@
+tags:
+  - Medicine
+summary: Lấy thông tin thuốc theo tên
+description: Lấy thông tin thuốc theo tên, có thể phân trang
+parameters:
+    - name: name
+      in: path
+      required: true
+      description: tên của thuốc
+      schema:
+        type: string
+        example: "vitamin"
+    - name: page
+      in: query
+      type: integer
+      required: false
+      default: 1
+      description: Số trang hiện tại
+    - name: limit
+      in: query
+      type: integer
+      required: false
+      default: 10
+      description: Số lượng phần tử trên mỗi trang
+responses:
+  200:
+    description: Thành công
