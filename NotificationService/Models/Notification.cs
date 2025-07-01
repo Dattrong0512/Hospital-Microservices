@@ -14,6 +14,6 @@ namespace NotificationService.Models
         public string Content { get; set; } = string.Empty;
         public DateTime SentAt { get; set; } = DateTime.UtcNow;
         public bool SentSuccessfully { get; set; }
-        public string AppointmentId { get; set; } = string.Empty;
+        public string MessageType { get; set; } = string.Empty;
     }
 }

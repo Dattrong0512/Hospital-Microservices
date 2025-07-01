@@ -1,5 +1,7 @@
 using NotificationService.Models;
 using NotificationService.Services;
+using Microsoft.Extensions.Hosting;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +26,10 @@ builder.Services.AddApiVersioning(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.Configure<RabbitMQSettings>(builder.Configuration.GetSection("RabbitMQ"));
+
+// Đăng ký Background Service cho RabbitMQ Consumer
+builder.Services.AddHostedService<RabbitMQConsumerService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
