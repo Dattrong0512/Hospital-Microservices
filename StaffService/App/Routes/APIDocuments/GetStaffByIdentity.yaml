@@ -1,0 +1,15 @@
+tags:
+  - Staff
+summary: Lấy thông tin nhân viên theo Identity card
+description: Lấy thông tin nhân viên dựa trên Identity card
+parameters:
+    - name: identity_card
+      in: path
+      required: true
+      description: Identity card của nhân viên
+      schema:
+        type: string
+        example: "123456789012"
+responses:
+  200:
+    description: Thành công

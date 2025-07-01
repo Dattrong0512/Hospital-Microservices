@@ -1,0 +1,27 @@
+tags:
+  - Staff
+summary: Cập nhật thông tin của nhân viên
+description: Cập nhật thông tin chi tiết của một nhân viên, bao gồm số điện thoại và email.
+parameters:
+  - name: identity_card
+    in: path
+    required: true
+    description: identity card của nhân viên cần cập nhật
+    schema:
+      type: string
+      example: "123456789012"
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      properties:
+        phone_number:
+          type: string
+          example: "01234567890"
+        email:
+          type: string
+          example: "test@gmail.com"
+responses:
+    200:
+      description: Cập nhật thông tin nhân viên thành công

@@ -1,0 +1,20 @@
+tags:
+  - Staff
+summary: Lấy thông tin của nhân viên theo ID
+description: Lấy thông tin chi tiết của một nhân viên dựa trên ID của họ.
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      properties:
+        staff_id:
+          type: string
+          example: "staff1_id"
+      required:
+        - staff_id
+
+responses:
+  200:
+    description: Thành công
