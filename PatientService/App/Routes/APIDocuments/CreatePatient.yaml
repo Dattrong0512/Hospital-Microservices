@@ -1,0 +1,47 @@
+tags:
+  - Patient
+summary: Tạo bệnh nhân mới
+description: Tạo một bệnh nhân mới.
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      properties:
+        fullname:
+          type: string
+          example: "Nguyễn Văn A"
+        identity_card:
+          type: string
+          example: "123456789012"
+        birth_date:
+          type: string
+          format: date
+          example: "2025-07-01"
+        gender:
+          type: string
+          example: "Nam"
+        phone_number:
+          type: string
+          example: "1234567890"
+        email:
+          type: string
+          example: "nva@gmail.com"
+        address:
+          type: string
+          example: "44 Nguyễn Trãi"
+        medical_history:
+          type: string
+          example: "Hen suyễn nhẹ"
+      required:
+        - fullname
+        - identity_card
+        - birth_date
+        - gender
+        - phone_number
+        - email
+        - address
+responses:
+  201:
+    description: Thành công
