@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package patient;
+
+service PatientService {
+  rpc GetPatientById (PatientIdRequest) returns (PatientResponse);
+  rpc GetPatientByIdentity(PatientIdentityRequest) returns (PatientResponse);
+}
+
+message PatientIdRequest {
+  int32 patient_id = 1;
+}
+
+message PatientIdentityRequest {
+  string identity_card = 1;
+}
+
+message PatientResponse {
+  bool found = 1;
+  int32 id = 2;
+  string identity_card = 3;
+  string fullname = 4;
+  string birth_date = 5;
+  string gender = 6;
+  string address = 7;
+  string phone_number = 8;
+  string email = 9;
+  string medical_history = 10;
+}

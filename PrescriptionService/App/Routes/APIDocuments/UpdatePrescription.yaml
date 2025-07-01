@@ -1,0 +1,24 @@
+tags:
+  - Prescription
+summary: Cập nhật thông tin của đơn thuốc
+description: Cập nhật thông tin chi tiết của một đơn thuốc
+parameters:
+  - name: prescription_id
+    in: path
+    required: true
+    description: ID của đơn thuốc cần cập nhật
+    schema:
+      type: integer
+      example: 1
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "Đã lấy"
+responses:
+    200:
+      description: Cập nhật thông tin đơn thuốc thành công

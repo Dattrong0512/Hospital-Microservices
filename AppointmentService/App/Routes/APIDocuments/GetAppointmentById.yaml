@@ -1,0 +1,15 @@
+tags:
+  - Appointment
+summary: Lấy thông tin cuộc hẹn theo ID
+description: Lấy thông tin chi tiết của một cuộc hẹn dựa trên ID của nó.
+parameters:
+    - name: appointment_id
+      in: path
+      required: true
+      description: ID của lịch hẹn cần lấy
+      schema:
+        type: integer
+        example: 1
+responses:
+  200:
+    description: Thành công

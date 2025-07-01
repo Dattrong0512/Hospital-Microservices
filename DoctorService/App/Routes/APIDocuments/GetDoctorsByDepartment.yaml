@@ -1,0 +1,19 @@
+tags:
+  - Doctor
+summary: Lấy danh sách bác sĩ dựa theo khoa
+description: Lấy danh sách bác sĩ dựa theo khoa trên hệ thống
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      properties:
+        department:
+          type: string
+          example: "Chấn thương chỉnh hình"
+      required:
+        - department
+responses:
+  200:
+    description: Thành công

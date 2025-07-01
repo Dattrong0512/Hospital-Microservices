@@ -1,0 +1,32 @@
+tags:
+  - Appointment
+summary: Cập nhật lịch hẹn
+description: Cập nhật thông tin của một lịch hẹn đã tồn tại, bao gồm trạng thái, ghi chú, ngày và giờ bắt đầu mới.
+parameters:
+  - name: appointment_id
+    in: path
+    required: true
+    description: ID của lịch hẹn cần cập nhật
+    schema:
+      type: integer
+      example: 5
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+          example: "2025-07-01"
+        started_time:
+          type: string
+          example: "09:00:00"
+        status:
+          type: string
+        description:
+          type: string
+responses:
+    200:
+      description: Cập nhật lịch hẹn thành công

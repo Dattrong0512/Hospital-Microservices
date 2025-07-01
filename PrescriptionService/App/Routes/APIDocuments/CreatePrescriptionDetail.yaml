@@ -1,0 +1,27 @@
+tags:
+  - Prescription Detail
+summary: Tạo chi tiết đơn thuốc mới
+description: Tạo một chi tiết đơn thuốc mới.
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      properties:
+        prescription_id:
+          type: integer
+          example: 1
+        medicine_id:
+          type: integer
+          example: 1
+        amount:
+          type: integer
+          example: 5
+      required:
+        - prescription_id
+        - medicine_id
+        - amount
+responses:
+  201:
+    description: Thành công

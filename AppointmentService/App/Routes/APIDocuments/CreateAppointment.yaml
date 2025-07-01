@@ -1,0 +1,35 @@
+tags:
+  - Appointment
+summary: Tạo cuộc hẹn mới
+description: Tạo một cuộc hẹn mới cho bệnh nhân.
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      properties:
+        patient_id:
+          type: integer
+        doctor_id:
+          type: string
+        date:
+          type: string
+          format: date
+          example: "2025-07-01"
+        started_time:
+          type: string
+          example: "09:00:00"
+        status:
+          type: string
+        description:
+          type: string
+      required:
+        - patient_id
+        - doctor_id
+        - date
+        - started_time
+        - description
+responses:
+  201:
+    description: Tạo thành công

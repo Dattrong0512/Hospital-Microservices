@@ -1,0 +1,16 @@
+tags:
+  - Patient
+summary: Lấy thông tin của bệnh nhân theo ID
+description: Lấy thông tin chi tiết của một bệnh nhân dựa trên ID của họ.
+parameters:
+  - name: patient_id
+    in: path
+    required: true
+    description: ID của bệnh nhân
+    schema:
+      type: integer
+      example: 1
+
+responses:
+  200:
+    description: Thành công

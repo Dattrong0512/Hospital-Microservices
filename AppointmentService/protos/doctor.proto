@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package doctor;
+
+service DoctorService {
+  rpc GetAvailableDoctors (AvailableDoctorsRequest) returns (AvailableDoctorsResponse);
+  rpc GetDoctorById (DoctorIdRequest) returns (DoctorResponse);
+}
+
+message DoctorIdRequest {
+  string doctor_id = 1;
+}
+
+message DoctorResponse {
+  bool found = 1;
+  string doctor_id = 2;
+  string identity_card = 3;
+  string username = 4;
+  string fullname = 5;
+  string birth_date = 6;
+  string gender = 7;
+  string phone_number = 8;
+  string email = 9;
+  string department = 10;
+}
+
+message AvailableDoctorsRequest {
+  repeated string excluded_id = 1;
+  string department = 2;
+}
+
+message AvailableDoctorsResponse {
+  repeated DoctorResponse doctors = 1;
+}

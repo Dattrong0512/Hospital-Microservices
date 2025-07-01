@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package medicine;
+
+service MedicineService {
+  rpc GetMedicineById (MedicineIdRequest) returns (MedicineResponse);
+  rpc UpdateMedicine (UpdateMedicineRequest) returns (MedicineResponse);
+}
+
+message MedicineIdRequest {
+  int32 medicine_id = 1;
+}
+
+message UpdateMedicineRequest {
+  int32 medicine_id = 1;
+  int32 amount = 2;
+}
+
+message MedicineResponse {
+  bool found = 1;
+  int32 medicine_id = 2;
+  string name = 3;
+  string MFG = 4;
+  string EXP = 5;
+  string unit = 6;
+  int32 price = 7;
+  int32 amount = 8;
+}

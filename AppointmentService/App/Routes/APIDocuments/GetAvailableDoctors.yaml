@@ -1,0 +1,32 @@
+tags:
+  - Appointment
+summary: Lấy danh sách bác sĩ rảnh theo khoa, ngày và giờ
+description: Lấy danh sách bác sĩ có thể đặt lịch hẹn dựa trên khoa, ngày và giờ đã chỉ định.
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      properties:
+        doctor_department:
+          type: string
+          example: "Chấn thương chỉnh hình"
+          description: Tên khoa/phòng ban
+        appointment_date:
+          type: string
+          format: date
+          example: "2025-06-30"
+          description: Ngày đặt lịch (định dạng yyyy-mm-dd)
+        started_time:
+          type: string
+          pattern: "^\\d{2}:\\d{2}$"
+          example: "09:00:00"
+          description: Giờ bắt đầu lịch hẹn (định dạng HH:mm:ss)
+      required:
+        - doctor_department
+        - appointment_date
+        - started_time
+responses:
+    200:
+      description: Thành công

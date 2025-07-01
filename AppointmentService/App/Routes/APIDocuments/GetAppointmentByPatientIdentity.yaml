@@ -1,0 +1,27 @@
+tags:
+  - Appointment
+summary: Lấy danh sách cuộc hẹn theo Identity card
+description: Lấy danh sách cuộc hẹn của bệnh nhân dựa trên Identity card của họ, hỗ trợ phân trang.
+parameters:
+    - name: identity_card
+      in: path
+      required: true
+      description: Identity card của bệnh nhân
+      schema:
+        type: string 
+        example: "123456789012"
+    - name: page
+      in: query
+      type: integer
+      required: false
+      default: 1
+      description: Số trang hiện tại
+    - name: limit
+      in: query
+      type: integer
+      required: false
+      default: 10
+      description: Số lượng phần tử trên mỗi trang
+responses:
+  200:
+    description: Thành công

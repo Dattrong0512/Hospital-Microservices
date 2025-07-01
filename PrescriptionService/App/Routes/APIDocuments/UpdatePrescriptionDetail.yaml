@@ -1,0 +1,23 @@
+tags:
+  - Prescription Detail
+summary: Cập nhật thông tin chi tiết của đơn thuốc
+description: Cập nhật thông tin chi tiết của một đơn thuốc
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      properties:
+        prescription_id:
+          type: integer
+          example: 1
+        medicine_id:
+          type: integer
+          example: 1
+        amount:
+          type: integer
+          example: 1
+responses:
+    200:
+      description: Cập nhật chi tiết đơn thuốc thành công

@@ -1,0 +1,38 @@
+tags:
+  - Medicine
+summary: Cập nhật thông tin của thuốc
+description: Cập nhật thông tin chi tiết của thuốc, bao gồm số lượng tồn, đơn giá, đơn vị, ngày sản xuất và hạn sử dụng.
+parameters:
+  - name: medicine_id
+    in: path
+    required: true
+    description: ID của thuốc cần cập nhật
+    schema:
+      type: integer
+      example: 1
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      properties:
+        amount:
+          type: integer
+          example: 50
+        price:
+          type: integer
+          example: 50000
+        unit:
+          type: string
+          example: "hộp"
+        MFG:
+          type: string
+          format: date
+          example: "2025-07-01"
+        EXP:
+          type: string
+          format: date
+          example: "2025-07-01"
+responses:
+    200:
+      description: Cập nhật thông tin thuốc thành công

@@ -1,0 +1,15 @@
+tags:
+  - Patient
+summary: Lấy thông tin bệnh nhân theo Identity card
+description: Lấy thông tin bệnh nhân dựa trên Identity card
+parameters:
+    - name: identity_card
+      in: path
+      required: true
+      description: Identity card của bệnh nhân
+      schema:
+        type: string
+        example: "123456789012"
+responses:
+  200:
+    description: Thành công

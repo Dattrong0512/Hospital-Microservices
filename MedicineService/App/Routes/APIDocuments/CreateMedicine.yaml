@@ -1,0 +1,41 @@
+tags:
+  - Medicine
+summary: Tạo thuốc mới
+description: Tạo một thuốc mới.
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Vitamin A"
+        MFG:
+          type: string
+          format: date
+          example: "2025-07-01"
+        EXP:
+          type: string
+          format: date
+          example: "2025-07-01"
+        amount:
+          type: integer
+          example: 2
+        unit:
+          type: string
+          example: "hộp"
+        price:
+          type: integer
+          example: 500000
+      required:
+        - name
+        - MFG
+        - EXP
+        - amount
+        - unit
+        - price
+responses:
+  201:
+    description: Thành công
