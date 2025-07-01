@@ -1,0 +1,21 @@
+tags:
+  - Prescription Detail
+summary: Xóa chi tiết của một đơn thuốc
+description: Xóa chi tiết của một đơn thuốc.
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      properties:
+        prescription_id:
+          type: integer
+          example: 1
+        medicine_id:
+          type: integer
+          example: 1
+
+responses:
+  200:
+    description: Thành công

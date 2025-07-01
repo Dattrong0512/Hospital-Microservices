@@ -1,0 +1,27 @@
+tags:
+  - Prescription
+summary: Tạo đơn thuốc mới
+description: Tạo một đơn thuốc mới.
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      properties:
+        appointment_id:
+          type: integer
+          example: 1
+        status:
+          type: string
+          example: "Chưa lấy"
+        no_days:
+          type: integer
+          example: 5
+      required:
+        - appointment_id
+        - status
+        - no_days
+responses:
+  201:
+    description: Thành công
