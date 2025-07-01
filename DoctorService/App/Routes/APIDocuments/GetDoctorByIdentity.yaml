@@ -1,0 +1,15 @@
+tags:
+  - Doctor
+summary: Lấy thông tin bác sĩ theo Identity card
+description: Lấy thông tin bác sĩ dựa trên Identity card
+parameters:
+    - name: identity_card
+      in: path
+      required: true
+      description: Identity card của bác sĩ
+      schema:
+        type: string
+        example: "123456789012"
+responses:
+  200:
+    description: Thành công

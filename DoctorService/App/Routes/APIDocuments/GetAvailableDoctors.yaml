@@ -1,0 +1,23 @@
+tags:
+  - Doctor
+summary: Lấy danh sách bác sĩ rảnh
+description: Lấy danh sách bác sĩ có thể đặt lịch hẹn dựa trên khoa
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      properties:
+        excluded_ids:
+          type: array
+          example: ["id_busy_doctor1", "id_busy_doctor2"]
+        doctor_department:
+          type: string
+          example: "Chấn thương chỉnh hình"
+      required:
+        - excluded_ids
+        - doctor_department
+responses:
+    200:
+      description: Thành công

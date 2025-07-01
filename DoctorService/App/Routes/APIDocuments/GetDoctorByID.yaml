@@ -1,0 +1,20 @@
+tags:
+  - Doctor
+summary: Lấy thông tin của bác sĩ theo ID
+description: Lấy thông tin chi tiết của một bác sĩ dựa trên ID của họ.
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      properties:
+        doctor_id:
+          type: string
+          example: "doctor1_id"
+      required:
+        - doctor_id
+
+responses:
+  200:
+    description: Thành công

@@ -1,0 +1,52 @@
+tags:
+  - Doctor
+summary: Tạo bác sĩ mới
+description: Tạo một bác sĩ mới.
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "doctorA"
+        password:
+          type: string
+          example: "12345678Aa"
+        fullname:
+          type: string
+          example: "Nguyễn Văn A"
+        identity_card:
+          type: string
+          example: "123456789012"
+        birth_date:
+          type: string
+          format: date
+          example: "2025-07-01"
+        gender:
+          type: string
+          example: "Nam"
+        phone_number:
+          type: string
+          example: "1234567890"
+        email:
+          type: string
+          example: "nva@gmail.com"
+        department:
+          type: string
+          example: "Chấn thương chỉnh hình"
+      required:
+        - username
+        - password
+        - fullname
+        - identity_card
+        - birth_date
+        - gender
+        - phone_number
+        - email
+        - department
+responses:
+  201:
+    description: Thành công
