@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IDentityServices.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250603110930_IdentityStructure")]
-    partial class IdentityStructure
+    [Migration("20250702045815_CreateDB")]
+    partial class CreateDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

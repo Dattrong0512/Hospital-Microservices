@@ -152,6 +152,5 @@ C:\Users\Hi\Desktop\Microservices_UDPT\IDentityServices\IDentityServices\IDentit
 C:\Users\Hi\Desktop\Microservices_UDPT\IDentityServices\IDentityServices\IDentityServices\obj\Debug\net8.0\IDentityServices.pdb
 C:\Users\Hi\Desktop\Microservices_UDPT\IDentityServices\IDentityServices\IDentityServices\obj\Debug\net8.0\IDentityServices.genruntimeconfig.cache
 C:\Users\Hi\Desktop\Microservices_UDPT\IDentityServices\IDentityServices\IDentityServices\obj\Debug\net8.0\ref\IDentityServices.dll
-C:\Users\Hi\Desktop\Microservices_UDPT\IDentityServices\IDentityServices\IDentityServices\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\Hi\Desktop\Microservices_UDPT\IDentityServices\IDentityServices\IDentityServices\bin\Debug\net8.0\Microsoft.AspNetCore.Mvc.Versioning.dll
 C:\Users\Hi\Desktop\Microservices_UDPT\IDentityServices\IDentityServices\IDentityServices\bin\Debug\net8.0\Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer.dll
