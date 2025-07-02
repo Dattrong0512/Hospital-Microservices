@@ -104,6 +104,7 @@ namespace NotificationService.Services
 
                 notification.SentSuccessfully = true;
                 _logger.LogInformation("Email sent successfully to: {RecipientEmail}", recipientEmail);
+                Console.WriteLine("Email sent successfully to: {RecipientEmail}", recipientEmail);
             }
             catch (Exception ex)
             {

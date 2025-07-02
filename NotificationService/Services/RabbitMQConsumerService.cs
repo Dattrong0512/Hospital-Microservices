@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using NotificationService.Messages;
 using System.Text.Json;
 using System;
-using Microsoft.Extensions.Options;
 
 namespace NotificationService.Services
 {
@@ -16,21 +15,23 @@ namespace NotificationService.Services
     {
         private readonly ILogger<RabbitMQConsumerService> _logger;
         private readonly INotificationService _notificationService;
-        private readonly RabbitMQSettings _rabbitMQSettings;
+        private readonly IConnectionFactory _connectionFactory;
         private IConnection _connection;
         private IModel _channel;
-        private const string QUEUE_NAME = "prescription_queue";
+        private const string QUEUE_NAME = "appointment_queue";
+        //private const string QUEUE_NAME1 = "prescription_queue";
         private const string EXCHANGE_NAME = "notification_exchange";
-        private const string ROUTING_KEY = "prescription";
+        //private const string ROUTING_KEY1 = "prescription";
+        private const string ROUTING_KEY = "appointment";
 
         public RabbitMQConsumerService(
             ILogger<RabbitMQConsumerService> logger,
             INotificationService notificationService,
-            IOptions<RabbitMQSettings> rabbitMQSettings)
+            IConnectionFactory connectionFactory)
         {
             _logger = logger;
             _notificationService = notificationService;
-            _rabbitMQSettings = rabbitMQSettings.Value;
+            _connectionFactory = connectionFactory;
 
             InitializeRabbitMQ();
         }
@@ -39,19 +40,10 @@ namespace NotificationService.Services
         {
             try
             {
-                var factory = new ConnectionFactory
-                {
-                    HostName = _rabbitMQSettings.HostName,
-                    Port = _rabbitMQSettings.Port,
-                    UserName = _rabbitMQSettings.UserName,
-                    Password = _rabbitMQSettings.Password,
-                    DispatchConsumersAsync = true
-                };
-
-                _connection = factory.CreateConnection();
+                _connection = _connectionFactory.CreateConnection();
                 _channel = _connection.CreateModel();
 
-                _channel.ExchangeDeclare(exchange: EXCHANGE_NAME, type: ExchangeType.Topic, durable: true);
+                _channel.ExchangeDeclare(exchange: EXCHANGE_NAME, type: ExchangeType.Direct, durable: true);
                 _channel.QueueDeclare(queue: QUEUE_NAME,
                                      durable: true,
                                      exclusive: false,
@@ -65,12 +57,13 @@ namespace NotificationService.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to connect to RabbitMQ or configure channel. Host: {HostName}:{Port}", _rabbitMQSettings.HostName, _rabbitMQSettings.Port);
+                _logger.LogError(ex, "Failed to connect to RabbitMQ or configure channel. Check RabbitMQ connection string in appsettings.");
             }
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
+
             stoppingToken.ThrowIfCancellationRequested();
 
             if (_channel == null)
@@ -82,13 +75,14 @@ namespace NotificationService.Services
             var consumer = new AsyncEventingBasicConsumer(_channel);
             consumer.Received += async (model, ea) =>
             {
+                _logger.LogInformation("DEBUG: RECEIVED - Entered consumer.Received event handler."); 
                 var body = ea.Body.ToArray();
                 var messageContent = Encoding.UTF8.GetString(body);
                 _logger.LogInformation($" [x] Received message: {messageContent}");
 
                 try
                 {
-                    var reminder = JsonSerializer.Deserialize<AppointmentReminderMessage>(messageContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }); // Thêm option để linh hoạt với case của property
+                    var reminder = JsonSerializer.Deserialize<AppointmentReminderMessage>(messageContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                     if (reminder == null)
                     {
                         _logger.LogWarning("Received null or invalid AppointmentReminderMessage. Not acknowledging and discarding.");
@@ -99,43 +93,39 @@ namespace NotificationService.Services
                     // Gửi thông báo cho bệnh nhân
                     if (!string.IsNullOrEmpty(reminder.PatientEmail))
                     {
-                        _logger.LogInformation("Sending patient notification for Appointment ID: {AppointmentId}", reminder.MessageType, reminder.AppointmentDateTime);
+                        _logger.LogInformation("Sending patient notification for Appointment Type: {MessageType}, Date: {AppointmentDateTime}", reminder.MessageType, reminder.AppointmentDateTime); // Đã sửa placeholder
                         await _notificationService.SendAppointmentNotificationAsync(
                             reminder.PatientEmail,
                             "PATIENT",
                             reminder.DoctorName,
                             reminder.PatientName,
-                            reminder.AppointmentDateTime,
-                            reminder.MessageType
+                            reminder.AppointmentDateTime
                         );
                     }
                     else
                     {
-                        _logger.LogInformation("Patient email is empty for Appointment ID: {AppointmentId}. Skipping patient notification.", reminder.MessageType);
+                        _logger.LogInformation("Patient email is empty for Appointment Type: {MessageType}. Skipping patient notification.", reminder.MessageType); // Đã sửa placeholder
                     }
-
 
                     // Gửi thông báo cho bác sĩ
                     if (!string.IsNullOrEmpty(reminder.DoctorEmail))
                     {
-                        _logger.LogInformation("Sending doctor notification for Appointment ID: {AppointmentId}", reminder.MessageType, reminder.AppointmentDateTime);
+                        _logger.LogInformation("Sending doctor notification for Appointment Type: {MessageType}, Date: {AppointmentDateTime}", reminder.MessageType, reminder.AppointmentDateTime); // Đã sửa placeholder
                         await _notificationService.SendAppointmentNotificationAsync(
                             reminder.DoctorEmail,
                             "DOCTOR",
                             reminder.DoctorName,
                             reminder.PatientName,
-                            reminder.AppointmentDateTime,
-                            reminder.MessageType
+                            reminder.AppointmentDateTime
                         );
                     }
-                     else
+                    else
                     {
-                        _logger.LogInformation("Doctor email is empty for Appointment ID: {AppointmentId}. Skipping doctor notification.", reminder.MessageType);
+                        _logger.LogInformation("Doctor email is empty for Appointment Type: {MessageType}. Skipping doctor notification.", reminder.MessageType); // Đã sửa placeholder
                     }
 
-
                     _channel.BasicAck(ea.DeliveryTag, false);
-                    _logger.LogInformation("Message processed and acknowledged for Appointment ID: {AppointmentId}", reminder.MessageType);
+                    _logger.LogInformation("Message processed and acknowledged for Appointment Type: {MessageType}", reminder.MessageType); // Đã sửa placeholder
                 }
                 catch (JsonException jsonEx)
                 {
@@ -150,6 +140,8 @@ namespace NotificationService.Services
             };
 
             _channel.BasicConsume(queue: QUEUE_NAME, autoAck: false, consumer: consumer);
+            _logger.LogInformation($"DEBUG: CONSUME - Consumer started listening on queue: {QUEUE_NAME}");
+
 
             return Task.CompletedTask;
         }
