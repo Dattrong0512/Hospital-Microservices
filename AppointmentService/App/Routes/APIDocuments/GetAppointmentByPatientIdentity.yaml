@@ -22,6 +22,26 @@ parameters:
       required: false
       default: 10
       description: Số lượng phần tử trên mỗi trang
+    - name: status
+      in: query
+      type: string
+      required: false
+      default: "Chưa hoàn thành"
+      description: Trạng thái của cuộc hẹn
+    - name: started_date
+      in: query
+      type: string
+      format: date
+      required: false
+      default: "2025-06-01"
+      description: Từ ngày
+    - name: ended_date
+      in: query
+      type: string
+      format: date
+      required: false
+      default: "2025-07-01"
+      description: Đến ngày
 responses:
   200:
     description: Thành công

@@ -37,9 +37,26 @@ def GetAppointmentByPatientIdentity(identity_card):
     try:
         page = int(request.args.get("page", 1))
         limit = int(request.args.get("limit", 10))
+        status = request.args.get("status", None)
+        started_date = request.args.get("started_date", None)
+        ended_date = request.args.get("ended_date", None)
     except ValueError:
         return jsonify({"error": "Invalid page or limit parameter"}), 400
-    appointment = AppointmentController.GetAppointmentByPatientIdentity(identity_card, page, limit)
+    appointment = AppointmentController.GetAppointmentByPatientIdentity(identity_card, status, started_date, ended_date, page, limit)
+    return jsonify(appointment), 200
+
+@appointment_bp.route("/byDoctorId/<string:doctor_id>", methods=["GET"])
+@swag_from(r"APIDocuments/GetAppointmentByDoctorID.yaml")
+def GetAppointmentByDoctorId(doctor_id):
+    try:
+        page = int(request.args.get("page", 1))
+        limit = int(request.args.get("limit", 10))
+        status = request.args.get("status", None)
+        started_date = request.args.get("started_date", None)
+        ended_date = request.args.get("ended_date", None)
+    except ValueError:
+        return jsonify({"error": "Invalid page or limit parameter"}), 400
+    appointment = AppointmentController.GetAppointmentByDoctorId(doctor_id, status, started_date, ended_date, page, limit)
     return jsonify(appointment), 200
 
 @appointment_bp.route("/availableDoctors", methods=["POST"])
@@ -55,7 +72,10 @@ def ListAll():
     try:
         page = int(request.args.get("page", 1))
         limit = int(request.args.get("limit", 10))
+        status = request.args.get("status", None)
+        started_date = request.args.get("started_date", None)
+        ended_date = request.args.get("ended_date", None)
     except ValueError:
         return jsonify({"error": "Invalid page or limit parameter"}), 400
-    appointment = AppointmentController.GetAllAppointments(page, limit)
+    appointment = AppointmentController.GetAllAppointments(status, started_date, ended_date, page, limit)
     return jsonify(appointment), 200

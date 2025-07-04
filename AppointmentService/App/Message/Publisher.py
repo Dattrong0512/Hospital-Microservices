@@ -4,11 +4,11 @@ from dotenv import load_dotenv
 load_dotenv()
 RABBITMQ_HOST = os.getenv('RABBITMQ_HOST', 'localhost')
 RABBITMQ_PORT = int(os.getenv('RABBITMQ_PORT', '5672'))
-RBBITMQ_URL = os.getenv('RABBITMQ_URL')
+RABBITMQ_URL = os.getenv('RABBITMQ_URL')
 
 class RabbitMQPublisher:
     # def __init__(self, host=RABBITMQ_HOST, exchange='notification_exchange', routing_key='appointment'):
-    def __init__(self, url=RBBITMQ_URL, exchange='notification_exchange', routing_key='appointment'):
+    def __init__(self, url=RABBITMQ_URL, exchange='notification_exchange', routing_key='appointment'):
         self.url = url
         # self.host = host
         self.exchange = exchange

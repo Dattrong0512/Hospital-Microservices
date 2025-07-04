@@ -1,4 +1,5 @@
 import os
+import urllib.parse
 from dotenv import load_dotenv
 
 load_dotenv()  # Tự động load .env trong thư mục gốc
@@ -10,7 +11,8 @@ class Config:
     DB_PASS = os.getenv("DB_PASS")
     DB_NAME = os.getenv("DB_NAME")
 
+    encoded_pass = urllib.parse.quote_plus(DB_PASS)
     SQLALCHEMY_DATABASE_URI = (
-        f"mysql+pymysql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+        f"mysql+pymysql://{DB_USER}:{encoded_pass}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False

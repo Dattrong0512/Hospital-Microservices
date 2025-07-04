@@ -18,6 +18,9 @@ parameters:
         amount:
           type: integer
           example: 1
+        note:
+          type: string
+          example: "Uống trước khi ăn"
 responses:
     200:
       description: Cập nhật chi tiết đơn thuốc thành công

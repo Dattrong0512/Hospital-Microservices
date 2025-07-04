@@ -19,6 +19,7 @@ parameters:
           example: "2025-07-01"
         started_time:
           type: string
+          format: time
           example: "09:00:00"
         status:
           type: string

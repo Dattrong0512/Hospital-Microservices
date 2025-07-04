@@ -9,5 +9,5 @@ def AppointmentToProto(appointment):
         date=appointment.date.strftime('%d-%m-%Y') if appointment.date else "",
         status=appointment.status,
         description=appointment.description,
-        started_time=appointment.started_time
+        started_time=appointment.started_time.strftime('%H:%M:%S') if appointment.started_time else "",
     )

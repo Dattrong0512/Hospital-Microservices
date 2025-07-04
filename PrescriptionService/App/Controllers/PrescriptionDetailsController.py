@@ -40,7 +40,7 @@ def UpdatePrescriptionDetail(prescription_id, medicine_id, data):
         return {"error": "Không thể kết nối đến Medicine Service"}
     if not update_response.found:
         return {"error": "Không tìm thấy thuốc"}
-    allowed_fields = {'amount'}
+    allowed_fields = {'amount', 'note'}
     for key, value in data.items():
         if key in allowed_fields:
             setattr(detail, key, value)
