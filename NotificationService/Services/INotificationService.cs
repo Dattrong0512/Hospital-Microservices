@@ -6,9 +6,9 @@ namespace NotificationService.Services
     {
         Task SendAppointmentNotificationAsync(string recipientEmail, string recipientType,
                                               string doctorName, string patientName,
-                                              DateTime appointmentDateTime, string appointmentId);
+                                              DateTime appointmentDateTime);
         Task SendPrescriptionReadyNotificationAsync(string patientEmail, string patientName,
-                                                    string prescriptionDetails, string prescriptionId);
+                                                    string prescriptionDetail);
 
         Task<Notification?> GetNotificationByIdAsync(string id);
     }

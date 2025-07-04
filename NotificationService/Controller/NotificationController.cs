@@ -33,16 +33,16 @@ namespace NotificationService.Controllers
                 return BadRequest(ModelState);
             }
 
-            _logger.LogInformation("Received request to send appointment notification for AppointmentId: {AppointmentId}", request.AppointmentId);
+            _logger.LogInformation("Received request to send appointment notification");
 
             await _notificationService.SendAppointmentNotificationAsync(
                 request.PatientEmail, "PATIENT", request.DoctorName,
-                request.PatientName, request.AppointmentDateTime, request.AppointmentId
+                request.PatientName, request.AppointmentDateTime
             );
 
             await _notificationService.SendAppointmentNotificationAsync(
                 request.DoctorEmail, "DOCTOR", request.DoctorName,
-                request.PatientName, request.AppointmentDateTime, request.AppointmentId
+                request.PatientName, request.AppointmentDateTime
             );
 
             return Ok("Appointment notifications sent and logged.");
@@ -68,8 +68,7 @@ namespace NotificationService.Controllers
             await _notificationService.SendPrescriptionReadyNotificationAsync(
                 request.PatientEmail,
                 request.PatientName,
-                request.PrescriptionDetails,
-                request.PrescriptionId
+                request.PrescriptionDetails
             );
 
             return Ok("Prescription ready notification sent and logged.");

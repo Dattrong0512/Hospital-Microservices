@@ -28,7 +28,7 @@ namespace NotificationService.Services
 
         public async Task SendAppointmentNotificationAsync(string recipientEmail, string recipientType,
                                                             string doctorName, string patientName,
-                                                            DateTime appointmentDateTime, string appointmentId)
+                                                            DateTime appointmentDateTime)
         {
             string subject;
             string content;
@@ -39,7 +39,7 @@ namespace NotificationService.Services
                 content = $"Kính gửi {patientName},\n\n" +
                           $"Lịch hẹn khám bệnh của bạn với Bác sĩ {doctorName} đã được xác nhận.\n" +
                           $"Thời gian: {appointmentDateTime:dd/MM/yyyy HH:mm}\n" +
-                          $"Mã lịch hẹn: {appointmentId}\n\n" +
+                          // $"Mã lịch hẹn: {appointmentId}\n\n" +
                           "Vui lòng đến đúng giờ. Nếu có bất kỳ thay đổi nào, chúng tôi sẽ thông báo lại.\n" +
                           "Trân trọng,\nBệnh viện ABC";
             }
@@ -50,7 +50,7 @@ namespace NotificationService.Services
                           $"Bạn có một lịch hẹn khám bệnh mới đã được xác nhận:\n" +
                           $"Bệnh nhân: {patientName}\n" +
                           $"Thời gian: {appointmentDateTime:dd/MM/yyyy HH:mm}\n" +
-                          $"Mã lịch hẹn: {appointmentId}\n\n" +
+                          // $"Mã lịch hẹn: {appointmentId}\n\n" +
                           "Vui lòng chuẩn bị và có mặt đúng giờ.\n" +
                           "Trân trọng,\nBan Quản lý Bệnh viện ABC";
             }
@@ -60,11 +60,11 @@ namespace NotificationService.Services
                 return;
             }
 
-            await SendAndLogNotification(recipientEmail, recipientType, subject, content, appointmentId);
+            await SendAndLogNotification(recipientEmail, recipientType, subject, content);
         }
 
         public async Task SendPrescriptionReadyNotificationAsync(string patientEmail, string patientName,
-                                                                 string prescriptionDetails, string prescriptionId)
+                                                                 string prescriptionDetails)
         {
             var subject = "Thông báo: Đơn thuốc của bạn đã sẵn sàng!";
             var content = $"Kính gửi bệnh nhân {patientName},\n\n" +
@@ -73,11 +73,11 @@ namespace NotificationService.Services
                           $"Vui lòng đến quầy thuốc để nhận đơn thuốc của bạn. Cảm ơn bạn!\n" +
                           "Bệnh viện ABC";
 
-            await SendAndLogNotification(patientEmail, "PATIENT", subject, content, prescriptionId);
+            await SendAndLogNotification(patientEmail, "PATIENT", subject, content);
         }
 
         private async Task SendAndLogNotification(string recipientEmail, string recipientType,
-                                                  string subject, string content, string relatedId)
+                                                  string subject, string content)
         {
             var notification = new Notification
             {
@@ -85,8 +85,7 @@ namespace NotificationService.Services
                 RecipientType = recipientType,
                 Subject = subject,
                 Content = content,
-                SentAt = DateTime.UtcNow,
-                AppointmentId = relatedId
+                SentAt = DateTime.UtcNow
             };
 
             try
@@ -105,6 +104,7 @@ namespace NotificationService.Services
 
                 notification.SentSuccessfully = true;
                 _logger.LogInformation("Email sent successfully to: {RecipientEmail}", recipientEmail);
+                Console.WriteLine("Email sent successfully to: {RecipientEmail}", recipientEmail);
             }
             catch (Exception ex)
             {
