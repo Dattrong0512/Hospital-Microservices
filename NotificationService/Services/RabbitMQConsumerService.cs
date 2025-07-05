@@ -5,7 +5,7 @@ using RabbitMQ.Client.Events;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using NotificationService.Messages;
+using NotificationService.Messages; // Đảm bảo include namespace này
 using System.Text.Json;
 using System;
 
@@ -19,9 +19,7 @@ namespace NotificationService.Services
         private IConnection _connection;
         private IModel _channel;
         private const string QUEUE_NAME = "appointment_queue";
-        //private const string QUEUE_NAME1 = "prescription_queue";
         private const string EXCHANGE_NAME = "notification_exchange";
-        //private const string ROUTING_KEY1 = "prescription";
         private const string ROUTING_KEY = "appointment";
 
         public RabbitMQConsumerService(
@@ -50,8 +48,8 @@ namespace NotificationService.Services
                                      autoDelete: false,
                                      arguments: null);
                 _channel.QueueBind(queue: QUEUE_NAME,
-                                  exchange: EXCHANGE_NAME,
-                                  routingKey: ROUTING_KEY);
+                                 exchange: EXCHANGE_NAME,
+                                 routingKey: ROUTING_KEY);
 
                 _logger.LogInformation("RabbitMQConsumerService connected and configured successfully.");
             }
@@ -63,7 +61,6 @@ namespace NotificationService.Services
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-
             stoppingToken.ThrowIfCancellationRequested();
 
             if (_channel == null)
@@ -75,7 +72,7 @@ namespace NotificationService.Services
             var consumer = new AsyncEventingBasicConsumer(_channel);
             consumer.Received += async (model, ea) =>
             {
-                _logger.LogInformation("DEBUG: RECEIVED - Entered consumer.Received event handler."); 
+                _logger.LogInformation("DEBUG: RECEIVED - Entered consumer.Received event handler.");
                 var body = ea.Body.ToArray();
                 var messageContent = Encoding.UTF8.GetString(body);
                 _logger.LogInformation($" [x] Received message: {messageContent}");
@@ -90,10 +87,18 @@ namespace NotificationService.Services
                         return;
                     }
 
+                    // Kiểm tra xem AppointmentDateTime có hợp lệ không
+                    if (reminder.AppointmentDateTime == DateTime.MinValue)
+                    {
+                        _logger.LogError("Failed to parse AppointmentDateTime for message: {MessageContent}. Not acknowledging and discarding.", messageContent);
+                        _channel.BasicNack(ea.DeliveryTag, false, false);
+                        return;
+                    }
+
                     // Gửi thông báo cho bệnh nhân
                     if (!string.IsNullOrEmpty(reminder.PatientEmail))
                     {
-                        _logger.LogInformation("Sending patient notification for Appointment Type: {MessageType}, Date: {AppointmentDateTime}", reminder.MessageType, reminder.AppointmentDateTime); // Đã sửa placeholder
+                        _logger.LogInformation("Sending patient notification for Appointment Type: {MessageType}, Date: {AppointmentDateTime}", reminder.MessageType, reminder.AppointmentDateTime);
                         await _notificationService.SendAppointmentNotificationAsync(
                             reminder.PatientEmail,
                             "PATIENT",
@@ -104,44 +109,43 @@ namespace NotificationService.Services
                     }
                     else
                     {
-                        _logger.LogInformation("Patient email is empty for Appointment Type: {MessageType}. Skipping patient notification.", reminder.MessageType); // Đã sửa placeholder
+                        _logger.LogInformation("Patient email is empty for Appointment Type: {MessageType}. Skipping patient notification.", reminder.MessageType);
                     }
 
                     // Gửi thông báo cho bác sĩ
                     if (!string.IsNullOrEmpty(reminder.DoctorEmail))
                     {
-                        _logger.LogInformation("Sending doctor notification for Appointment Type: {MessageType}, Date: {AppointmentDateTime}", reminder.MessageType, reminder.AppointmentDateTime); // Đã sửa placeholder
+                        _logger.LogInformation("Sending doctor notification for Appointment Type: {MessageType}, Date: {AppointmentDateTime}", reminder.MessageType, reminder.AppointmentDateTime);
                         await _notificationService.SendAppointmentNotificationAsync(
                             reminder.DoctorEmail,
                             "DOCTOR",
                             reminder.DoctorName,
                             reminder.PatientName,
-                            reminder.AppointmentDateTime
+                            reminder.AppointmentDateTime // Sử dụng thuộc tính DateTime đã xử lý
                         );
                     }
                     else
                     {
-                        _logger.LogInformation("Doctor email is empty for Appointment Type: {MessageType}. Skipping doctor notification.", reminder.MessageType); // Đã sửa placeholder
+                        _logger.LogInformation("Doctor email is empty for Appointment Type: {MessageType}. Skipping doctor notification.", reminder.MessageType);
                     }
 
                     _channel.BasicAck(ea.DeliveryTag, false);
-                    _logger.LogInformation("Message processed and acknowledged for Appointment Type: {MessageType}", reminder.MessageType); // Đã sửa placeholder
+                    _logger.LogInformation("Message processed and acknowledged for Appointment Type: {MessageType}", reminder.MessageType);
                 }
                 catch (JsonException jsonEx)
                 {
                     _logger.LogError(jsonEx, "Failed to deserialize message: {MessageContent}. This message will be discarded.", messageContent);
-                    _channel.BasicNack(ea.DeliveryTag, false, false);
+                    _channel.BasicNack(ea.DeliveryTag, false, false); // Nack và không requeue
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Error processing RabbitMQ message: {MessageContent}", messageContent);
-                    _channel.BasicNack(ea.DeliveryTag, false, true);
+                    _channel.BasicNack(ea.DeliveryTag, false, true); // Nack và requeue để thử lại
                 }
             };
 
             _channel.BasicConsume(queue: QUEUE_NAME, autoAck: false, consumer: consumer);
             _logger.LogInformation($"DEBUG: CONSUME - Consumer started listening on queue: {QUEUE_NAME}");
-
 
             return Task.CompletedTask;
         }

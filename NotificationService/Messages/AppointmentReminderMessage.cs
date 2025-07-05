@@ -1,7 +1,7 @@
 using System;
 using System.Text.Json.Serialization; 
 
-namespace NotificationService.Messages //1 message gửi cho cả2 role
+namespace NotificationService.Messages
 {
     public class AppointmentReminderMessage
     {
@@ -25,7 +25,18 @@ namespace NotificationService.Messages //1 message gửi cho cả2 role
 
         [JsonPropertyName("started_time")]
         public string StartedTime { get; set; } = string.Empty;
-
-        public DateTime AppointmentDateTime { get; set; }
+        [JsonIgnore]
+        public DateTime AppointmentDateTime
+        {
+            get
+            {
+                if (DateTime.TryParse($"{Date} {StartedTime}", out DateTime result))
+                {
+                    return result;
+                }
+                Console.WriteLine($"Warning: Could not parse date '{Date}' and time '{StartedTime}' into a valid DateTime.");
+                return DateTime.MinValue;
+            }
+        }
     }
 }

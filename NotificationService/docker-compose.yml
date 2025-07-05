@@ -1,0 +1,63 @@
+version: '3.8' # Phiên bản Docker Compose file format
+
+services:
+  # Dịch vụ NotificationService của bạn
+  notificationservice:
+    build:
+      context: . # Ngữ cảnh build là thư mục hiện tại (nơi có docker-compose.yml và thư mục NotificationService)
+      dockerfile: Dockerfile # Chỉ định Dockerfile của bạn
+    container_name: notification_service_app # Đặt tên dễ nhận biết cho container
+    ports:
+      - "5088:80" # Ánh xạ cổng: 5088 trên máy host của bạn tới cổng 80 trong container
+    environment:
+      # Cấu hình môi trường ASP.NET Core
+      ASPNETCORE_ENVIRONMENT: Development # RẤT QUAN TRỌNG để kích hoạt Swagger UI
+      ASPNETCORE_URLS: "http://+:80" # Đảm bảo ứng dụng lắng nghe trên tất cả các interface bên trong container
+
+      # Cấu hình kết nối MongoDB cho NotificationService
+      MongoDBSettings__ConnectionString: "mongodb://mongodb:27017" # Sử dụng tên service "mongodb" làm hostname
+      MongoDBSettings__DatabaseName: "notificationdb"
+      MongoDBSettings__CollectionName: "notifications"
+
+      # Cấu hình kết nối RabbitMQ cho NotificationService
+      
+      RabbitMQ__AmqpConnectionString: "amqps://errymwix:JCnl3C8qXN32qdFwK7B9hM-Dfn5SLrNb@armadillo.rmq.cloudamqp.com/errymwix"
+
+
+      # Cấu hình cài đặt Email (thay đổi thông tin này cho phù hợp với SMTP server của bạn)
+      MailSettings__SenderName: "ABC Hospital App"
+      MailSettings__SenderEmail: "kantruong11@gmail.com"
+      MailSettings__SmtpHost: "smtp.example.com" # Ví dụ: smtp.gmail.com, smtp.mailtrap.io, smtp.ethereal.email
+      MailSettings__SmtpPort: 587 # Cổng SMTP (thường là 587 hoặc 465)
+      MailSettings__SmtpUsername: "kantruong11@gmail.com"
+      MailSettings__SmtpPassword: "jvwq swtn icua jlde"
+    
+    # Đảm bảo NotificationService khởi động sau khi MongoDB và RabbitMQ sẵn sàng
+    depends_on:
+      - mongodb
+      - rabbitmq
+
+  # Dịch vụ MongoDB
+  mongodb:
+    image: mongo:latest # Sử dụng image MongoDB mới nhất
+    container_name: mongodb_server # Đặt tên dễ nhận biết cho container
+    ports:
+      - "27017:27017" # Ánh xạ cổng MongoDB ra máy host (tùy chọn, để bạn có thể truy cập bằng Mongo Compass)
+    volumes:
+      # Tạo một volume để dữ liệu MongoDB được lưu trữ bền vững (không bị mất khi container bị xóa)
+      - mongodb_data:/data/db 
+
+  # Dịch vụ RabbitMQ
+  rabbitmq:
+    image: rabbitmq:3-management-alpine # Sử dụng image RabbitMQ với giao diện quản lý
+    container_name: rabbitmq_server # Đặt tên dễ nhận biết cho container
+    ports:
+      - "5672:5672" # Cổng tiêu chuẩn cho kết nối AMQP
+      - "15672:15672" # Cổng cho giao diện quản lý RabbitMQ (truy cập tại http://localhost:15672 với guest/guest)
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq # Lưu trữ dữ liệu RabbitMQ bền vững
+
+# Khai báo các volumes được sử dụng
+volumes:
+  mongodb_data:
+  rabbitmq_data:
