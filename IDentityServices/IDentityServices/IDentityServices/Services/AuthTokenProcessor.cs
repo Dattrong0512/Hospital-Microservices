@@ -34,7 +34,7 @@ namespace IDentityServices.Services
         // Hàm lấy secret từ Kong Gateway
         private async Task<(string,string)> GetSecretFromKong(string consumerId)
         {
-            string url = $"http://host.docker.internal:8001/consumers/{consumerId}/jwt";
+            string url = $"http://138.197.142.55:8001/consumers/{consumerId}/jwt";
             _logger.LogInformation(url);
             var response = await _httpClient.GetAsync(url);
 

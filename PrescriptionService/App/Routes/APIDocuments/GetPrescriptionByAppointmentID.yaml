@@ -1,0 +1,16 @@
+tags:
+  - Prescription
+summary: Lấy thông tin của đơn thuốc theo ID cuộc hẹn
+description: Lấy thông tin chi tiết của một đơn thuốc dựa trên ID của cuộc hẹn.
+parameters:
+  - name: appointment_id
+    in: path
+    required: true
+    description: ID của cuộc hẹn
+    schema:
+      type: integer
+      example: 1
+
+responses:
+  200:
+    description: Thành công

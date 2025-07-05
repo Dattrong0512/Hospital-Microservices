@@ -28,10 +28,10 @@ def UpdatePrescription(prescription_id):
     
     return jsonify(prescription.ToDict()), 200
 
-@prescription_bp.route('/<int:prescription_id>', methods=['GET'])
-@swag_from(r"APIDocuments/GetPrescriptionByID.yaml")
-def GetPrescription(prescription_id):
-    prescription = PrescriptionController.GetPrescriptionById(prescription_id)
+@prescription_bp.route('/<int:appointment_id>', methods=['GET'])
+@swag_from(r"APIDocuments/GetPrescriptionByAppointmentID.yaml")
+def GetPrescriptionByAppointmentID(appointment_id):
+    prescription = PrescriptionController.GetPrescriptionByAppointmentId(appointment_id)
     if not prescription:
         return jsonify({"error": "Prescription not found"}), 404
     

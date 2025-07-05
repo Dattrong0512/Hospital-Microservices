@@ -14,7 +14,7 @@ message AppointmentResponse {
   bool found = 1;
   int32 appointment_id = 2;
   int32 patient_id = 3;
-  int32 doctor_id = 4;
+  string doctor_id = 4;
   string status = 5;
   string description = 6;
   string date = 7;

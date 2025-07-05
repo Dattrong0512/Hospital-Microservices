@@ -47,8 +47,8 @@ def UpdatePrescription(prescription_id, data):
 
     return prescription
 
-def GetPrescriptionById(prescription_id):
-    return Prescription.query.get(prescription_id)
+def GetPrescriptionByAppointmentId(appointment_id):
+    return Prescription.query.filter_by(appointment_id=appointment_id).first()
 
 def GetAllPrescriptions(page, limit):
     offset = (page - 1) * limit

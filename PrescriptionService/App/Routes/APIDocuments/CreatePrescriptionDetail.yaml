@@ -18,6 +18,9 @@ parameters:
         amount:
           type: integer
           example: 5
+        note:
+          type: string
+          example: "Uống sau bữa ăn"
       required:
         - prescription_id
         - medicine_id

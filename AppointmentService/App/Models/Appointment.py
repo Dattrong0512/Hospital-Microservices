@@ -8,7 +8,7 @@ class Appointment(db.Model):
     status = db.Column(db.String(12), nullable=False)
     description = db.Column(db.String(100))
     date = db.Column(db.Date, nullable=False)
-    started_time = db.Column(db.String(10), nullable=False)
+    started_time = db.Column(db.Time, nullable=False)
 
     def ToDict(self):
         return {
@@ -18,5 +18,5 @@ class Appointment(db.Model):
             "status": self.status,
             "description": self.description,
             "date": self.date.strftime('%d-%m-%Y') if self.date else None,
-            "started_time": self.started_time
+            "started_time": self.started_time.strftime('%H:%M:%S') if self.started_time else None,
         }

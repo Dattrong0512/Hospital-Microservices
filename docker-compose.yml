@@ -1,0 +1,96 @@
+version: '3.9'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5673:5672"     # Cổng giao tiếp RabbitMQ
+      - "15673:15672"   # Cổng UI quản lý
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    networks:
+      - hospital-net
+
+  doctor:
+    build:
+      context: ./DoctorService
+    container_name: doctor-service
+    ports:
+      - "5003:5003"     # REST
+      - "50053:50053"   # gRPC
+    networks:
+      - hospital-net
+
+  patient:
+    build:
+      context: ./PatientService
+    container_name: patient-service
+    ports:
+      - "5001:5001"     # REST
+      - "50051:50051"   # gRPC
+    networks:
+      - hospital-net
+
+  appointment:
+    build:
+      context: ./AppointmentService
+    container_name: appointment-service
+    environment:
+      - DOCTOR_gRPC_HOST=doctor
+      - DOCTOR_gRPC_PORT=50053
+      - PATIENT_gRPC_HOST=patient
+      - PATIENT_gRPC_PORT=50051
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+    ports:
+      - "5004:5004"     # REST
+      - "50054:50054"   # gRPC
+    depends_on:
+      - doctor
+      - patient
+    networks:
+      - hospital-net
+
+  medicine:
+    build:
+      context: ./MedicineService
+    container_name: medicine-service
+    ports:
+      - "5002:5002"     # REST
+      - "50052:50052"   # gRPC
+    networks:
+      - hospital-net
+
+  prescription:
+    build:
+      context: ./PrescriptionService
+    container_name: prescription-service
+    environment:
+      - APPOINTMENT_gRPC_HOST=appointment
+      - APPOINTMENT_gRPC_PORT=50054
+      - MEDICINE_gRPC_HOST=medicine
+      - MEDICINE_gRPC_PORT=50052
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+    ports:
+      - "5006:5006"     # REST
+    depends_on:
+      - appointment
+      - medicine
+    networks:
+      - hospital-net
+
+  staff:
+    build:
+      context: ./StaffService
+    container_name: staff-service
+    ports:
+      - "5005:5005"
+    networks:
+      - hospital-net
+
+networks:
+  hospital-net:
+    driver: bridge
