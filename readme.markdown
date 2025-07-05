@@ -81,3 +81,20 @@ Dịch vụ IdentityServices cung cấp các endpoint API sau đây, có thể t
 
 - **{version}**: Là phiên bản của API (ví dụ: v1, v2), được thay thế trong URL tùy theo cấu hình. Hiện tại là v0
 
+# Hướng Dẫn Chạy Dịch Vụ AppointmentService, DoctorService, MedicineService, PrescriptionService, PatientService, StaffService
+
+Hướng dẫn này sẽ giúp bạn chạy các dịch vụ AppointmentService, DoctorService, MedicineService, PrescriptionService, PatientService, StaffService
+1. **Di chuyển đến thư mục chứa file 'docker-compose.yml':**
+     ```
+     cd Hospital-Microservices
+     ```
+
+2. **Build Docker image cho toàn bộ Service:**
+   - Chạy lệnh sau để build image Docker:
+     ```
+     docker-compose up --build
+     ```
+   - Nếu muốn build docker cho từng service, thì chạy câu lệnh:
+     ```
+     docker-compose up --build service_name
+     ```
