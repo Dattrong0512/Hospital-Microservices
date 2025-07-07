@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "JI/aEYR+pQc=",
+  "dgSpecHash": "SLtO5CTbc7g=",
   "success": true,
   "projectFilePath": "F:\\Hospital-Microservices\\NotificationService\\NotificationService.csproj",
   "expectedPackageFiles": [
@@ -35,7 +35,8 @@
     "C:\\Users\\ADMIN\\.nuget\\packages\\system.security.cryptography.pkcs\\8.0.1\\system.security.cryptography.pkcs.8.0.1.nupkg.sha512",
     "C:\\Users\\ADMIN\\.nuget\\packages\\system.security.principal.windows\\5.0.0\\system.security.principal.windows.5.0.0.nupkg.sha512",
     "C:\\Users\\ADMIN\\.nuget\\packages\\system.threading.channels\\4.7.1\\system.threading.channels.4.7.1.nupkg.sha512",
-    "C:\\Users\\ADMIN\\.nuget\\packages\\zstdsharp.port\\0.7.3\\zstdsharp.port.0.7.3.nupkg.sha512"
+    "C:\\Users\\ADMIN\\.nuget\\packages\\zstdsharp.port\\0.7.3\\zstdsharp.port.0.7.3.nupkg.sha512",
+    "C:\\Users\\ADMIN\\.nuget\\packages\\microsoft.netcore.app.host.linux-x64\\8.0.16\\microsoft.netcore.app.host.linux-x64.8.0.16.nupkg.sha512"
   ],
   "logs": []
 }

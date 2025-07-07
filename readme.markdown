@@ -98,3 +98,24 @@ Hướng dẫn này sẽ giúp bạn chạy các dịch vụ AppointmentService,
      ```
      docker-compose up --build service_name
      ```
+# Hướng Dẫn Chạy Dịch Vụ NotificationService
+
+1. **Di chuyển đến thư mục `NotificatinService`:**
+   - Mở terminal (Command Prompt trên Windows).
+
+2. **Build Docker image cho NotificatinService:**
+   - Chạy lệnh sau để build image Docker với tên `notification-service`:
+     ```
+     docker build -t notification-service:latest .  
+     ```
+
+3. **Chạy container NotificatinService:**
+   - Chạy lệnh sau để khởi động container từ image vừa build:
+     ```
+     docker-compose up -d
+     
+     ```
+4. **Kiểm tra dịch vụ:**
+   - Sau khi chạy lệnh trên, dịch vụ NotificatinService sẽ chạy trên `http://localhost:5088/swagger/index.html`. Bạn có thể mở trình duyệt và truy cập địa chỉ này để kiểm tra.
+
+---

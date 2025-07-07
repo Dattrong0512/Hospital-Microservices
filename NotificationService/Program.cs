@@ -1,22 +1,17 @@
 using NotificationService.Models;
 using NotificationService.Services;
 using Microsoft.Extensions.Hosting;
-using RabbitMQ.Client;
 using Microsoft.OpenApi.Models;
-
+using RabbitMQ.Client;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Đọc và bind cấu hình MongoDB
 builder.Services.Configure<MongoDBSettings>(builder.Configuration.GetSection("MongoDBSettings"));
 
-// Đọc và bind cấu hình Mail
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
-// Đăng ký NotificationService vào Dependency Injection Container
-builder.Services.AddSingleton<INotificationService, NotificationService.Services.NotificationService>(); // Đảm bảo đúng namespace
+builder.Services.AddSingleton<INotificationService, NotificationService.Services.NotificationService>();
 
-// Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddApiVersioning(options =>
 {
@@ -36,55 +31,50 @@ builder.Services.AddSwaggerGen(options =>
     var xmlFilename = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
+
 builder.Services.Configure<RabbitMQSettings>(builder.Configuration.GetSection("RabbitMQ"));
 
 builder.Services.AddSingleton<IConnectionFactory>(sp =>
 {
     var config = sp.GetRequiredService<IConfiguration>();
     var rabbitMQSettings = config.GetSection("RabbitMQ").Get<RabbitMQSettings>();
-    var logger = sp.GetRequiredService<ILogger<Program>>(); // Get logger for better debugging
+    var logger = sp.GetRequiredService<ILogger<Program>>();
 
-    if (!string.IsNullOrEmpty(rabbitMQSettings?.AmqpConnectionString))
+    if (rabbitMQSettings == null)
+    {
+        logger.LogError("RabbitMQ settings are missing from configuration. Ensure 'RabbitMQ' section is defined.");
+        throw new InvalidOperationException("RabbitMQ settings are not configured.");
+    }
+
+    if (!string.IsNullOrEmpty(rabbitMQSettings.AmqpConnectionString))
     {
         var factory = new ConnectionFactory
         {
-            Uri = new Uri(rabbitMQSettings.AmqpConnectionString)
+            Uri = new Uri(rabbitMQSettings.AmqpConnectionString),
+            AutomaticRecoveryEnabled = true
         };
-
-        // *******************************************************************
-        // THIS IS THE CRUCIAL PART FOR 'PLAIN' AUTH MECHANISM ERROR
-        // CloudAMQP might not allow PLAIN over AMQPS.
-        // Let's explicitly set the allowed authentication mechanisms.
-        // AMQPLAIN is often a good choice, or leave it for the library to decide.
-        // If the 'PLAIN' error persists, you might need to adjust this further.
-        // For CloudAMQP, often just setting the URI is enough,
-        // but if it's explicitly failing with PLAIN, this helps.
-        factory.AuthMechanisms = new IAuthMechanismFactory[] { new AmqPlainMechanismFactory() };
-        // *******************************************************************
-        
         logger.LogInformation($"Using RabbitMQ connection string: {rabbitMQSettings.AmqpConnectionString}");
         return factory;
     }
-    else // Fallback to individual properties if no AMQP connection string (for local dev)
+    else
     {
-        logger.LogInformation("Using individual RabbitMQ settings (Host, Port, User, Pass).");
+        logger.LogWarning("AmqpConnectionString is missing. Falling back to individual RabbitMQ settings (Host, Port, User, Pass).");
         var factory = new ConnectionFactory
         {
-            HostName = rabbitMQSettings?.HostName,
-            Port = rabbitMQSettings?.Port ?? AmqpTcpEndpoint.DefaultAmqpPort,
-            UserName = rabbitMQSettings?.UserName,
-            Password = rabbitMQSettings?.Password
+            HostName = rabbitMQSettings.HostName ?? "localhost",
+            Port = rabbitMQSettings.Port ?? 5672,
+            UserName = rabbitMQSettings.UserName ?? "guest",
+            Password = rabbitMQSettings.Password ?? "guest",
+            AutomaticRecoveryEnabled = true
         };
-        logger.LogInformation($"Using RabbitMQ individual settings: Host={rabbitMQSettings?.HostName}, Port={rabbitMQSettings?.Port}");
+        logger.LogInformation($"Using RabbitMQ individual settings: Host={factory.HostName}, Port={factory.Port}");
         return factory;
     }
 });
 
-// Đăng ký Background Service cho RabbitMQ Consumer
 builder.Services.AddHostedService<RabbitMQConsumerService>();
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -93,8 +83,6 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "Notification Service API v1");
     });
 }
-
-app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
