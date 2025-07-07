@@ -1,0 +1,10 @@
+RewriteEngine On
+RewriteBase /UDPT-QLBN/
+
+# Allow direct access to files in public directory
+RewriteRule ^public/(.*)$ public/$1 [L]
+
+# Only rewrite URLs that don't point to existing files or directories
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.+)$ index.php?url=$1 [QSA,L]
