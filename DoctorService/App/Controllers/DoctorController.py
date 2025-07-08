@@ -13,7 +13,7 @@ def CreateDoctor(data):
     }
 
     try:
-        response = requests.post("http://localhost:8080/api/v0/account/register/user/doctor", json=identity_payload)
+        response = requests.post("http://identity.hospitalmicroservices.live/api/v0/account/register/user/doctor", json=identity_payload)
     except requests.exceptions.RequestException as e:
         current_app.logger.error(f"Failed to connect to Identity Service: {e}")
         raise Exception("Không thể kết nối đến dịch vụ tài khoản")
