@@ -1,6 +1,6 @@
 from App._init_ import db
 from App.Models.Prescription import Prescription
-from App.Services import AppointmentClient
+from App.Services import AppointmentClient, PatientClient
 from App.Message.Publisher import RabbitMQPublisher
 
 def CreatePrescription(data):
@@ -18,12 +18,18 @@ def CreatePrescription(data):
     db.session.add(prescription)
     db.session.commit()
 
+    patient_id = appointment_response.patient_id
+    patient_response = PatientClient.GetPatientById(patient_id)
+    if patient_response is None:
+        return {"error": "Không thể kết nối đến Patient Service"}
+    if not patient_response.found:
+        return {"error": "Không tìm thấy bệnh nhân"}
     #Gửi thông báo đến notification service
     publisher = RabbitMQPublisher()
     publisher.send_message({
-        "type": "prescription",
-        "patient_id": appointment_response.patient_id,
-        "appointment_id": appointment_id,
+        "type": "Prescription",
+        "patient_name": patient_response.fullname,
+        "email": patient_response.email,
         "no_days": data['no_days']
     })
     return prescription
