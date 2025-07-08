@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ReportService</name>
+    </assembly>
+    <members>
+        <member name="M:ReportService.Controllers.ReportController.GetMonthlyPatientStatistics(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Thống kê số lượng bệnh nhân duy nhất theo từng tháng/năm.
+            </summary>
+            <param name="year">Năm cần thống kê (tùy chọn, nếu không truyền sẽ lấy tất cả năm).</param>
+            <param name="month">Tháng cần thống kê (tùy chọn, nếu không truyền sẽ lấy tất cả tháng).</param>
+            <returns>Danh sách thống kê số lượng bệnh nhân theo tháng/năm.</returns>
+        </member>
+        <member name="M:ReportService.Controllers.ReportController.GetMonthlyPrescriptionStatistics(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Thống kê số lượng thuốc đã cấp theo từng tên thuốc của từng tháng/năm.
+            </summary>
+            <param name="year">Năm cần thống kê (tùy chọn, nếu không truyền sẽ lấy tất cả năm).</param>
+            <param name="month">Tháng cần thống kê (tùy chọn, nếu không truyền sẽ lấy tất cả tháng).</param>
+            <returns>Danh sách thống kê số lượng thuốc theo tên thuốc và tháng/năm.</returns>
+        </member>
+    </members>
+</doc>

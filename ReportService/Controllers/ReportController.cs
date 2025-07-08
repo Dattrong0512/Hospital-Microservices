@@ -1,6 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using ReportService.Models;
 using ReportService.Services;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http;
+using System;
 
 namespace ReportService.Controllers
 {
@@ -18,18 +23,20 @@ namespace ReportService.Controllers
             _logger = logger;
         }
         /// <summary>
-        /// Lấy báo cáo số lượng bệnh nhân theo từng tháng.
+        /// Thống kê số lượng bệnh nhân duy nhất theo từng tháng/năm.
         /// </summary>
-        /// <returns>Danh sách thống kê số lượng bệnh nhân theo tháng. 200 nếu thành công, 500 nếu lỗi.</returns>
+        /// <param name="year">Năm cần thống kê (tùy chọn, nếu không truyền sẽ lấy tất cả năm).</param>
+        /// <param name="month">Tháng cần thống kê (tùy chọn, nếu không truyền sẽ lấy tất cả tháng).</param>
+        /// <returns>Danh sách thống kê số lượng bệnh nhân theo tháng/năm.</returns>
         [HttpGet("monthly-patient-statistics")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<MonthlyPatientStats>))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetMonthlyPatientStatistics()
+        public async Task<IActionResult> GetMonthlyPatientStatistics([FromQuery] int? year, [FromQuery] int? month)
         {
             _logger.LogInformation("Received request for monthly patient statistics.");
             try
             {
-                var stats = await _reportService.GetMonthlyPatientStatisticsAsync();
+                var stats = await _reportService.GetMonthlyPatientStatisticsAsync(year, month);
                 return Ok(stats);
             }
             catch (Exception ex)
@@ -40,18 +47,20 @@ namespace ReportService.Controllers
         }
 
         /// <summary>
-        /// Lấy báo cáo số lượng đơn thuốc đã cấp theo từng tháng.
+        /// Thống kê số lượng thuốc đã cấp theo từng tên thuốc của từng tháng/năm.
         /// </summary>
-        /// <returns>Danh sách thống kê số lượng đơn thuốc theo tháng. 200 nếu thành công, 500 nếu lỗi.</returns>
+        /// <param name="year">Năm cần thống kê (tùy chọn, nếu không truyền sẽ lấy tất cả năm).</param>
+        /// <param name="month">Tháng cần thống kê (tùy chọn, nếu không truyền sẽ lấy tất cả tháng).</param>
+        /// <returns>Danh sách thống kê số lượng thuốc theo tên thuốc và tháng/năm.</returns>
         [HttpGet("monthly-prescription-statistics")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<MonthlyPrescriptionStats>))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetMonthlyPrescriptionStatistics()
+        public async Task<IActionResult> GetMonthlyPrescriptionStatistics([FromQuery] int? year, [FromQuery] int? month)
         {
             _logger.LogInformation("Received request for monthly prescription statistics.");
             try
             {
-                var stats = await _reportService.GetMonthlyPrescriptionStatisticsAsync();
+                var stats = await _reportService.GetMonthlyPrescriptionStatisticsAsync(year, month);
                 return Ok(stats);
             }
             catch (Exception ex)
