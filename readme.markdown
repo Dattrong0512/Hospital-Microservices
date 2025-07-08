@@ -104,20 +104,21 @@ Hướng dẫn này sẽ giúp bạn chạy các dịch vụ AppointmentService,
    - Mở terminal (Command Prompt trên Windows).
 
 2. **Build Docker image cho NotificatinService:**
-   - Chạy lệnh sau để build image Docker với tên `notification-service`:
+   - Chạy lệnh sau để build image rabbitmq-cloud-listener:
      ```
-     docker build -t notification-service:latest .  
+     docker build -t rabbitmq-cloud-listener ./RabbitMQCloudListener  
      ```
 
 3. **Chạy container NotificatinService:**
    - Chạy lệnh sau để khởi động container từ image vừa build:
      ```
-     docker-compose up -d
+     docker run --rm rabbitmq-cloud-listener
      
      ```
 4. **Kiểm tra dịch vụ:**
-   - Sau khi chạy lệnh trên, dịch vụ NotificatinService sẽ chạy trên `http://localhost:5088/swagger/index.html`. Bạn có thể mở trình duyệt và truy cập địa chỉ này để kiểm tra.
-
+   - Sau khi chạy lệnh trên, Container sẽ luôn lắng nghe 2 queue: appointment_queue và prescription_queue trên exchange notification_exchange.
+   - Khi có message phù hợp, chương trình sẽ gửi email cho bệnh nhân, bác sĩ để nhắc nhở lịch khám.
+   - Để dừng, nhấn Ctrl+C hoặc đóng terminal.
 ---
 # Hướng Dẫn Chạy Dịch Vụ ReportService
 
