@@ -119,3 +119,24 @@ Hướng dẫn này sẽ giúp bạn chạy các dịch vụ AppointmentService,
    - Sau khi chạy lệnh trên, dịch vụ NotificatinService sẽ chạy trên `http://localhost:5088/swagger/index.html`. Bạn có thể mở trình duyệt và truy cập địa chỉ này để kiểm tra.
 
 ---
+# Hướng Dẫn Chạy Dịch Vụ ReportService
+
+1. **Di chuyển đến thư mục `ReportService`:**
+   - Mở terminal (Command Prompt trên Windows).
+
+2. **Build Docker image cho ReportService:**
+   - Chạy lệnh sau để build image Docker với tên `reportservice`:
+     ```
+     docker build -t reportservice:latest .   
+     ```
+
+3. **Chạy container ReportService:**
+   - Chạy lệnh sau để khởi động container từ image vừa build:
+     ```
+     docker run -d -p 5163:8080 --name reportservice -e ASPNETCORE_ENVIRONMENT=Development reportservice:latest
+
+     ```
+4. **Kiểm tra dịch vụ:**
+   - Sau khi chạy lệnh trên, dịch vụ ReportService sẽ chạy trên `http://localhost:5163/swagger/index.html`. Bạn có thể mở trình duyệt và truy cập địa chỉ này để kiểm tra.
+
+---

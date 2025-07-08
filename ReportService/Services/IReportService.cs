@@ -6,7 +6,7 @@ namespace ReportService.Services
 {
     public interface IReportService
     {
-        Task<List<MonthlyPatientStats>> GetMonthlyPatientStatisticsAsync();
-        Task<List<MonthlyPrescriptionStats>> GetMonthlyPrescriptionStatisticsAsync();
+        Task<List<MonthlyPatientStats>> GetMonthlyPatientStatisticsAsync(int? year = null, int? month = null);
+        Task<List<MonthlyPrescriptionStats>> GetMonthlyPrescriptionStatisticsAsync(int? year = null, int? month = null);
     }
 }
