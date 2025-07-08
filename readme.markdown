@@ -96,7 +96,7 @@ Hướng dẫn này sẽ giúp bạn chạy các dịch vụ AppointmentService,
      ```
    - Nếu muốn build docker cho từng service, thì chạy câu lệnh:
      ```
-     docker-compose up --build service_name
+     docker-compose up service_name
      ```
 # Hướng Dẫn Chạy Dịch Vụ NotificationService
 
