@@ -6,5 +6,6 @@ namespace ReportService.Models
         public int Month { get; set; }
         public string MedicineName { get; set; } = string.Empty;
         public long TotalAmount { get; set; }
+        public long TotalPrice { get; set; }
     }
 }

@@ -87,7 +87,8 @@ namespace ReportService.Services
                                  Year = g.Key.Year,
                                  Month = g.Key.Month,
                                  MedicineName = g.Key.Name,
-                                 TotalAmount = g.Sum(x => x.pd.Amount)
+                                 TotalAmount = g.Sum(x => x.pd.Amount),
+                                 TotalPrice = g.Sum(x => (long)x.pd.Amount * (long)x.m.Price)
                              })
                             .OrderBy(s => s.Year)
                             .ThenBy(s => s.Month)
