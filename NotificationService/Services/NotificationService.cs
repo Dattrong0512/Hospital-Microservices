@@ -6,6 +6,7 @@ using MongoDB.Driver;
 using NotificationService.Models;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 
 namespace NotificationService.Services
 {
@@ -32,6 +33,14 @@ namespace NotificationService.Services
 
             var mongoClient = new MongoClient(mongoDBSettings.Value.ConnectionString);
             var mongoDatabase = mongoClient.GetDatabase(mongoDBSettings.Value.DatabaseName);
+
+            // Kiểm tra và tạo collection nếu chưa tồn tại
+            var collectionNames = mongoDatabase.ListCollectionNames().ToList();
+            if (!collectionNames.Contains(mongoDBSettings.Value.CollectionName))
+            {
+                mongoDatabase.CreateCollection(mongoDBSettings.Value.CollectionName);
+            }
+
             _notificationsCollection = mongoDatabase.GetCollection<Notification>(
                 mongoDBSettings.Value.CollectionName);
             

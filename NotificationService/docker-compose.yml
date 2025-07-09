@@ -15,8 +15,8 @@ services:
       ASPNETCORE_URLS: "http://+:80"
 
       # Cấu hình kết nối MongoDB
-      MongoDBSettings__ConnectionString: "mongodb://mongodb:27017"
-      MongoDBSettings__DatabaseName: "notificationdb"
+      MongoDBSettings__ConnectionString: "mongodb+srv://doadmin:NfO605M3o87yw1V2@notification-mongo-256fe619.mongo.ondigitalocean.com/admin?retryWrites=true&w=majority"
+      MongoDBSettings__DatabaseName: "admin"
       MongoDBSettings__CollectionName: "notifications"
 
       # Cấu hình kết nối RabbitMQ 
