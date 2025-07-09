@@ -106,15 +106,13 @@ Hướng dẫn này sẽ giúp bạn chạy các dịch vụ AppointmentService,
 2. **Build Docker image cho NotificatinService:**
    - Chạy lệnh sau để build image rabbitmq-cloud-listener:
      ```
-     docker build -t rabbitmq-cloud-listener ./RabbitMQCloudListener  
+        docker-compose build
      ```
 
 3. **Chạy container NotificatinService:**
    - Chạy lệnh sau để khởi động container từ image vừa build:
      ```
-     docker run -d rabbitmq-cloud-listener
-
-
+        docker-compose up -d
      
      ```
 4. **Kiểm tra dịch vụ:**
@@ -136,53 +134,10 @@ Hướng dẫn này sẽ giúp bạn chạy các dịch vụ AppointmentService,
 3. **Chạy container ReportService:**
    - Chạy lệnh sau để khởi động container từ image vừa build:
      ```
-    docker run -d -p 5163:8080 --name reportservice -e ASPNETCORE_ENVIRONMENT=Development reportservice:latest
+     docker run -d -p 8089:8089 --name reportservice -e ASPNETCORE_ENVIRONMENT=Development reportservice:latest
 
      ```
 4. **Kiểm tra dịch vụ:**
    - Sau khi chạy lệnh trên, dịch vụ ReportService sẽ chạy trên `http://localhost:5163/swagger/index.html`. Bạn có thể mở trình duyệt và truy cập địa chỉ này để kiểm tra.
 
 ---
-
-# UDPT-QLBN - PHP Frontend Microservices
-
-Hướng dẫn chạy FE PHP
-
-## 1. Chạy bằng XAMPP (local)
-
-- Copy toàn bộ thư mục `UDPT-QLBN` vào `htdocs` của XAMPP.
-- Khởi động Apache từ XAMPP Control Panel.
-- Truy cập: [http://localhost/UDPT-QLBN](http://localhost/UDPT-QLBN)
-
-## 2. Chạy bằng Docker
-
-### Yêu cầu
-
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) đã cài trên máy.
-
-### Các bước
-
-1. **Trỏ đến thư mục chứa Dockerfile:**
-
-   ```sh
-   cd  UDPT-QLBN
-   ```
-
-2. **Build image:**
-
-   ```sh
-   docker build -t udpt-qlbn-fe .
-   ```
-
-3. **Chạy container trên cổng 8081:**
-
-   ```sh
-   docker run -d -p 8081:80 --name udpt-qlbn-fe udpt-qlbn-fe
-   ```
-
-4. **Truy cập ứng dụng:**
-
-   - Mở trình duyệt: [http://localhost:8081/UDPT-QLBN](http://localhost:8081/UDPT-QLBN)
-
----
-

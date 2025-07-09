@@ -54,6 +54,17 @@ services:
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
 
+  rabbitmqcloudlistener:
+    build:
+      context: ./RabbitMQCloudListener
+      dockerfile: Dockerfile
+    container_name: rabbitmq_cloud_listener
+    depends_on:
+      - rabbitmq
+      - mongodb
+    environment: {}
+    restart: unless-stopped
+
 volumes:
   mongodb_data:
   rabbitmq_data:
