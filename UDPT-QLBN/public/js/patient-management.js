@@ -827,8 +827,13 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .then((data) => {
         if (data.success) {
-          // Close modal and reset form
-          $("#addPatientModal").modal("hide");
+          // Close modal and reset form (Bootstrap 5)
+          const modal = bootstrap.Modal.getInstance(
+            document.getElementById("addPatientModal")
+          );
+          if (modal) {
+            modal.hide();
+          }
           document.getElementById("addPatientForm").reset();
 
           // Reload patient list
@@ -1407,8 +1412,13 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .then((data) => {
         if (data.success) {
-          // Close modal and reset form
-          $("#addPatientModal").modal("hide");
+          // Close modal and reset form (Bootstrap 5)
+          const modal = bootstrap.Modal.getInstance(
+            document.getElementById("addPatientModal")
+          );
+          if (modal) {
+            modal.hide();
+          }
           document.getElementById("addPatientForm").reset();
 
           // Reload patient list

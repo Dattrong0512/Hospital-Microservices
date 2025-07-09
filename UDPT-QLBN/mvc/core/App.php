@@ -7,13 +7,13 @@ class App
     
     // Public routes that don't require authentication
     protected $publicRoutes = [
-        'Auth' => ['login', 'authenticate', 'register', 'forgotPassword', 'resetPassword']
+        'Auth' => ['login', 'authenticate', 'register', 'forgotPassword', 'resetPassword', 'registerDoctor']
     ];
 
     // Routes with role-based access
     protected $roleRoutes = [
-        'staff' => ['Staff','Appointment', 'Patient', 'Medicine','Prescription'],
-        'doctor' => ['Doctor', 'Patient', 'Appointment', 'Prescription', 'Medicine']
+        'staff' => ['Staff','Appointment', 'Patient', 'Medicine','Prescription','Report', 'Auth'],
+        'doctor' => ['Doctor', 'Patient', 'Appointment', 'Prescription', 'Medicine', 'Auth']
     ];
 
     function __construct()

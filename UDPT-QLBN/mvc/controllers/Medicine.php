@@ -60,10 +60,30 @@ class Medicine extends Controller
         header('Content-Type: application/json');
         try {
             $medicine = $this->medicineService->getMedicineById($id);
-            echo json_encode($medicine);
+            
+            // ✅ Đảm bảo response có format chuẩn
+            if ($medicine) {
+                echo json_encode([
+                    'success' => true,
+                    'data' => $medicine,
+                    'message' => 'Medicine retrieved successfully'
+                ]);
+            } else {
+                http_response_code(404);
+                echo json_encode([
+                    'success' => false,
+                    'error' => 'Medicine not found',
+                    'data' => null
+                ]);
+            }
         } catch (Exception $e) {
-            http_response_code(404);
-            echo json_encode(['error' => $e->getMessage()]);
+            error_log("Error in api_getMedicine: " . $e->getMessage());
+            http_response_code(500);
+            echo json_encode([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'data' => null
+            ]);
         }
     }
 

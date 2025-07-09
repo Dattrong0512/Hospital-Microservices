@@ -2,7 +2,6 @@
 class Staff extends Controller {
     private $baseUrl = '/UDPT-QLBN';
 
-
     public function __construct() {
         // Khởi tạo session nếu chưa có
         if (session_status() === PHP_SESSION_NONE) {
@@ -52,5 +51,28 @@ class Staff extends Controller {
         ];
         
         $this->view("pages/staff/AppointmentManagement", $data);
+    }
+
+    /**
+     * Lấy thông tin nhân viên theo ID (dùng cho AJAX hoặc view)
+     */
+    public function profileAjax() {
+        header('Content-Type: application/json');
+        try {
+            if (!isset($_SESSION['staff_id'])) {
+                echo json_encode(['success' => false, 'message' => 'Không tìm thấy staff_id trong session']);
+                return;
+            }
+            require_once __DIR__ . '/../services/StaffService.php';
+            $staffService = new StaffService();
+            $staff = $staffService->getStaffById($_SESSION['staff_id']);
+            if (isset($staff['fullname'])) {
+                echo json_encode(['success' => true, 'staff' => $staff]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Không tìm thấy thông tin nhân viên']);
+            }
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        }
     }
 }

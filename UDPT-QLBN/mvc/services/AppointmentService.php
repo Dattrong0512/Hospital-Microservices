@@ -8,7 +8,7 @@ class AppointmentService
     private $doctorService;
     public function __construct()
     {
-        $this->baseUrl = "http://localhost:5004/api/v0";
+        $this->baseUrl = "https://konggateway.hospitalmicroservices.live/api/v0";
         $this->apiKey = "";
 
         require_once "./mvc/services/PatientService.php";
@@ -192,64 +192,63 @@ class AppointmentService
     protected function makeApiRequest($method, $url, $data = null)
     {
         $curl = curl_init();
-        
-        $options = [
-            CURLOPT_URL => $url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => $method
+        $accessToken = $_SESSION['access_token'] ?? null;
+        $headers = [
+            "Accept: application/json",
+            "Content-Type: application/json"
         ];
-        
-        // Add API key if needed
-        if ($this->apiKey) {
-            $options[CURLOPT_HTTPHEADER] = [
-                'X-API-KEY: ' . $this->apiKey,
-                'Content-Type: application/json'
-            ];
-        } else {
-            $options[CURLOPT_HTTPHEADER] = [
-                'Content-Type: application/json'
-            ];
+        if ($accessToken) {
+            $headers[] = 'Authorization: Bearer ' . $accessToken;
         }
-        
-        // Add JSON data for POST/PUT
-        if (($method === 'POST' || $method === 'PUT') && $data !== null) {
-            $options[CURLOPT_POSTFIELDS] = json_encode($data);
-            error_log("Request body: " . json_encode($data));
-        }
-        
-        curl_setopt_array($curl, $options);
-        
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
-        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        
-        curl_close($curl);
-        
-        if ($err) {
-            error_log("cURL Error: " . $err);
-            throw new Exception("Lỗi kết nối API: " . $err);
-        }
-        
-        error_log("API Response [$httpCode]: " . substr($response, 0, 500) . "...");
-        
-        // Check HTTP status
-        if ($httpCode >= 400) {
-            error_log("API Error: HTTP $httpCode - $response");
-            throw new Exception("Lỗi từ API: HTTP $httpCode");
-        }
-        
-        $data = json_decode($response, true);
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            error_log("JSON Parse Error: " . json_last_error_msg());
-            error_log("Raw response: " . $response);
-            throw new Exception("Lỗi phân tích dữ liệu JSON");
-        }
-        
-        return $data;
+        $tryCount = 0;
+        do {
+            $tryCount++;
+            curl_setopt($curl, CURLOPT_URL, $url);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curl, CURLOPT_ENCODING, '');
+            curl_setopt($curl, CURLOPT_MAXREDIRS, 10);
+            curl_setopt($curl, CURLOPT_TIMEOUT, 30);
+            curl_setopt($curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+
+            if (($method === 'POST' || $method === 'PUT') && $data !== null) {
+                curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+            }
+
+            $response = curl_exec($curl);
+            $err = curl_error($curl);
+            $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+            curl_close($curl);
+
+            if ($err) {
+                throw new Exception("Lỗi kết nối API: " . $err);
+            }
+
+            if ($httpCode === 401 && $tryCount === 1) {
+                require_once 'mvc/services/AuthService.php';
+                $authService = new AuthService();
+                $authService->refreshToken();
+                $accessToken = $_SESSION['access_token'] ?? null;
+                if ($accessToken) {
+                    $headers[] = 'Authorization: Bearer ' . $accessToken;
+                }
+                continue;
+            }
+
+            if ($httpCode >= 400) {
+                throw new Exception("Lỗi từ API: HTTP $httpCode");
+            }
+
+            $data = json_decode($response, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new Exception("Lỗi phân tích dữ liệu JSON");
+            }
+
+            return $data;
+        } while ($tryCount < 2);
+
+        throw new Exception("Appointment API Error: Không thể refresh token hoặc lỗi không xác định.");
     }
 
     

@@ -3,7 +3,7 @@ class PrescriptionService {
     private $baseUrl;
 
     public function __construct() {
-        $this->baseUrl = "http://localhost:5006/api/v0";
+        $this->baseUrl = "https://konggateway.hospitalmicroservices.live/api/v0";
         require_once "./mvc/services/MedicineService.php";
         $this->medicineService = new MedicineService();
         require_once "./mvc/services/PatientService.php";
@@ -233,68 +233,85 @@ class PrescriptionService {
     // ✅ SỬA: Enhanced sendRequest - loại bỏ fallback mock
     private function sendRequest($method, $endpoint, $data = null) {
         $url = $this->baseUrl . $endpoint;
-        
+        $accessToken = $_SESSION['access_token'] ?? null;
         error_log("💊 [API_REQUEST] $method $url");
-        
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-        
-        $headers = ['Content-Type: application/json', 'Accept: application/json'];
-        
-        if ($data) {
-            $jsonData = json_encode($data);
-            error_log("💊 [API_REQUEST] Request body: $jsonData");
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
-        }
-        
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $error = curl_error($ch);
-        
-        $info = curl_getinfo($ch);
-        error_log("💊 [API_REQUEST] HTTP code: $httpCode");
-        error_log("💊 [API_REQUEST] Total time: " . $info['total_time'] . " seconds");
-        
-        if ($error) {
-            error_log("❌ [API_REQUEST] CURL Error: $error");
+
+        $tryCount = 0;
+        do {
+            $tryCount++;
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+
+            $headers = ['Content-Type: application/json', 'Accept: application/json'];
+            if ($accessToken) {
+                $headers[] = 'Authorization: Bearer ' . $accessToken;
+            }
+            if ($data) {
+                $jsonData = json_encode($data);
+                error_log("💊 [API_REQUEST] Request body: $jsonData");
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+            }
+
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $error = curl_error($ch);
+
+            $info = curl_getinfo($ch);
+            error_log("💊 [API_REQUEST] HTTP code: $httpCode");
+            error_log("💊 [API_REQUEST] Total time: " . ($info['total_time'] ?? 0) . " seconds");
+
+            if ($error) {
+                error_log("❌ [API_REQUEST] CURL Error: $error");
+                curl_close($ch);
+                throw new Exception("Không thể kết nối đến Prescription API: $error");
+            }
+
             curl_close($ch);
-            throw new Exception("Không thể kết nối đến Prescription API: $error");
-        }
-        
-        curl_close($ch);
-        
-        error_log("💊 [API_REQUEST] Raw response (first 300 chars): " . substr($response, 0, 300));
-        
-        // Check for HTML response
-        if (is_string($response) && preg_match('/^\s*</', $response)) {
-            error_log("❌ [API_REQUEST] HTML response received");
-            throw new Exception('Prescription API trả về HTML thay vì JSON');
-        }
-        
-        $responseData = json_decode($response, true);
-        
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            error_log("❌ [API_REQUEST] JSON Parse Error: " . json_last_error_msg());
-            error_log("Raw response: " . $response);
-            throw new Exception('Lỗi parse JSON từ Prescription API: ' . json_last_error_msg());
-        }
-        
-        // Check HTTP error codes
-        if ($httpCode >= 400) {
-            $errorMessage = isset($responseData['error']) ? $responseData['error'] : "HTTP Error $httpCode";
-            error_log("❌ [API_REQUEST] HTTP Error: $errorMessage");
-            throw new Exception("Prescription API Error: $errorMessage");
-        }
-        
-        error_log("✅ [API_REQUEST] Success");
-        return $responseData;
+
+            error_log("💊 [API_REQUEST] Raw response (first 300 chars): " . substr($response, 0, 300));
+
+            // Check for HTML response
+            if (is_string($response) && preg_match('/^\s*</', $response)) {
+                error_log("❌ [API_REQUEST] HTML response received");
+                throw new Exception('Prescription API trả về HTML thay vì JSON');
+            }
+
+            $responseData = json_decode($response, true);
+
+            if ($httpCode === 401 && $tryCount === 1) {
+                // Token hết hạn, tự động refresh
+                require_once 'mvc/services/AuthService.php';
+                $authService = new AuthService();
+                $authService->refreshToken();
+                $accessToken = $_SESSION['access_token'] ?? null;
+                continue;
+            }
+
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                error_log("❌ [API_REQUEST] JSON Parse Error: " . json_last_error_msg());
+                error_log("Raw response: " . $response);
+                throw new Exception('Lỗi parse JSON từ Prescription API: ' . json_last_error_msg());
+            }
+
+            // Check HTTP error codes
+            if ($httpCode >= 400) {
+                $errorMessage = isset($responseData['error']) ? $responseData['error'] : "HTTP Error $httpCode";
+                error_log("❌ [API_REQUEST] HTTP Error: $errorMessage");
+                throw new Exception("Prescription API Error: $errorMessage");
+            }
+
+            error_log("✅ [API_REQUEST] Success");
+            return $responseData;
+        } while ($tryCount < 2);
+
+        throw new Exception("Prescription API Error: Không thể refresh token hoặc lỗi không xác định.");
     }
 
     public function enhanceAppointmentWithPatientInfo($appointmentData) {

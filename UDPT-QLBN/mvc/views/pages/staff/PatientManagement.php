@@ -18,7 +18,7 @@
     <div class="card-header bg-white py-3">
         <div class="d-flex justify-content-between align-items-center">
             <h5 class="card-title mb-0">Danh sách bệnh nhân</h5>
-            <button class="btn btn-primary" data-toggle="modal" data-target="#addPatientModal">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPatientModal">
                 <i class="fas fa-plus-circle mr-1"></i>
                 Thêm bệnh nhân
             </button>
@@ -31,7 +31,7 @@
                         <i class="fas fa-search text-muted"></i>
                     </span> -->
                 </div>
-                <input type="text" id="searchInput" class="form-control border-left-0" placeholder="Tìm kiếm theo tên, mã bệnh nhân hoặc email...">
+                <input type="text" id="searchInput" class="form-control" placeholder="Tìm kiếm theo số CMND/CCCD...">
             </div>
         </div>
     </div>
@@ -99,9 +99,7 @@
         <div class="modal-content">
             <div class="modal-header bg-light">
                 <h5 class="modal-title" id="addPatientModalLabel">Thêm bệnh nhân mới</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="addPatientForm" class="needs-validation" novalidate>
@@ -184,7 +182,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 <button type="button" class="btn btn-primary" id="savePatientBtn">Lưu</button>
             </div>
         </div>
@@ -197,9 +195,7 @@
     <div class="modal-content">
       <div class="modal-header bg-light">
         <h5 class="modal-title">Chi tiết bệnh nhân</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div id="patientDetailLoading" class="text-center py-5">
@@ -308,19 +304,19 @@
                     <tr>
                       <td width="30%" class="font-weight-bold align-middle">Email:</td>
                       <td>
-                        <input type="email" class="form-control" id="editPatientEmail" placeholder="Email">
+                        <input type="email" class="form-control" id="editPatientEmail" name="email" placeholder="Email">
                       </td>
                     </tr>
                     <tr>
                       <td class="font-weight-bold align-middle">Điện thoại:</td>
                       <td>
-                        <input type="tel" class="form-control" id="editPatientPhone" placeholder="Số điện thoại">
+                        <input type="tel" class="form-control" id="editPatientPhone" name="phone_number" placeholder="Số điện thoại">
                       </td>
                     </tr>
                     <tr>
                       <td class="font-weight-bold align-middle">Địa chỉ:</td>
                       <td>
-                        <textarea class="form-control" id="editPatientAddress" placeholder="Địa chỉ" rows="2"></textarea>
+                        <textarea class="form-control" id="editPatientAddress" name="address" placeholder="Địa chỉ" rows="2"></textarea>
                       </td>
                     </tr>
                   </table>
@@ -334,7 +330,7 @@
                     <tr>
                       <td width="30%" class="font-weight-bold align-middle">Tiền sử bệnh:</td>
                       <td>
-                        <textarea class="form-control" id="editPatientMedicalHistory" rows="4" placeholder="Tiền sử bệnh"></textarea>
+                        <textarea class="form-control" id="editPatientMedicalHistory" name="medical_history" rows="4" placeholder="Tiền sử bệnh"></textarea>
                       </td>
                     </tr>
                   </table>
@@ -347,7 +343,7 @@
       <div class="modal-footer">
         <!-- View mode buttons -->
         <div id="viewModeButtons">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
           <button type="button" class="btn btn-primary" id="switchToEditModeBtn">Chỉnh sửa</button>
         </div>
         
@@ -367,27 +363,5 @@
     <input type="text" class="form-control" id="patientIdentityCard" name="identity_card" placeholder="Nhập số CMND/CCCD">
 </div> -->
 
-<!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deletePatientModal" tabindex="-1" aria-labelledby="deletePatientModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deletePatientModalLabel">Xác nhận xóa</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Bạn có chắc chắn muốn xóa bệnh nhân <span id="deletePatientName" class="font-weight-bold"></span>? Hành động này không thể hoàn tác.</p>
-                <input type="hidden" id="deletePatientId">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Xóa</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Link to JavaScript file -->
-<script src="/UDPT-QLBN/public/js/patient-management.js"></script>
+<script src="/UDPT-QLBN/public/js/patient-management-clean.js"></script>

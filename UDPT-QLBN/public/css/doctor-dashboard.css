@@ -1,0 +1,1100 @@
+/* ==========================================================================
+   GENERAL COMPONENTS
+   ========================================================================== */
+
+/* Stats Cards */
+.stats-card {
+    transition: all 0.2s ease;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.stats-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+}
+
+.stats-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    margin-right: 16px;
+}
+
+/* Badge Styling */
+.badge-success {
+    background-color: #d1e7dd;
+    color: #0f5132;
+    border: none;
+}
+
+.badge-warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border: none;
+}
+
+.badge-danger {
+    background-color: #f8d7da;
+    color: #842029;
+    border: none;
+}
+
+.badge-outline-success {
+    background-color: transparent;
+    color: #198754;
+    border: 1px solid #198754;
+}
+
+.badge-outline-secondary {
+    background-color: transparent;
+    color: #6c757d;
+    border: 1px solid #6c757d;
+}
+
+/* Navigation Tabs */
+.nav-tabs {
+    border-bottom: 1px solid #dee2e6;
+    margin-bottom: 20px;
+}
+
+.nav-tabs .nav-link {
+    border: none;
+    padding: 0.75rem 1rem;
+    color: #495057;
+}
+
+.nav-tabs .nav-link.active {
+    font-weight: 500;
+    color: #0d6efd;
+    border-bottom: 2px solid #0d6efd;
+    background: transparent;
+}
+
+/* ==========================================================================
+   LAYOUT & CONTAINERS
+   ========================================================================== */
+
+.container-fluid {
+    padding-left: 15px;
+    padding-right: 15px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.container-fluid.pb-4 {
+    padding-top: 10px;
+    padding-bottom: 30px !important;
+}
+
+.dashboard-section {
+    margin-bottom: 30px;
+}
+
+.bg-white.shadow-sm.mb-4 {
+    padding: 20px 0;
+    margin-bottom: 30px !important;
+    margin-top: 0;
+}
+
+.row.mb-4 {
+    margin-top: 10px;
+}
+
+/* Tables */
+.table-responsive {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table th, .table td {
+    padding: 15px;
+    vertical-align: middle;
+}
+
+/* Cards */
+.card {
+    margin-bottom: 25px;
+}
+
+/* ==========================================================================
+   PATIENT INFO & FORMS
+   ========================================================================== */
+
+.patient-info-label {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+}
+
+.patient-info-value {
+    font-weight: 500;
+    color: #495057;
+}
+
+.form-group label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+/* Medical History */
+#medicalHistoryView {
+    border: 1px solid #e9ecef;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+#medicalHistoryView:hover {
+    background-color: #e9ecef;
+}
+
+#medicalHistoryTextarea {
+    resize: vertical;
+    min-height: 80px;
+    font-size: 0.9rem;
+}
+
+#medicalHistoryTextarea:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+}
+
+/* ==========================================================================
+   MODAL STYLING
+   ========================================================================== */
+
+/* Main Modal */
+.modal-xl {
+    max-width: 1140px;
+}
+
+#examModal .modal-dialog {
+    max-width: 1200px;
+    width: 95%;
+}
+
+#examModal .modal-body {
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 1.5rem;
+}
+
+/* Modal Content Layout */
+#examModalContent.row {
+    margin: 0;
+    min-height: 600px;
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+#examModalContent .col-lg-7,
+#examModalContent .col-lg-5 {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Modal Column Sizing */
+@media (min-width: 992px) {
+    #examModalContent .col-lg-7 {
+        flex: 0 0 58.333333%;
+        max-width: 58.333333%;
+    }
+    
+    #examModalContent .col-lg-5 {
+        flex: 0 0 41.666667%;
+        max-width: 41.666667%;
+    }
+}
+
+/* Modal Headers */
+#examModal .col-lg-7 .card:last-child .card-header,
+#examModal .col-lg-5 .card .card-header {
+    background-color: #f8f9fa !important;
+    color: #495057 !important;
+    border-bottom: 1px solid #dee2e6;
+}
+
+/* ==========================================================================
+   PRESCRIPTION SYSTEM
+   ========================================================================== */
+
+/* Prescription Container */
+#prescriptionContainer {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 450px;
+    max-height: none !important; /* BỎ giới hạn max-height */
+    overflow: hidden;
+}
+
+/* Empty State */
+.prescription-empty,
+#emptyPrescription {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    text-align: center;
+    color: #6c757d;
+    z-index: 1;
+}
+
+.prescription-empty i {
+    font-size: 3.5rem;
+    opacity: 0.4;
+    margin-bottom: 1rem;
+}
+
+/* Prescription Items Container */
+#prescriptionItems {
+    flex: 1;
+    overflow-y: auto !important;
+    overflow-x: hidden;
+    max-height: none !important; /* BỎ giới hạn max-height */
+    padding: 1rem;
+    padding-right: 0.5rem;
+    position: relative;
+    z-index: 2;
+}
+
+/* Prescription Card */
+.prescription-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.prescription-card .card-body {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+#examModal .col-lg-5 .card {
+    height: 100%;
+    min-height: 580px;
+    max-height: none !important; /* BỎ giới hạn max-height */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#examModal .col-lg-5 .card-body {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    position: relative;
+}
+
+/* ==========================================================================
+   MEDICINE FORMS & ITEMS
+   ========================================================================== */
+
+/* Medicine Form Base */
+.simple-medicine-form {
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+    background-color: #f8f9fc;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    word-wrap: break-word;
+}
+
+.simple-medicine-form:hover {
+    border-color: #0d6efd;
+    background-color: #e7f3ff;
+}
+
+.simple-medicine-form .form-group {
+    margin-bottom: 8px;
+}
+
+.simple-medicine-form .form-group:last-child {
+    margin-bottom: 0;
+}
+
+/* Medicine Form Elements */
+.simple-medicine-form .form-label {
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+}
+
+.simple-medicine-form .form-control {
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 0.85rem;
+}
+
+.simple-medicine-form .form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+}
+
+/* Medicine Form Header */
+.medicine-form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.medicine-form-header h6 {
+    font-size: 0.9rem;
+    margin-bottom: 0;
+}
+
+.medicine-form-header .btn-remove-form {
+    margin-left: auto;
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Medicine Items */
+.medicine-item,
+.prescription-item {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+    background-color: #ffffff;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.medicine-item:hover,
+.prescription-item:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-color: #0d6efd;
+}
+
+#examModal .prescription-item {
+    background-color: #f8f9fa;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+/* Medicine Item Content */
+.medicine-item .medicine-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.medicine-item .medicine-name {
+    font-weight: 600;
+    color: #0d6efd;
+    font-size: 0.95rem;
+}
+
+.medicine-item .medicine-details {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-bottom: 5px;
+}
+
+.medicine-item .medicine-note {
+    font-size: 0.85rem;
+    color: #495057;
+    font-style: italic;
+}
+
+.medicine-item .btn-remove {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ==========================================================================
+   MEDICINE SUGGESTIONS & INFO
+   ========================================================================== */
+
+/* Medicine Suggestions Dropdown */
+.medicine-suggestions {
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    background: white !important;
+    border: 1px solid #dee2e6 !important;
+    border-top: none !important;
+    border-radius: 0 0 4px 4px !important;
+    max-height: 150px !important;
+    overflow-y: auto !important;
+    z-index: 1050 !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+.medicine-suggestion-item {
+    transition: background-color 0.2s ease;
+}
+
+.medicine-suggestion-item:hover {
+    background-color: #f8f9fa !important;
+}
+
+.medicine-suggestion-item:last-child {
+    border-bottom: none !important;
+}
+
+/* Medicine Info Display */
+.medicine-info-display .alert {
+    margin-bottom: 8px;
+    font-size: 0.8rem;
+    padding: 8px 10px;
+}
+
+.medicine-selected-name {
+    color: #0d6efd;
+}
+
+.medicine-selected-unit {
+    font-size: 0.8rem;
+}
+
+.medicine-selected-stock {
+    font-size: 0.75rem;
+}
+
+/* Medicine Info in Modal */
+#examModal .medicine-info {
+    background-color: #e7f3ff;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    margin-bottom: 15px;
+}
+
+#examModal .medicine-info .medicine-name {
+    font-weight: 600;
+    color: #0d6efd;
+}
+
+#examModal .medicine-info .medicine-stock {
+    color: #6c757d;
+}
+
+#examModal .form-label {
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+/* ==========================================================================
+   INPUT GROUPS & FORM ELEMENTS
+   ========================================================================== */
+
+/* Input Groups */
+.simple-medicine-form .input-group {
+    margin-bottom: 0;
+}
+
+.simple-medicine-form .input-group-text {
+    font-size: 0.8rem;
+    padding: 6px 10px;
+}
+
+.simple-medicine-form .btn-group {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+/* Row Spacing */
+.simple-medicine-form .row {
+    margin-left: -5px;
+    margin-right: -5px;
+}
+
+.simple-medicine-form .row > [class*="col-"] {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+/* Form Validation */
+.form-control.is-invalid {
+    border-color: #dc3545;
+    padding-right: calc(1.5em + 0.75rem);
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+.invalid-feedback {
+    display: block;
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: 0.875em;
+    color: #dc3545;
+}
+
+/* ==========================================================================
+   VIEW EXAM MODAL
+   ========================================================================== */
+
+/* View Exam Table */
+#viewExamModal .table-bordered {
+    border: 1px solid #dee2e6;
+}
+
+#viewExamModal .table-bordered th,
+#viewExamModal .table-bordered td {
+    border: 1px solid #dee2e6;
+    padding: 10px 8px;
+    vertical-align: middle;
+}
+
+#viewExamModal .table-bordered th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 12px 8px;
+}
+
+#viewExamModal .table-bordered td {
+    font-size: 0.875rem;
+}
+
+/* View Exam Table Column Widths */
+#viewExamModal .table-bordered th:nth-child(1),
+#viewExamModal .table-bordered td:nth-child(1) {
+    width: 10%;
+    text-align: center;
+}
+
+#viewExamModal .table-bordered th:nth-child(2),
+#viewExamModal .table-bordered td:nth-child(2) {
+    width: 35%;
+}
+
+#viewExamModal .table-bordered th:nth-child(3),
+#viewExamModal .table-bordered td:nth-child(3) {
+    width: 15%;
+    text-align: center;
+}
+
+#viewExamModal .table-bordered th:nth-child(4),
+#viewExamModal .table-bordered td:nth-child(4) {
+    width: 15%;
+    text-align: center;
+}
+
+#viewExamModal .table-bordered th:nth-child(5),
+#viewExamModal .table-bordered td:nth-child(5) {
+    width: 25%;
+}
+
+/* View Exam Content Styling */
+#viewExamModal .medicine-id {
+    font-weight: 600;
+    color: #6c757d;
+    font-size: 0.95rem;
+}
+
+#viewExamModal .medicine-name {
+    font-weight: 600;
+    color: #0d6efd;
+    font-size: 0.95rem;
+}
+
+#viewExamModal .medicine-unit {
+    font-weight: 500;
+    color: #495057;
+    font-size: 0.875rem;
+}
+
+#viewExamModal .medicine-amount {
+    font-weight: 600;
+    color: #28a745;
+    font-size: 1rem;
+    text-align: center;
+}
+
+#viewExamModal .medicine-note {
+    color: #495057;
+    font-style: italic;
+    font-size: 0.875rem;
+}
+
+/* View Prescription Status */
+#viewPrescriptionStatus.badge-warning {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+#viewPrescriptionStatus.badge-success {
+    background-color: #28a745;
+    color: white;
+}
+
+#viewPrescriptionStatus.badge-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* ==========================================================================
+   SCROLLBARS
+   ========================================================================== */
+
+#prescriptionItems::-webkit-scrollbar {
+    width: 6px;
+}
+
+#prescriptionItems::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+#prescriptionItems::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+}
+
+#prescriptionItems::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* ==========================================================================
+   ANIMATIONS
+   ========================================================================== */
+
+.simple-medicine-form.new-form {
+    animation: slideInForm 0.3s ease;
+    opacity: 0;
+    animation-fill-mode: forwards;
+}
+
+@keyframes slideInForm {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+        max-height: 0;
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        max-height: 500px;
+    }
+}
+
+/* ==========================================================================
+   UTILITY CLASSES
+   ========================================================================== */
+
+/* Loading & Empty States */
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.empty-state i {
+    font-size: 3rem;
+    color: #dee2e6;
+    margin-bottom: 1rem;
+}
+
+/* Custom Buttons */
+.btn-add-medicine {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+/* Filter Options */
+#filterOptions .form-control {
+    height: calc(1.5em + 0.75rem + 2px);
+    padding: 0.375rem 0.75rem;
+}
+
+#filterOptions label {
+    margin-bottom: 0.35rem;
+    display: block;
+}
+
+#filterOptions .col-md-4.d-flex {
+    padding-bottom: 0.35rem;
+}
+
+#filterOptions input[type="date"].form-control,
+#filterOptions select.form-control {
+    min-width: 100%;
+}
+
+#filterOptions .btn {
+    padding: 0.375rem 0.75rem;
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN
+   ========================================================================== */
+
+@media (max-width: 991.98px) {
+    #examModal .modal-dialog {
+        max-width: 95%;
+        margin: 1rem;
+    }
+    
+    #examModal .modal-body {
+        max-height: 85vh;
+        padding: 1rem;
+    }
+    
+    #examModalContent .col-lg-7,
+    #examModalContent .col-lg-5 {
+        margin-bottom: 1rem;
+    }
+    
+    #examModal .col-lg-5 .card {
+        min-height: 400px;
+        max-height: none;
+    }
+    
+    #prescriptionContainer {
+        max-height: none;
+    }
+}
+
+@media (max-width: 767.98px) {
+    #viewExamModal .modal-dialog {
+        max-width: 95%;
+        margin: 0.5rem;
+    }
+    
+    #viewExamModal .table-responsive {
+        font-size: 0.8rem;
+    }
+    
+    #viewExamModal .card-body {
+        padding: 1rem;
+    }
+    
+    #medicalHistoryView {
+        padding: 1rem !important;
+    }
+    
+    #medicalHistoryTextarea {
+        font-size: 0.85rem;
+    }
+    
+    .medicine-suggestions {
+        max-height: 150px;
+    }
+    
+    .medicine-info-display .alert {
+        padding: 0.5rem;
+    }
+}
+
+/* Medicine Selection Modal */
+#medicineSelectionModal .modal-dialog {
+    max-width: 900px;
+}
+
+/* ==========================================================================
+   FIX: TĂNG CHIỀU CAO ĐƠN THUỐC VÀ FORM THUỐC TRÀN HẾT CHIỀU CAO
+   ========================================================================== */
+
+/* ✅ FIX: Tăng chiều cao prescription container tối đa */
+#prescriptionContainer {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 650px !important; /* Tăng lên 650px */
+    max-height: 700px !important; /* Tăng lên 700px */
+    overflow: hidden;
+}
+
+/* ✅ FIX: Card đơn thuốc cao tối đa */
+#examModal .col-lg-5 .card {
+    height: 100%;
+    min-height: 730px !important; /* Tăng lên 730px */
+    max-height: 730px !important; /* Match để tràn hết */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* ✅ FIX: Modal content row cao tối đa */
+#examModalContent.row {
+    margin: 0;
+    min-height: 750px !important; /* Tăng lên 750px */
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: stretch;
+}
+
+/* ✅ FIX: Modal dialog và body cao hơn */
+#examModal .modal-dialog {
+    max-width: 1400px !important; /* Rộng hơn */
+    width: 98% !important;
+    height: 95vh !important; /* Sử dụng 95% viewport height */
+}
+
+#examModal .modal-body {
+    max-height: 95vh !important; /* Tăng lên 95vh */
+    overflow-y: auto;
+    padding: 1.5rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ✅ FIX: Cột trái cũng cao hơn để cân bằng */
+#examModalContent .col-lg-7 {
+    display: flex;
+    flex-direction: column;
+    min-height: 750px !important;
+}
+
+/* ✅ FIX: Card hồ sơ khám bệnh trong cột trái co giãn tối đa */
+#examModal .col-lg-7 .card:last-child {
+    flex: 1 !important;
+    min-height: 450px !important; /* Tăng để match */
+}
+
+/* ✅ FIX: Textarea trong cột trái cao hơn */
+#examModal .col-lg-7 textarea {
+    min-height: 250px !important; /* Tăng từ 200px */
+    max-height: 350px !important; /* Tăng từ 300px */
+    resize: vertical;
+}
+
+/* ✅ FIX: Prescription items tràn hết chiều cao */
+#prescriptionItems {
+    flex: 1;
+    overflow-y: auto !important;
+    overflow-x: hidden;
+    max-height: 100% !important;
+    padding: 1rem;
+    padding-right: 0.5rem;
+    position: relative;
+    z-index: 2;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    
+    /* Tràn hết chiều cao có thể */
+    height: 100% !important;
+}
+
+/* ✅ FIX: Medicine forms lớn hơn để tận dụng không gian */
+.simple-medicine-form {
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    padding: 15px !important; /* Tăng padding từ 10px */
+    margin-bottom: 15px !important; /* Tăng margin từ 10px */
+    background-color: #f8f9fc;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    word-wrap: break-word;
+    min-height: 180px !important; /* Đặt min-height để form lớn hơn */
+}
+
+/* ✅ FIX: Form elements trong medicine form lớn hơn */
+.simple-medicine-form .form-group {
+    margin-bottom: 12px !important; /* Tăng từ 6px */
+}
+
+.simple-medicine-form .form-label {
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.85rem !important; /* Tăng từ 0.8rem */
+    margin-bottom: 5px !important; /* Tăng từ 3px */
+}
+
+.simple-medicine-form .form-control {
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 8px 10px !important; /* Tăng từ 5px 8px */
+    font-size: 0.85rem !important; /* Tăng từ 0.8rem */
+    min-height: 38px !important; /* Đặt min-height */
+}
+
+/* ✅ FIX: Textarea trong form thuốc lớn hơn */
+.simple-medicine-form textarea.form-control {
+    min-height: 60px !important; /* Tăng chiều cao textarea */
+    resize: vertical;
+}
+
+/* ✅ FIX: Medicine form header lớn hơn */
+.medicine-form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px !important; /* Tăng từ 8px */
+    padding-bottom: 8px !important; /* Tăng từ 6px */
+    border-bottom: 1px solid #dee2e6;
+}
+
+.medicine-form-header h6 {
+    font-size: 0.9rem !important; /* Tăng từ 0.85rem */
+    margin-bottom: 0;
+    font-weight: 600;
+}
+
+/* ✅ FIX: Button thêm thuốc lớn hơn */
+.btn-add-medicine {
+    padding: 10px 20px !important;
+    font-size: 0.9rem !important;
+    min-height: 40px !important;
+}
+
+/* ✅ FIX: Scrollbar đẹp và rõ ràng hơn */
+#prescriptionItems::-webkit-scrollbar {
+    width: 10px !important; /* Rộng hơn */
+}
+
+#prescriptionItems::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+    margin: 5px 0;
+}
+
+#prescriptionItems::-webkit-scrollbar-thumb {
+    background: #007bff; /* Màu xanh để dễ nhìn */
+    border-radius: 10px;
+    border: 1px solid #f1f1f1;
+}
+
+#prescriptionItems::-webkit-scrollbar-thumb:hover {
+    background: #0056b3;
+}
+
+/* ✅ FIX: Empty state trong container cao hơn */
+#emptyPrescription {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 4rem 2rem; /* Tăng padding */
+    text-align: center;
+    color: #6c757d;
+    z-index: 1;
+}
+
+#emptyPrescription i {
+    font-size: 3rem !important; /* Icon lớn hơn */
+    margin-bottom: 1rem;
+}
+
+/* ✅ FIX: Prescription summary footer */
+#prescriptionSummary {
+    flex-shrink: 0 !important;
+    border-top: 2px solid #007bff; /* Border đậm hơn */
+    background-color: #f8f9fa;
+    padding: 1rem !important; /* Tăng padding */
+    font-size: 0.9rem !important;
+}
+
+/* ✅ FIX: Responsive - mobile cũng cao hơn */
+@media (max-width: 991.98px) {
+    #prescriptionContainer {
+        min-height: 550px !important;
+        max-height: 600px !important;
+    }
+    
+    #examModal .col-lg-5 .card {
+        min-height: 630px !important;
+        max-height: 630px !important;
+    }
+    
+    #examModalContent.row {
+        min-height: 650px !important;
+    }
+    
+    #examModal .modal-dialog {
+        height: 90vh !important;
+    }
+    
+    #examModal .modal-body {
+        max-height: 90vh !important;
+    }
+    
+    .simple-medicine-form {
+        min-height: 160px !important;
+        padding: 12px !important;
+    }
+}
+
+/* ✅ THÊM: Smooth scroll và visual cues */
+#prescriptionItems.auto-scroll {
+    scroll-behavior: smooth;
+}
+
+/* ✅ THÊM: Gradient fade ở cuối để báo hiệu scroll */
+#prescriptionItems::after {
+    content: '';
+    position: sticky;
+    bottom: 0;
+    height: 30px; /* Cao hơn */
+    background: linear-gradient(transparent, rgba(248, 249, 250, 0.9));
+    pointer-events: none;
+    margin: 0 -1rem -1rem -1rem;
+}
+
+/* ✅ THÊM: Hover effects cho medicine forms */
+.simple-medicine-form:hover {
+    border-color: #007bff;
+    background-color: #f0f8ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
+}
+
+.col-lg-7.d-flex.flex-column {
+  max-height: 300px; /* Điều chỉnh theo ý muốn */
+  overflow-y: auto; /* Thêm thanh cuộn nếu nội dung vượt quá */
+}

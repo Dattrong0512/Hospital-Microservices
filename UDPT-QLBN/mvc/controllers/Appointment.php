@@ -388,4 +388,24 @@ class Appointment extends Controller
         }
     }
 
+    private function formatDateForAPI($dateString) {
+        if (empty($dateString)) {
+            return '';
+        }
+        
+        // Kiểm tra format date hiện tại và chuyển về Y-m-d nếu cần
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateString)) {
+            return $dateString; // Đã đúng format
+        }
+        
+        // Thử parse và format lại
+        try {
+            $date = new DateTime($dateString);
+            return $date->format('Y-m-d');
+        } catch (Exception $e) {
+            error_log("Invalid date format: " . $dateString);
+            return $dateString; // Trả về nguyên bản nếu không parse được
+        }
+    }
+
 }

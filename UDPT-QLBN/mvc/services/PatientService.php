@@ -6,7 +6,7 @@ class PatientService {
 
     public function __construct() {
         // Đọc từ file cấu hình hoặc biến môi trường
-        $this->baseUrl = "http://localhost:5001/api/v0";
+        $this->baseUrl = "https://konggateway.hospitalmicroservices.live/api/v0";
         //$this->apiKey = $_ENV['PATIENT_SERVICE_API_KEY'] ?? "your-api-key-here";
     }
     
@@ -147,121 +147,70 @@ class PatientService {
     }
     
     /**
-     * Xóa bệnh nhân
-     */
-    public function deletePatient($id) {
-        if ($this->useMockData) {
-            return $this->getMockData('/patients/' . $id, 'DELETE');
-        }
-
-        return $this->sendRequest('DELETE', '/patients/' . $id);
-    }
-    
-    /**
-     * Tìm kiếm bệnh nhân theo từ khóa
-     */
-    public function searchPatients($query) {
-        if ($this->useMockData) {
-            $allPatients = $this->getMockData('/patients', 'GET');
-            
-            if (!empty($query)) {
-                $filtered = array_filter($allPatients['data'], function($patient) use ($query) {
-                    return strpos(strtolower($patient['name']), strtolower($query)) !== false ||
-                           strpos(strtolower($patient['email']), strtolower($query)) !== false ||
-                           strpos(strtolower($patient['id']), strtolower($query)) !== false;
-                });
-                
-                return [
-                    'success' => true,
-                    'data' => array_values($filtered)
-                ];
-            }
-            
-            return $allPatients;
-        }
-
-        return $this->sendRequest('GET', '/patients/search?query=' . urlencode($query));
-    }
-    
-    /**
      * Hàm chung để gửi request đến API
      */
     
     private function sendRequest($method, $endpoint, $data = null) {
         $url = $this->baseUrl . $endpoint;
-        
-        // Ghi log URL gọi API
+        $accessToken = $_SESSION['access_token'] ?? null;
         error_log("API Request: $method $url");
-        
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        
-        // Enable verbose logging
-        $verbose = fopen('php://temp', 'w+');
-        curl_setopt($ch, CURLOPT_STDERR, $verbose);
-        curl_setopt($ch, CURLOPT_VERBOSE, true);
-        
-        $headers = ['Content-Type: application/json'];
-        
-        if ($data) {
-            $jsonData = json_encode($data);
-            error_log("Request Payload: $jsonData");
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
-        }
-        
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        
-        // Tắt SSL verification cho môi trường dev
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        
-        // Lấy thông tin chi tiết về request
-        $info = curl_getinfo($ch);
-        error_log("HTTP code: $httpCode");
-        error_log("Total time: " . $info['total_time'] . " seconds");
-        
-        if (curl_errno($ch)) {
-            // Log chi tiết lỗi CURL
-            rewind($verbose);
-            $verboseLog = stream_get_contents($verbose);
-            error_log("CURL Error: " . curl_error($ch));
-            error_log("CURL Error Code: " . curl_errno($ch));
-            error_log("Verbose log: " . $verboseLog);
-            
-            // Tạm thời dùng mock data nếu có lỗi kết nối
+
+        $tryCount = 0;
+        do {
+            $tryCount++;
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+            $headers = ['Content-Type: application/json'];
+            if ($accessToken) {
+                $headers[] = 'Authorization: Bearer ' . $accessToken;
+            }
+            if ($data) {
+                $jsonData = json_encode($data);
+                error_log("Request Payload: $jsonData");
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+            }
+
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+            if (curl_errno($ch)) {
+                curl_close($ch);
+                throw new Exception("CURL Error: " . curl_error($ch));
+            }
             curl_close($ch);
-            error_log("Falling back to mock data due to connection error");
-            return $this->getMockData($endpoint, $method, $data);
-        }
-        
-        curl_close($ch);
-        
-        // Log raw response
-        error_log("Raw API Response (first 300 chars): " . substr($response, 0, 300));
-        
-        // Kiểm tra nếu response là HTML thay vì JSON
-        if (is_string($response) && substr(trim($response), 0, 1) === '<') {
-            error_log("API returned HTML instead of JSON");
-            error_log("HTML Response: " . $response);
-            throw new Exception('API trả về dữ liệu không hợp lệ (HTML thay vì JSON)');
-        }
-        
-        $responseData = json_decode($response, true);
-        
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            error_log("JSON Parse Error: " . json_last_error_msg());
-            error_log("Response: " . $response);
-            throw new Exception('Lỗi parse JSON: ' . json_last_error_msg());
-        }
-        
-        // Log đã parse thành công
-        error_log("Successfully parsed JSON response");
-        
-        return $responseData;
+
+            if ($httpCode === 401 && $tryCount === 1) {
+                require_once 'mvc/services/AuthService.php';
+                $authService = new AuthService();
+                $authService->refreshToken();
+                $accessToken = $_SESSION['access_token'] ?? null;
+                continue;
+            }
+
+            if ($httpCode >= 400) {
+                throw new Exception("Patient API Error: HTTP $httpCode");
+            }
+
+            if (is_string($response) && substr(trim($response), 0, 1) === '<') {
+                throw new Exception('API trả về dữ liệu không hợp lệ (HTML thay vì JSON)');
+            }
+
+            $responseData = json_decode($response, true);
+
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new Exception('Lỗi parse JSON: ' . json_last_error_msg());
+            }
+
+            return $responseData;
+        } while ($tryCount < 2);
+
+        throw new Exception("Patient API Error: Không thể refresh token hoặc lỗi không xác định.");
     }
 
     // Thêm phương thức để lấy dữ liệu mẫu

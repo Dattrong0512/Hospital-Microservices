@@ -17,9 +17,8 @@ class AuthService {
         }
         
         // Cấu hình endpoint API xác thực
-        $this->baseUrl = "http://localhost:8000/api/v0";
-        $this->doctorsApiUrl = "http://localhost:5003/api/v0";
-        
+        $this->baseUrl = "https://konggateway.hospitalmicroservices.live/api/v0";
+
         // ✅ THÊM: Khởi tạo DoctorService
         $this->doctorService = new DoctorService();
         
@@ -74,7 +73,30 @@ class AuthService {
      * Đăng ký tài khoản bác sĩ
      */
     public function registerDoctor($userData) {
-        return $this->sendRequest('POST', '/account/register/user/doctor', $userData, false);
+        // Gọi trực tiếp API Flask Python của Doctor Service
+        $doctorApiUrl = "https://konggateway.hospitalmicroservices.live/api/v0/doctors/";
+        error_log("[AuthService][registerDoctor] Sending POST to: $doctorApiUrl");
+        error_log("[AuthService][registerDoctor] Data: " . json_encode($userData));
+        $ch = curl_init($doctorApiUrl);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($userData));
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
+        curl_close($ch);
+        error_log("[AuthService][registerDoctor] HTTP code: $httpCode");
+        error_log("[AuthService][registerDoctor] Response: $response");
+        if ($curlError) {
+            error_log("[AuthService][registerDoctor] CURL error: $curlError");
+            return ['success' => false, 'message' => 'Lỗi kết nối: ' . $curlError];
+        }
+        if ($httpCode === 201 || $httpCode === 200) {
+            return ['success' => true, 'data' => json_decode($response, true)];
+        } else {
+            return ['success' => false, 'message' => $response];
+        }
     }
     
     /**

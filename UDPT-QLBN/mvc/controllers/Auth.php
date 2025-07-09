@@ -305,6 +305,7 @@ class Auth extends Controller {
     public function registerDoctor() {
         // Chỉ cho phép POST request
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            error_log("[REGISTER_DOCTOR] Invalid request method: " . $_SERVER['REQUEST_METHOD']);
             header("Location: /UDPT-QLBN/Auth/register");
             exit;
         }
@@ -409,44 +410,35 @@ class Auth extends Controller {
                 'username' => trim(strtolower($_POST['username'])),
                 'password' => $_POST['password']
             ];
-            
             error_log("[REGISTER_DOCTOR] Attempting to register: " . $_POST['username']);
             error_log("[REGISTER_DOCTOR] Department: " . $_POST['department']);
-            
             // ✅ API CALL: Gọi AuthService để đăng ký
             $result = $this->authService->registerDoctor($doctorData);
-            
             error_log("[REGISTER_DOCTOR] Registration result: " . json_encode($result));
-            
             // ✅ SUCCESS: Kiểm tra kết quả thành công
             if (isset($result['success']) && $result['success'] === true) {
-                // Hiển thị trang thành công
                 $data = [
                     'success' => 'Đăng ký bác sĩ thành công! Vui lòng đăng nhập để sử dụng hệ thống.',
                     'show_login_link' => true,
                     'registered_username' => $doctorData['username']
                 ];
+                error_log("[REGISTER_DOCTOR] Registration successful for: " . $doctorData['username']);
                 $this->view("pages/auth/Register", $data);
                 return;
             }
-            
             // ✅ ERROR: Xử lý lỗi từ API
             $errorMessage = $result['message'] ?? 'Đăng ký thất bại. Vui lòng thử lại.';
+            error_log("[REGISTER_DOCTOR] Registration failed: " . $errorMessage);
             throw new Exception($errorMessage);
-            
         } catch (Exception $e) {
             error_log("[REGISTER_DOCTOR] Registration error: " . $e->getMessage());
-            
             // ✅ ERROR DISPLAY: Hiển thị lỗi và giữ lại dữ liệu
             $data = [
                 'error' => $e->getMessage(),
                 'form_data' => $_POST // Giữ lại dữ liệu đã nhập (trừ password)
             ];
-            
-            // Xóa password khỏi form data để bảo mật
             unset($data['form_data']['password']);
             unset($data['form_data']['confirm_password']);
-            
             $this->view("pages/auth/Register", $data);
         }
     }
