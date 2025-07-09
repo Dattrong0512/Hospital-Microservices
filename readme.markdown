@@ -112,7 +112,8 @@ Hướng dẫn này sẽ giúp bạn chạy các dịch vụ AppointmentService,
 3. **Chạy container NotificatinService:**
    - Chạy lệnh sau để khởi động container từ image vừa build:
      ```
-     docker run -d -p 8088:8088 --name rabbitmq-cloud-listener rabbitmq-cloud-listener
+     docker run -d rabbitmq-cloud-listener
+
 
      
      ```
