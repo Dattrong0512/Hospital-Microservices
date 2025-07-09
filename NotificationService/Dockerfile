@@ -1,7 +1,6 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Chỉ copy các file và thư mục cần thiết
 COPY NotificationService.csproj ./
 COPY Models ./Models
 COPY Services ./Services
@@ -25,5 +24,6 @@ WORKDIR /app
 COPY --from=publish /app/publish .
 
 ENV ASPNETCORE_ENVIRONMENT=Production
+ENV ASPNETCORE_URLS=http://+:8088
 
 ENTRYPOINT ["dotnet", "NotificationService.dll"]
