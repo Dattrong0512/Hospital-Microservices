@@ -26,7 +26,7 @@ services:
       # Cấu hình cài đặt Email
       MailSettings__SenderName: "ABC Hospital App"
       MailSettings__SenderEmail: "kantruong11@gmail.com"
-      MailSettings__SmtpHost: "smtp.example.com"
+      MailSettings__SmtpHost: "smtp.gmail.com"
       MailSettings__SmtpPort: 587
       MailSettings__SmtpUsername: "kantruong11@gmail.com"
       MailSettings__SmtpPassword: "jvwq swtn icua jlde"
