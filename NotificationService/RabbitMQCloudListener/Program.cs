@@ -58,22 +58,22 @@ class Program
                 if (appointment != null)
                 {
                     // Gửi email cho bệnh nhân
-                    if (!string.IsNullOrEmpty(appointment.Patient_email))
+                    if (!string.IsNullOrEmpty(appointment.patient_email))
                     {
                         var subject = "Nhắc nhở lịch khám bệnh";
-                        var content = $"Kính gửi {appointment.Patient_fullname},\n\nBạn có lịch hẹn khám với bác sĩ {appointment.Doctor_fullname} vào ngày {appointment.Date} lúc {appointment.Started_time} tại bệnh viện.\n\nVui lòng đến đúng giờ, mang theo giấy tờ cần thiết và tuân thủ các hướng dẫn của bệnh viện.\n\nTrân trọng,\nBệnh viện ABC";
-                        SendEmail(appointment.Patient_email, subject, content);
+                        var content = $"Kính gửi {appointment.patient_fullname},\n\nBạn có lịch hẹn khám với bác sĩ {appointment.doctor_fullname} vào ngày {appointment.date} lúc {appointment.started_time} tại bệnh viện.\n\nVui lòng đến đúng giờ, mang theo giấy tờ cần thiết và tuân thủ các hướng dẫn của bệnh viện.\n\nTrân trọng,\nBệnh viện ABC";
+                        SendEmail(appointment.patient_email, subject, content);
                     }
                     else
                     {
                         Console.WriteLine(" [!] Appointment message thiếu Patient_email.");
                     }
                     // Gửi email cho bác sĩ
-                    if (!string.IsNullOrEmpty(appointment.Doctor_email))
+                    if (!string.IsNullOrEmpty(appointment.doctor_email))
                     {
                         var subject = "Nhắc nhở lịch khám bệnh";
-                        var content = $"Kính gửi bác sĩ {appointment.Doctor_fullname},\n\nBạn có lịch hẹn khám với bệnh nhân {appointment.Patient_fullname} vào ngày {appointment.Date} lúc {appointment.Started_time} tại bệnh viện.\n\nVui lòng chuẩn bị hồ sơ và thiết bị cần thiết cho ca khám này.\n\nTrân trọng,\nBệnh viện ABC";
-                        SendEmail(appointment.Doctor_email, subject, content);
+                        var content = $"Kính gửi bác sĩ {appointment.doctor_fullname},\n\nBạn có lịch hẹn khám với bệnh nhân {appointment.patient_fullname} vào ngày {appointment.date} lúc {appointment.started_time} tại bệnh viện.\n\nVui lòng chuẩn bị hồ sơ và thiết bị cần thiết cho ca khám này.\n\nTrân trọng,\nBệnh viện ABC";
+                        SendEmail(appointment.doctor_email, subject, content);
                     }
                     else
                     {
@@ -179,12 +179,12 @@ public class NotificationMessageBase
 
 public class AppointmentNotificationMessage : NotificationMessageBase
 {
-    public string Patient_fullname { get; set; }
-    public string Patient_email { get; set; }
-    public string Doctor_fullname { get; set; }
-    public string Doctor_email { get; set; }
-    public string Date { get; set; }
-    public string Started_time { get; set; }
+    public string patient_fullname { get; set; }
+    public string patient_email { get; set; }
+    public string doctor_fullname { get; set; }
+    public string doctor_email { get; set; }
+    public string date { get; set; }
+    public string started_time { get; set; }
 }
 
 public class PrescriptionNotificationMessage : NotificationMessageBase
