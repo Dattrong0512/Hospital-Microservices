@@ -6,15 +6,33 @@ using RabbitMQ.Client.Events;
 using MailKit.Net.Smtp;
 using MimeKit;
 using System.Threading;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Driver;
 
 class Program
 {
+    static MongoClient mongoClient;
+    static IMongoCollection<EmailLog> emailLogCollection;
+
     static void Main(string[] args)
     {
         var amqpUrl = "amqps://errymwix:JCnl3C8qXN32qdFwK7B9hM-Dfn9SLrNb@armadillo.rmq.cloudamqp.com/errymwix";
         var exchangeName = "notification_exchange";
         var appointmentQueue = "appointment_queue";
         var prescriptionQueue = "prescription_queue";
+
+        // MongoDB config
+        var mongoUsername = "doadmin";
+        var mongoPassword = "NfO605M3o87yw1V2";
+        var mongoHost = "notification-mongo-256fe619.mongo.ondigitalocean.com";
+        var mongoDatabase = "admin";
+        var mongoCollection = "email_logs";
+        var mongoConnectionString = $"mongodb+srv://{mongoUsername}:{mongoPassword}@{mongoHost}/{mongoDatabase}?retryWrites=true&w=majority";
+
+        mongoClient = new MongoClient(mongoConnectionString);
+        var db = mongoClient.GetDatabase(mongoDatabase);
+        emailLogCollection = db.GetCollection<EmailLog>(mongoCollection);
 
         var factory = new ConnectionFactory() { Uri = new Uri(amqpUrl) };
         using var connection = factory.CreateConnection();
@@ -108,6 +126,13 @@ class Program
 
     static void SendEmail(string toEmail, string subject, string content)
     {
+        var log = new EmailLog
+        {
+            Recipient = toEmail,
+            Subject = subject,
+            Content = content,
+            SentAt = DateTime.UtcNow
+        };
         try
         {
             var email = new MimeMessage();
@@ -122,11 +147,26 @@ class Program
             smtp.Send(email);
             smtp.Disconnect(true);
 
+            log.SentSuccessfully = true;
+            log.ErrorMessage = null;
             Console.WriteLine($" [>] Đã gửi email tới {toEmail}");
         }
         catch (Exception ex)
         {
+            log.SentSuccessfully = false;
+            log.ErrorMessage = ex.Message;
             Console.WriteLine($" [!] Lỗi gửi email tới {toEmail}: {ex.Message}");
+        }
+        finally
+        {
+            try
+            {
+                emailLogCollection.InsertOne(log);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($" [!] Lỗi lưu log email vào MongoDB: {ex.Message}");
+            }
         }
     }
 }
@@ -152,4 +192,24 @@ public class PrescriptionNotificationMessage : NotificationMessageBase
     public string patient_name { get; set; }
     public string email { get; set; }
     public int no_days { get; set; }
+}
+
+// Thêm class lưu log email
+public class EmailLog
+{
+    [BsonId]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string Id { get; set; }
+    [BsonElement("recipient")]
+    public string Recipient { get; set; }
+    [BsonElement("subject")]
+    public string Subject { get; set; }
+    [BsonElement("content")]
+    public string Content { get; set; }
+    [BsonElement("sentAt")]
+    public DateTime SentAt { get; set; }
+    [BsonElement("sentSuccessfully")]
+    public bool SentSuccessfully { get; set; }
+    [BsonElement("errorMessage")]
+    public string ErrorMessage { get; set; }
 }
