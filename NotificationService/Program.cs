@@ -9,6 +9,8 @@ builder.Services.Configure<MongoDBSettings>(builder.Configuration.GetSection("Mo
 
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
+builder.Services.Configure<SendGridSettings>(builder.Configuration.GetSection("SendGridSettings"));
+
 builder.Services.AddSingleton<INotificationService, NotificationService.Services.NotificationService>();
 
 builder.Services.AddControllers();
