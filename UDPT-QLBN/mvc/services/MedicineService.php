@@ -5,7 +5,7 @@ class MedicineService
 
     public function __construct()
     {
-        $this->apiBaseUrl = "http://localhost:5002/api/v0"; 
+        $this->apiBaseUrl = "https://konggateway.hospitalmicroservices.live/api/v0"; 
     }
 
     public function getAllMedicines($page = 1, $limit = 10)
@@ -156,61 +156,82 @@ class MedicineService
 
     private function makeApiRequest($method, $url, $data = null)
     {
-        $curl = curl_init();
-
-        $options = [
-            CURLOPT_URL => $url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => $method,
-            CURLOPT_HTTPHEADER => [
-                "Accept: application/json",
-                "Content-Type: application/json"
-            ],
+        $headers = [
+            'Content-Type: application/json',
+            'Accept: application/json'
         ];
-
-        if ($data) {
-            $options[CURLOPT_POSTFIELDS] = json_encode($data);
+        $accessToken = $_SESSION['access_token'] ?? null;
+        if ($accessToken) {
+            $headers[] = 'Authorization: Bearer ' . $accessToken;
         }
 
-        curl_setopt_array($curl, $options);
+        $tryCount = 0;
+        do {
+            $tryCount++;
+            $curl = curl_init();
 
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
-        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+            $options = [
+                CURLOPT_URL => $url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => "",
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => $method,
+                CURLOPT_HTTPHEADER => $headers,
+            ];
 
-        curl_close($curl);
-
-        if ($err) {
-            throw new Exception("cURL Error: " . $err);
-        }
-
-        $decoded = json_decode($response, true);
-        
-        if ($decoded && !isset($decoded['error'])) {
-        // Nếu không có cấu trúc phân trang chuẩn, chuyển đổi
-            if (!isset($decoded['data']) && is_array($decoded)) {
-                // Tạo cấu trúc dữ liệu có phân trang
-                $result = [
-                    'data' => $decoded,
-                    'page' => $_GET['page'] ?? 1,
-                    'limit' => $_GET['limit'] ?? 10,
-                    'total' => count($decoded),
-                    'total_pages' => ceil(count($decoded) / ($_GET['limit'] ?? 10))
-                ];
-                return $result;
+            if ($data) {
+                $options[CURLOPT_POSTFIELDS] = json_encode($data);
             }
-        }
 
-        // Kiểm tra lỗi từ API
-        if ($httpCode >= 400) {
-            $errorMessage = isset($decoded['error']) ? $decoded['error'] : "API Error (HTTP {$httpCode})";
-            throw new Exception($errorMessage);
-        }
+            curl_setopt_array($curl, $options);
 
-        return $decoded;
+            $response = curl_exec($curl);
+            $err = curl_error($curl);
+            $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+            curl_close($curl);
+
+            if ($err) {
+                throw new Exception("cURL Error: " . $err);
+            }
+
+            $decoded = json_decode($response, true);
+
+            if ($httpCode === 401 && $tryCount === 1) {
+                // Token hết hạn, tự động refresh
+                require_once 'mvc/services/AuthService.php';
+                $authService = new AuthService();
+                $authService->refreshToken();
+                $accessToken = $_SESSION['access_token'] ?? null;
+                if ($accessToken) {
+                    $headers[] = 'Authorization: Bearer ' . $accessToken;
+                }
+                continue;
+            }
+
+            if ($decoded && !isset($decoded['error'])) {
+                if (!isset($decoded['data']) && is_array($decoded)) {
+                    $result = [
+                        'data' => $decoded,
+                        'page' => $_GET['page'] ?? 1,
+                        'limit' => $_GET['limit'] ?? 10,
+                        'total' => count($decoded),
+                        'total_pages' => ceil(count($decoded) / ($_GET['limit'] ?? 10))
+                    ];
+                    return $result;
+                }
+            }
+
+            if ($httpCode >= 400) {
+                $errorMessage = isset($decoded['error']) ? $decoded['error'] : "API Error (HTTP {$httpCode})";
+                throw new Exception($errorMessage);
+            }
+
+            return $decoded;
+        } while ($tryCount < 2);
+
+        throw new Exception("Medicine API Error: Không thể refresh token hoặc lỗi không xác định.");
     }
 }

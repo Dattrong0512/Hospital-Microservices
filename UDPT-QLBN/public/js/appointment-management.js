@@ -136,6 +136,28 @@ class AppointmentManager {
         console.log("🔍 [SEARCH] Search term:", searchTerm);
       }
 
+      // ✅ THÊM: Xử lý filter parameters
+      const statusFilter = document
+        .getElementById("status-filter")
+        ?.value?.trim();
+      const dateFrom = document.getElementById("date-from")?.value?.trim();
+      const dateTo = document.getElementById("date-to")?.value?.trim();
+
+      if (statusFilter) {
+        url += `&status=${encodeURIComponent(statusFilter)}`;
+        console.log("🔍 [FILTER] Status:", statusFilter);
+      }
+
+      if (dateFrom) {
+        url += `&start_date=${encodeURIComponent(dateFrom)}`;
+        console.log("🔍 [FILTER] Start date:", dateFrom);
+      }
+
+      if (dateTo) {
+        url += `&end_date=${encodeURIComponent(dateTo)}`;
+        console.log("🔍 [FILTER] End date:", dateTo);
+      }
+
       console.log("📡 [API] Calling URL:", url);
 
       const response = await fetch(url);
@@ -739,8 +761,16 @@ class AppointmentManager {
   }
 
   showAlert(type, message) {
-    const alertContainer = document.getElementById("alert-container");
-    if (!alertContainer) return;
+    // Tìm hoặc tạo alert container
+    let alertContainer = document.getElementById("alert-container");
+    if (!alertContainer) {
+      alertContainer = document.createElement("div");
+      alertContainer.id = "alert-container";
+      alertContainer.className = "position-fixed";
+      alertContainer.style.cssText =
+        "top: 20px; right: 20px; z-index: 9999; max-width: 400px;";
+      document.body.appendChild(alertContainer);
+    }
 
     const alertElement = document.createElement("div");
     alertElement.className = `alert alert-${type} alert-dismissible fade show`;
@@ -922,13 +952,37 @@ class AppointmentManager {
   setupEventListeners() {
     console.log("🔄 Thiết lập sự kiện...");
 
+    // ✅ THÊM: Event listener cho nút "Thêm lịch khám" để mở modal
+    $(document).on(
+      "click",
+      '[data-target="#addAppointmentModal"]',
+      function (e) {
+        e.preventDefault();
+        console.log("🔄 Mở modal thêm lịch khám...");
+        $("#addAppointmentModal").modal("show");
+      }
+    );
+
     // Modal events
     $("#addAppointmentModal, #editAppointmentModal").on(
       "shown.bs.modal",
       () => {
+        console.log("🔄 Modal đã mở, khởi tạo flatpickr...");
         setTimeout(() => this.initializeFlatpickr(), 100);
       }
     );
+
+    // ✅ THÊM: Event listeners cho nút đóng modal
+    $(".modal .close, .modal [data-dismiss='modal']").on("click", function () {
+      console.log("🔄 Đóng modal...");
+      $(this).closest(".modal").modal("hide");
+    });
+
+    // ✅ THÊM: Reset form khi modal đóng
+    $("#addAppointmentModal").on("hidden.bs.modal", () => {
+      console.log("🔄 Modal đã đóng, reset form...");
+      this.resetAppointmentForm();
+    });
 
     // Search with debounce
     const searchInput = document.getElementById("searchAppointment");

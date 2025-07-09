@@ -214,48 +214,16 @@ class Patient extends Controller {
             echo json_encode(['success' => false, 'message' => $e->getMessage()]);
         }
     }
-    
-    function api_deletePatient($id) {
-        header('Content-Type: application/json');
-        
-        if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
-            http_response_code(405);
-            echo json_encode(['success' => false, 'message' => 'Method Not Allowed']);
-            return;
-        }
-        
-        try {
-            $result = $this->patientService->deletePatient($id);
-            echo json_encode(['success' => true, 'data' => $result]);
-        } catch (Exception $e) {
-            http_response_code(500);
-            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
-        }
-    }
-    
-    function api_searchPatients() {
-        header('Content-Type: application/json');
-        
-        $query = $_GET['query'] ?? '';
-        
-        try {
-            $patients = $this->patientService->searchPatients($query);
-            echo json_encode(['success' => true, 'data' => $patients['data']]);
-        } catch (Exception $e) {
-            http_response_code(500);
-            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
-        }
-    }
 
     function api_checkIdentityCard($identityCard) {
-    header('Content-Type: application/json');
-    
-    try {
-        $exists = $this->patientService->checkIdentityCardExists($identityCard);
-        echo json_encode(['success' => true, 'exists' => $exists]);
-    } catch (Exception $e) {
-        http_response_code(500);
-        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        header('Content-Type: application/json');
+        
+        try {
+            $exists = $this->patientService->checkIdentityCardExists($identityCard);
+            echo json_encode(['success' => true, 'exists' => $exists]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        }
     }
-}
 }

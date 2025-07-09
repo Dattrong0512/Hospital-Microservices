@@ -1,86 +1,104 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // Biến lưu trạng thái hiện tại
-  $(document).ready(function () {
+  // Setup modal handlers sau khi DOM đã sẵn sàng
+  setTimeout(() => {
+    setupModalHandlers();
+  }, 100);
+
+  // Hàm thiết lập xử lý modal
+  function setupModalHandlers() {
     // Xử lý nút Thêm thuốc trong modal
-    $("#btnAddMedicine")
-      .off("click")
-      .on("click", function () {
-        // Hiển thị trạng thái loading
-        const btn = $(this);
-        const originalText = btn.html();
-        btn.html(
-          '<span class="spinner-border spinner-border-sm mr-1"></span> Đang thêm...'
-        );
-        btn.prop("disabled", true);
-
-        // Gọi hàm thêm thuốc
-        addMedicine();
-
-        // Khôi phục nút sau 1 giây
-        setTimeout(() => {
-          btn.html(originalText);
-          btn.prop("disabled", false);
-        }, 1000);
-      });
+    const addBtn = document.getElementById("btnAddMedicine");
+    if (addBtn) {
+      addBtn.removeEventListener("click", handleAddMedicine); // Loại bỏ listener cũ
+      addBtn.addEventListener("click", handleAddMedicine);
+    }
 
     // Xử lý nút Lưu thay đổi trong modal chỉnh sửa
-    $("#btnSaveEdit")
-      .off("click")
-      .on("click", function () {
-        // Hiển thị trạng thái loading
-        const btn = $(this);
-        const originalText = btn.html();
-        btn.html(
-          '<span class="spinner-border spinner-border-sm mr-1"></span> Đang lưu...'
-        );
-        btn.prop("disabled", true);
-
-        // Gọi hàm cập nhật thuốc
-        updateMedicine();
-
-        // Khôi phục nút sau 1 giây
-        setTimeout(() => {
-          btn.html(originalText);
-          btn.prop("disabled", false);
-        }, 1000);
-      });
+    const saveBtn = document.getElementById("btnSaveEdit");
+    if (saveBtn) {
+      saveBtn.removeEventListener("click", handleSaveEdit); // Loại bỏ listener cũ
+      saveBtn.addEventListener("click", handleSaveEdit);
+    }
 
     // Xử lý nút Xóa trong modal xác nhận xóa
-    $("#confirmDeleteBtn")
-      .off("click")
-      .on("click", function () {
-        // Hiển thị trạng thái loading
-        const btn = $(this);
-        const originalText = btn.html();
-        btn.html(
-          '<span class="spinner-border spinner-border-sm mr-1"></span> Đang xóa...'
-        );
-        btn.prop("disabled", true);
-
-        // Gọi hàm xóa thuốc
-        deleteMedicine();
-
-        // Khôi phục nút sau 1 giây
-        setTimeout(() => {
-          btn.html(originalText);
-          btn.prop("disabled", false);
-        }, 1000);
-      });
+    const deleteBtn = document.getElementById("confirmDeleteBtn");
+    if (deleteBtn) {
+      deleteBtn.removeEventListener("click", handleDeleteMedicine); // Loại bỏ listener cũ
+      deleteBtn.addEventListener("click", handleDeleteMedicine);
+    }
 
     // Xử lý nút hủy và đóng modal
-    $('[data-dismiss="modal"]')
-      .off("click")
-      .on("click", function () {
-        const modalId = $(this).closest(".modal").attr("id");
+    document.querySelectorAll('[data-dismiss="modal"]').forEach((btn) => {
+      btn.addEventListener("click", function () {
+        const modalId = this.closest(".modal").id;
         $(`#${modalId}`).modal("hide");
       });
+    });
 
     // Đảm bảo modal đóng đúng
-    $(".modal").on("hidden.bs.modal", function () {
-      $("body").removeClass("modal-open");
-      $(".modal-backdrop").remove();
+    document.querySelectorAll(".modal").forEach((modal) => {
+      $(modal).on("hidden.bs.modal", function () {
+        $("body").removeClass("modal-open");
+        $(".modal-backdrop").remove();
+      });
     });
-  });
+  }
+
+  // Handler riêng cho nút Add để tránh gọi 2 lần
+  function handleAddMedicine() {
+    const btn = this;
+    if (btn.disabled) return; // Tránh click nhiều lần
+
+    const originalText = btn.innerHTML;
+    btn.innerHTML =
+      '<span class="spinner-border spinner-border-sm mr-1"></span> Đang thêm...';
+    btn.disabled = true;
+
+    addMedicine().finally(() => {
+      setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }, 1000);
+    });
+  }
+
+  // Handler riêng cho nút Save để tránh gọi 2 lần
+  function handleSaveEdit() {
+    const btn = this;
+    if (btn.disabled) return; // Tránh click nhiều lần
+
+    const originalText = btn.innerHTML;
+    btn.innerHTML =
+      '<span class="spinner-border spinner-border-sm mr-1"></span> Đang lưu...';
+    btn.disabled = true;
+
+    updateMedicine().finally(() => {
+      setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }, 1000);
+    });
+  }
+
+  // Handler riêng cho nút Delete để tránh gọi 2 lần
+  function handleDeleteMedicine() {
+    const btn = this;
+    if (btn.disabled) return; // Tránh click nhiều lần
+
+    const originalText = btn.innerHTML;
+    btn.innerHTML =
+      '<span class="spinner-border spinner-border-sm mr-1"></span> Đang xóa...';
+    btn.disabled = true;
+
+    deleteMedicine().finally(() => {
+      setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }, 1000);
+    });
+  }
+
+  // Biến lưu trạng thái hiện tại
   let currentPage = 1;
   let totalPages = 1;
   let limit = 10;
@@ -94,41 +112,348 @@ document.addEventListener("DOMContentLoaded", function () {
   let viewingNearExpiry = false;
   let selectedMedicineId = null;
 
-  // Khởi tạo ứng dụng
-  init();
-
   /**
-   * Khởi tạo các chức năng của ứng dụng
+   * Hiển thị/ẩn loading indicator
    */
-  function init() {
-    // Tải dữ liệu thuốc mặc định
-    loadMedicines();
-
-    // Thiết lập các sự kiện
-    setupEventListeners();
-
-    // Khởi tạo các thành phần giao diện
-    initializeDatepickers();
-
-    console.log("✓ Khởi tạo quản lý thuốc hoàn tất");
+  function showLoading(show) {
+    const loadingIndicator = document.getElementById("loadingIndicator");
+    if (show) {
+      loadingIndicator.classList.remove("d-none");
+    } else {
+      loadingIndicator.classList.add("d-none");
+    }
   }
 
   /**
-   * Thiết lập các sự kiện trong ứng dụng
+   * Hiển thị thông báo
    */
+  function showAlert(message, type = "info", duration = 5000) {
+    const alertContainer = document.getElementById("alert-container");
+
+    const alert = document.createElement("div");
+    alert.className = `alert alert-${type} alert-dismissible fade show`;
+    alert.innerHTML = `
+      ${message}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    `;
+
+    alertContainer.appendChild(alert);
+
+    if (duration > 0) {
+      setTimeout(() => {
+        alert.classList.remove("show");
+        setTimeout(() => {
+          alert.remove();
+        }, 150);
+      }, duration);
+    }
+  }
+
+  /**
+   * Reset bộ lọc về trạng thái mặc định
+   */
+  function resetFilters() {
+    currentFilters.expiry = "";
+    currentFilters.amount = "";
+
+    const expiryFilter = document.getElementById("expiry-filter");
+    const amountFilter = document.getElementById("amount-filter");
+
+    if (expiryFilter) expiryFilter.value = "";
+    if (amountFilter) amountFilter.value = "";
+
+    viewingNearExpiry = false;
+  }
+
+  /**
+   * Cập nhật giao diện sắp xếp cột
+   */
+  function updateSortUI() {
+    document.querySelectorAll(".sortable i").forEach((icon) => {
+      icon.className = "fas fa-sort text-muted ml-1";
+    });
+
+    const currentColumn = document.querySelector(`[data-sort="${sortField}"]`);
+    if (currentColumn) {
+      const icon = currentColumn.querySelector("i");
+      if (icon) {
+        icon.className = `fas fa-sort-${
+          sortDirection === "asc" ? "up" : "down"
+        } text-primary ml-1`;
+      }
+    }
+  }
+
+  /**
+   * Kiểm tra dữ liệu form thuốc
+   */
+  function validateMedicineForm(formId) {
+    const form = document.getElementById(formId);
+    if (!form) return false;
+
+    form.classList.add("was-validated");
+
+    const requiredFields = form.querySelectorAll("[required]");
+    let isValid = true;
+
+    requiredFields.forEach((field) => {
+      // ✅ Skip validation for readonly fields
+      if (field.readOnly || field.hasAttribute("readonly")) {
+        field.classList.remove("is-invalid");
+        return;
+      }
+
+      if (!field.value.trim()) {
+        field.classList.add("is-invalid");
+        isValid = false;
+      } else {
+        field.classList.remove("is-invalid");
+      }
+    });
+
+    // Kiểm tra ngày sản xuất và hạn sử dụng
+    if (formId === "addMedicineForm") {
+      const mfg = new Date(document.getElementById("medicineMFG").value);
+      const exp = new Date(document.getElementById("medicineEXP").value);
+
+      if (mfg >= exp) {
+        document.getElementById("medicineEXP").classList.add("is-invalid");
+        isValid = false;
+      }
+    } else if (formId === "editMedicineForm") {
+      const mfg = new Date(document.getElementById("editMedicineMFG").value);
+      const exp = new Date(document.getElementById("editMedicineEXP").value);
+
+      if (mfg >= exp) {
+        document.getElementById("editMedicineEXP").classList.add("is-invalid");
+        isValid = false;
+      }
+    }
+
+    return isValid;
+  }
+
+  /**
+   * Thêm thuốc mới
+   */
+  function addMedicine() {
+    const name = document.getElementById("medicineName").value;
+    const MFG = document.getElementById("medicineMFG").value;
+    const EXP = document.getElementById("medicineEXP").value;
+    const amount = document.getElementById("medicineAmount").value;
+    const unit = document.getElementById("medicineUnit").value;
+    const price = document.getElementById("medicinePrice").value;
+
+    if (!validateMedicineForm("addMedicineForm")) {
+      return Promise.reject(new Error("Form validation failed"));
+    }
+
+    const medicineData = {
+      name,
+      MFG,
+      EXP,
+      amount: parseInt(amount),
+      unit,
+      price: parseFloat(price),
+    };
+
+    return fetch("/UDPT-QLBN/Medicine/api_createMedicine", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(medicineData),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then((data) => {
+            throw new Error(data.error || `Lỗi HTTP: ${response.status}`);
+          });
+        }
+        return response.json();
+      })
+      .then((data) => {
+        $("#addMedicineModal").modal("hide");
+        document.getElementById("addMedicineForm").reset();
+        showAlert(`Đã thêm thuốc "${name}" thành công!`, "success");
+        loadMedicines();
+        return data;
+      })
+      .catch((error) => {
+        showAlert(`Không thể thêm thuốc. Lỗi: ${error.message}`, "danger");
+        throw error;
+      });
+  }
+
+  /**
+   * Cập nhật thông tin thuốc
+   */
+  function updateMedicine() {
+    const medicineId = document.getElementById("editMedicineId").value;
+    const name = document.getElementById("editMedicineName").value;
+    const MFG = document.getElementById("editMedicineMFG").value;
+    const EXP = document.getElementById("editMedicineEXP").value;
+    const amount = document.getElementById("editMedicineAmount").value;
+    const unit = document.getElementById("editMedicineUnit").value;
+    const price = document.getElementById("editMedicinePrice").value;
+
+    // Validate medicine ID
+    if (!medicineId || medicineId === "" || medicineId === "undefined") {
+      showAlert("ID thuốc không hợp lệ", "danger");
+      return Promise.reject(new Error("Medicine ID is missing or invalid"));
+    }
+
+    if (!validateMedicineForm("editMedicineForm")) {
+      return Promise.reject(new Error("Form validation failed"));
+    }
+
+    const medicineData = {
+      name,
+      MFG,
+      EXP,
+      amount: parseInt(amount),
+      unit,
+      price: parseFloat(price),
+    };
+
+    console.log(
+      "Updating medicine with ID:",
+      medicineId,
+      "Data:",
+      medicineData
+    );
+
+    return fetch(`/UDPT-QLBN/Medicine/api_updateMedicine/${medicineId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(medicineData),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then((data) => {
+            throw new Error(data.error || `Lỗi HTTP: ${response.status}`);
+          });
+        }
+        return response.json();
+      })
+      .then((data) => {
+        $("#editMedicineModal").modal("hide");
+        showAlert(`Đã cập nhật thuốc "${name}" thành công!`, "success");
+        loadMedicines();
+        return data;
+      })
+      .catch((error) => {
+        console.error("Update error:", error);
+        showAlert(`Không thể cập nhật thuốc. Lỗi: ${error.message}`, "danger");
+        throw error;
+      });
+  }
+
+  /**
+   * Xóa thuốc
+   */
+  function deleteMedicine() {
+    const medicineId = document.getElementById("deleteMedicineId").value;
+    const medicineName =
+      document.getElementById("deleteMedicineName").textContent;
+
+    return fetch(`/UDPT-QLBN/Medicine/api_deleteMedicine/${medicineId}`, {
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then((data) => {
+            throw new Error(data.error || `Lỗi HTTP: ${response.status}`);
+          });
+        }
+        return response.json();
+      })
+      .then((data) => {
+        $("#deleteMedicineModal").modal("hide");
+        showAlert(`Đã xóa thuốc "${medicineName}" thành công!`, "success");
+        loadMedicines();
+        return data;
+      })
+      .catch((error) => {
+        showAlert(`Không thể xóa thuốc. Lỗi: ${error.message}`, "danger");
+        throw error;
+      });
+  }
+
+  // Khởi tạo ứng dụng
+  init();
+
+  function init() {
+    console.log("🚀 Initializing medicine management app...");
+    loadMedicines();
+    setupEventListeners();
+    initializeDatepickers();
+    setTimeout(() => checkBootstrapModal(), 500);
+    console.log("✅ Medicine management app initialized");
+  }
+
+  function checkBootstrapModal() {
+    if (typeof $.fn.modal === "undefined") {
+      $(document).on(
+        "click",
+        '[data-target="#addMedicineModal"]',
+        function (e) {
+          e.preventDefault();
+          document.getElementById("addMedicineModal").style.display = "block";
+          document.getElementById("addMedicineModal").classList.add("show");
+        }
+      );
+
+      $(document).on("click", '[data-dismiss="modal"]', function (e) {
+        e.preventDefault();
+        $(this).closest(".modal").hide();
+      });
+    }
+  }
+
   function setupEventListeners() {
-    // Sự kiện tìm kiếm
+    // Modal thêm thuốc
+    $(document).on("click", '[data-target="#addMedicineModal"]', function (e) {
+      e.preventDefault();
+      $("#addMedicineModal").modal("show");
+    });
+
+    // Toggle thuốc sắp hết hạn
+    const toggleBtn = document.getElementById("toggleNearExpiry");
+    if (toggleBtn) {
+      toggleBtn.addEventListener("click", function () {
+        viewingNearExpiry = !viewingNearExpiry;
+        const btn = this;
+
+        if (viewingNearExpiry) {
+          btn.classList.remove("btn-outline-warning");
+          btn.classList.add("btn-warning");
+          btn.innerHTML = '<i class="fas fa-list mr-1"></i>Tất cả thuốc';
+          loadNearExpiryMedicines();
+        } else {
+          btn.classList.remove("btn-warning");
+          btn.classList.add("btn-outline-warning");
+          btn.innerHTML =
+            '<i class="fas fa-exclamation-triangle mr-1"></i>Thuốc sắp hết hạn';
+          loadMedicines();
+        }
+      });
+    }
+
+    // Tìm kiếm
     const searchInput = document.getElementById("searchMedicine");
     if (searchInput) {
       let searchTimeout;
 
-      // Tìm kiếm khi nhấn Enter
       searchInput.addEventListener("keyup", function (e) {
         if (e.key === "Enter" || e.keyCode === 13) {
           clearTimeout(searchTimeout);
           performSearch();
         } else {
-          // Debounce search - tìm kiếm sau 500ms không gõ
           clearTimeout(searchTimeout);
           searchTimeout = setTimeout(() => {
             if (this.value.trim() !== searchTerm) {
@@ -138,7 +463,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
 
-      // Tìm kiếm khi mất focus
       searchInput.addEventListener("blur", function () {
         if (this.value.trim() !== searchTerm) {
           performSearch();
@@ -146,60 +470,53 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     }
 
-    // Hàm thực hiện tìm kiếm
     function performSearch() {
       const newSearchTerm = searchInput.value.trim();
-      console.log("🔍 [SEARCH] Performing search with term:", newSearchTerm);
-
       searchTerm = newSearchTerm;
       currentPage = 1;
       viewingNearExpiry = false;
+
+      // Reset toggle button
+      const toggleBtn = document.getElementById("toggleNearExpiry");
+      if (toggleBtn) {
+        toggleBtn.classList.remove("btn-warning");
+        toggleBtn.classList.add("btn-outline-warning");
+        toggleBtn.innerHTML =
+          '<i class="fas fa-exclamation-triangle mr-1"></i>Thuốc sắp hết hạn';
+      }
+
       resetFilters();
       loadMedicines();
     }
 
-    document
-      .getElementById("btn-near-expiry")
-      .addEventListener("click", function () {
-        console.log("⚠️ [NEAR_EXPIRY] Button clicked");
-
-        viewingNearExpiry = true;
-        searchTerm = "";
-        currentPage = 1;
-        resetFilters();
-
-        // Clear search input
-        const searchInput = document.getElementById("searchMedicine");
-        if (searchInput) {
-          searchInput.value = "";
+    // Phân trang
+    const prevBtn = document.getElementById("prevPage");
+    if (prevBtn) {
+      prevBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        if (currentPage > 1) {
+          currentPage--;
+          loadMedicines();
         }
-
-        loadMedicines();
       });
+    }
 
-    // Sự kiện phân trang
-    document.getElementById("prevPage").addEventListener("click", function (e) {
-      e.preventDefault();
-      if (currentPage > 1) {
-        currentPage--;
-        loadMedicines();
-      }
-    });
+    const nextBtn = document.getElementById("nextPage");
+    if (nextBtn) {
+      nextBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        if (currentPage < totalPages) {
+          currentPage++;
+          loadMedicines();
+        }
+      });
+    }
 
-    document.getElementById("nextPage").addEventListener("click", function (e) {
-      e.preventDefault();
-      if (currentPage < totalPages) {
-        currentPage++;
-        loadMedicines();
-      }
-    });
-
-    // Sự kiện sắp xếp cột
+    // Sắp xếp cột
     document.querySelectorAll(".sortable").forEach((column) => {
       column.addEventListener("click", function () {
         const field = this.getAttribute("data-sort");
 
-        // Nếu click vào cùng cột đang sắp xếp, đảo chiều
         if (field === sortField) {
           sortDirection = sortDirection === "asc" ? "desc" : "asc";
         } else {
@@ -207,207 +524,76 @@ document.addEventListener("DOMContentLoaded", function () {
           sortDirection = "asc";
         }
 
-        // Cập nhật giao diện
         updateSortUI();
-
-        // Tải lại dữ liệu
         loadMedicines();
       });
     });
 
-    // Sự kiện lọc
-    document
-      .getElementById("apply-filter")
-      .addEventListener("click", function () {
-        currentFilters.expiry = document.getElementById("expiry-filter").value;
-        currentFilters.amount = document.getElementById("amount-filter").value;
-        currentPage = 1;
-        console.log("✏️ Áp dụng bộ lọc:", currentFilters);
-        loadMedicines();
-      });
-
-    document
-      .getElementById("reset-filter")
-      .addEventListener("click", function () {
-        console.log("✏️ Reset bộ lọc");
+    // Clear filters
+    const clearFiltersBtn = document.getElementById("clear-filters");
+    if (clearFiltersBtn) {
+      clearFiltersBtn.addEventListener("click", function () {
         resetFilters();
         loadMedicines();
       });
+    }
 
-    document
-      .getElementById("clear-filters")
-      .addEventListener("click", function () {
-        console.log("✏️ Xóa tất cả bộ lọc");
-        resetFilters();
-        loadMedicines();
-      });
-
-    // Sự kiện xem thuốc sắp hết hạn
-    document
-      .getElementById("btn-near-expiry")
-      .addEventListener("click", function () {
-        viewingNearExpiry = true;
-        searchTerm = "";
-        currentPage = 1;
-        resetFilters();
-        document.getElementById("searchMedicine").value = "";
-        loadMedicines();
-      });
-
-    // Thêm thuốc mới
-    document
-      .getElementById("btnAddMedicine")
-      .addEventListener("click", function () {
-        addMedicine();
-      });
-
-    // Sự kiện khi mở modal chi tiết
-    // $("#viewMedicineModal").on("show.bs.modal", function (e) {
-    //   const medicineId = e.relatedTarget.getAttribute("data-id");
-    //   loadMedicineDetails(medicineId);
-    // });
-
-    // Sự kiện khi mở modal chỉnh sửa từ chi tiết
-    // document
-    //   .getElementById("btnEditMedicine")
-    //   .addEventListener("click", function () {
-    //     // Đóng modal chi tiết và mở modal chỉnh sửa
-    //     $("#viewMedicineModal").modal("hide");
-    //     $("#editMedicineModal").modal("show");
-
-    //     // Tải thông tin thuốc vào form chỉnh sửa
-    //     populateEditForm(selectedMedicineId);
-    //   });
-
-    // Lưu chỉnh sửa thuốc
-    document
-      .getElementById("btnSaveEdit")
-      .addEventListener("click", function () {
-        updateMedicine();
-      });
-
-    // Mở modal xác nhận xóa thuốc
-    // document
-    //   .getElementById("btnDeleteMedicine")
-    //   .addEventListener("click", function () {
-    //     const medicineId = document.getElementById("editMedicineId").value;
-    //     const medicineName = document.getElementById("editMedicineName").value;
-
-    //     document.getElementById("deleteMedicineId").value = medicineId;
-    //     document.getElementById("deleteMedicineName").textContent =
-    //       medicineName;
-
-    //     $("#editMedicineModal").modal("hide");
-    //     $("#deleteMedicineModal").modal("show");
-    //   });
-
-    // Xác nhận xóa thuốc
-    document
-      .getElementById("confirmDeleteBtn")
-      .addEventListener("click", function () {
-        deleteMedicine();
-      });
-
-    document.querySelectorAll('[data-dismiss="modal"]').forEach((button) => {
-      button.addEventListener("click", function () {
-        const modalId = this.closest(".modal").id;
-        $(`#${modalId}`).modal("hide");
-      });
-    });
-
-    // Đảm bảo modal có thể đóng khi click nút X
-    document.querySelectorAll(".modal .close").forEach((button) => {
-      button.addEventListener("click", function () {
-        const modalId = this.closest(".modal").id;
-        $(`#${modalId}`).modal("hide");
-      });
-    });
+    // Modal dismiss - đã xử lý trong setupModalHandlers()
   }
 
-  /**
-   * Khởi tạo date picker cho các trường ngày tháng
-   */
   function initializeDatepickers() {
     const dateInputs = document.querySelectorAll('input[type="date"]');
     dateInputs.forEach((input) => {
       input.addEventListener("click", function () {
         this.showPicker();
       });
-
-      // Thêm sự kiện cho nút calendar
-      const parent = input.closest(".datepicker-container");
-      if (parent) {
-        const calendarBtn = parent.querySelector(".input-group-text");
-        if (calendarBtn) {
-          calendarBtn.addEventListener("click", function () {
-            input.showPicker();
-          });
-        }
-      }
     });
   }
 
-  /**
-   * Tải danh sách thuốc từ API
-   */
   function loadMedicines() {
-    console.log("📡 Bắt đầu tải dữ liệu thuốc");
-    console.log("📋 Trạng thái hiện tại:", {
-      page: currentPage,
-      limit: limit,
-      searchTerm: searchTerm,
-      viewingNearExpiry: viewingNearExpiry,
-      filters: currentFilters,
-    });
-
+    console.log(
+      "🔄 Loading medicines - viewingNearExpiry:",
+      viewingNearExpiry,
+      "searchTerm:",
+      searchTerm
+    );
     showLoading(true);
 
     let url;
     let params = `page=${currentPage}&limit=${limit}`;
 
-    // ✅ SỬA: URL mapping theo API Python
     if (viewingNearExpiry) {
-      // Gọi API thuốc sắp hết hạn
       url = `/UDPT-QLBN/Medicine/api_getNearExpiryMedicines?${params}`;
-      console.log("⚠️ [LOAD] Loading near expiry medicines");
     } else if (searchTerm && searchTerm.trim() !== "") {
-      // Gọi API tìm kiếm thuốc theo tên
       url = `/UDPT-QLBN/Medicine/api_searchMedicines?query=${encodeURIComponent(
         searchTerm.trim()
       )}&${params}`;
-      console.log("🔍 [LOAD] Searching medicines with term:", searchTerm);
     } else {
-      // Gọi API lấy tất cả thuốc
       url = `/UDPT-QLBN/Medicine/api_getAllMedicines?${params}`;
-      console.log("📋 [LOAD] Loading all medicines");
     }
 
-    console.log("📡 Gọi API:", url);
+    console.log("📡 Fetching from URL:", url);
 
     fetch(url)
       .then((response) => {
-        console.log("📡 Response status:", response.status);
-
+        console.log(
+          "📥 Response received:",
+          response.status,
+          response.statusText
+        );
         if (!response.ok) {
-          console.error("❌ API trả về lỗi:", response.status);
           throw new Error(`Lỗi HTTP: ${response.status}`);
         }
         return response.json();
       })
       .then((data) => {
-        console.log("✅ Tải dữ liệu thuốc thành công:", data);
-
-        // ✅ XỬ LÝ RESPONSE THEO FORMAT PYTHON API
+        console.log("📦 Raw data received:", data);
         let processedData;
 
         if (data && typeof data === "object") {
-          // Nếu có cấu trúc phân trang từ Python API
           if (data.hasOwnProperty("data") && Array.isArray(data.data)) {
             processedData = data;
-            console.log("📊 [LOAD] Structured response with pagination");
-          }
-          // Nếu là array đơn giản
-          else if (Array.isArray(data)) {
+          } else if (Array.isArray(data)) {
             processedData = {
               data: data,
               page: currentPage,
@@ -415,12 +601,7 @@ document.addEventListener("DOMContentLoaded", function () {
               total: data.length,
               total_pages: Math.ceil(data.length / limit),
             };
-            console.log(
-              "📊 [LOAD] Array response, created pagination structure"
-            );
-          }
-          // Nếu có lỗi
-          else if (data.hasOwnProperty("error")) {
+          } else if (data.hasOwnProperty("error")) {
             throw new Error(data.error);
           } else {
             throw new Error("Định dạng dữ liệu API không hợp lệ");
@@ -429,279 +610,140 @@ document.addEventListener("DOMContentLoaded", function () {
           throw new Error("Dữ liệu API không hợp lệ");
         }
 
-        // Hiển thị thông tin về định dạng ngày nếu có dữ liệu
-        if (processedData.data && processedData.data.length > 0) {
-          const sample = processedData.data[0];
-          console.log("📅 Mẫu định dạng ngày:", {
-            MFG: sample.MFG,
-            MFG_type: typeof sample.MFG,
-            EXP: sample.EXP,
-            EXP_type: typeof sample.EXP,
-          });
-        }
-
-        // Cập nhật dữ liệu phân trang
+        console.log("🔧 Processed data:", processedData);
         updatePaginationInfo(processedData);
-
-        // Hiển thị dữ liệu
         displayMedicines(processedData.data);
       })
       .catch((error) => {
-        console.error("❌ Lỗi khi tải dữ liệu thuốc:", error);
+        console.error("❌ Load medicines error:", error);
         showAlert(
           `Không thể tải dữ liệu thuốc. Lỗi: ${error.message}`,
           "danger"
         );
       })
       .finally(() => {
-        console.log("📡 Hoàn thành tải dữ liệu thuốc");
         showLoading(false);
       });
   }
 
-  /**
-   * Hiển thị danh sách thuốc
-   * @param {Array} medicines Danh sách thuốc
-   */
+  function loadNearExpiryMedicines() {
+    showLoading(true);
+
+    const params = `page=${currentPage}&limit=${limit}`;
+    const url = `/UDPT-QLBN/Medicine/api_getNearExpiryMedicines?${params}`;
+
+    fetch(url)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Lỗi HTTP: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        let processedData;
+        if (data && data.data && Array.isArray(data.data)) {
+          processedData = data;
+        } else if (Array.isArray(data)) {
+          processedData = {
+            data: data,
+            page: currentPage,
+            limit: limit,
+            total: data.length,
+            total_pages: Math.ceil(data.length / limit),
+          };
+        } else {
+          processedData = {
+            data: [],
+            page: 1,
+            limit: limit,
+            total: 0,
+            total_pages: 0,
+          };
+        }
+
+        updatePaginationInfo(processedData);
+        displayMedicines(processedData.data);
+        showLoading(false);
+      })
+      .catch((error) => {
+        showAlert("Không thể tải danh sách thuốc sắp hết hạn", "danger");
+        showLoading(false);
+      });
+  }
+
   function displayMedicines(medicines) {
-    console.log("📋 Hiển thị danh sách thuốc:", medicines);
+    console.log("🖥️ Displaying medicines:", medicines);
     const tbody = document.querySelector("#medicinesTable tbody");
     const noResultsRow = document.getElementById("no-results-row");
 
-    // Xóa dữ liệu cũ (trừ hàng thông báo không có kết quả)
+    console.log("📋 Table body found:", !!tbody);
+    console.log("🚫 No results row found:", !!noResultsRow);
+
+    // Xóa dữ liệu cũ
     const rows = tbody.querySelectorAll("tr:not(#no-results-row)");
+    console.log("🗑️ Removing", rows.length, "old rows");
     rows.forEach((row) => row.remove());
 
     // Kiểm tra nếu không có dữ liệu
     if (!medicines || medicines.length === 0) {
-      console.warn("⚠️ Không có dữ liệu thuốc để hiển thị");
+      console.log("❌ No medicines to display");
       noResultsRow.style.display = "table-row";
       return;
     }
 
-    // Lọc dữ liệu theo bộ lọc hiện tại
-    console.log("🔍 Bắt đầu lọc dữ liệu với bộ lọc:", currentFilters);
-    const filteredMedicines = filterMedicines(medicines);
-    console.log("🔍 Kết quả sau khi lọc:", filteredMedicines);
-
-    // Hiển thị thông báo nếu không có kết quả
-    if (filteredMedicines.length === 0) {
-      console.warn("⚠️ Không tìm thấy thuốc phù hợp với bộ lọc");
-      noResultsRow.style.display = "table-row";
-      return;
-    }
+    console.log("✅ Displaying", medicines.length, "medicines");
 
     // Ẩn thông báo không có kết quả
     noResultsRow.style.display = "none";
-    console.log("✅ Hiển thị", filteredMedicines.length, "thuốc phù hợp");
 
     // Hiển thị dữ liệu
-    filteredMedicines.forEach((medicine) => {
-      const row = document.createElement("tr");
-
-      // Tính toán trạng thái hạn sử dụng
+    medicines.forEach((medicine, index) => {
+      console.log(`📝 Processing medicine ${index}:`, medicine);
       const expStatus = getExpiryStatus(medicine.EXP);
       const expiryClass = getExpiryClass(expStatus);
 
+      const row = document.createElement("tr");
       row.innerHTML = `
-      <td>${medicine.medicine_id}</td>
-      <td>
-        <div class="d-flex align-items-center">
-          <div>
-            <div class="font-weight-bold">${medicine.name}</div>
-            <div class="small ${expiryClass.text}">
-              <span class="badge ${expiryClass.badge} mr-1">
-                <i class="fas fa-clock mr-1"></i>${expStatus.text}
-              </span>
-            </div>
-          </div>
-        </div>
-      </td>
-      <td>${formatDate(medicine.MFG)}</td>
-      <td>${formatDate(medicine.EXP)}</td>
-      <td class="text-right">${medicine.amount.toLocaleString()}</td>
-      <td>${medicine.unit}</td>
-      <td class="text-right">${medicine.price.toLocaleString()} đ</td>
-      <td>
-        <div class="btn-group">
-          <button type="button" class="btn btn-sm btn-outline-primary edit-medicine" data-id="${
+        <td>${medicine.medicine_id}</td>
+        <td>${medicine.name}</td>
+        <td>${formatDate(medicine.MFG)}</td>
+        <td>
+          <span class="${expiryClass.text}">${formatDate(medicine.EXP)}</span>
+          <br><small class="badge ${expiryClass.badge}">${
+        expStatus.text
+      }</small>
+        </td>
+        <td>${medicine.amount.toLocaleString()}</td>
+        <td>${medicine.unit}</td>
+        <td>${medicine.price.toLocaleString()} đ</td>
+        <td>
+          <button class="btn btn-sm btn-outline-primary mr-1" onclick="editMedicine(${
             medicine.medicine_id
-          }">
-            <i class="fas fa-edit mr-1"></i> Sửa
+          })">
+            <i class="fas fa-edit"></i>
           </button>
-          <button type="button" class="btn btn-sm btn-outline-danger ml-1 delete-medicine" data-id="${
+          <button class="btn btn-sm btn-outline-danger" onclick="showDeleteModal(${
             medicine.medicine_id
-          }" data-name="${medicine.name}">
-            <i class="fas fa-trash-alt mr-1"></i> Xóa
+          }, '${medicine.name}')">
+            <i class="fas fa-trash"></i>
           </button>
-        </div>
-      </td>
-    `;
-
+        </td>
+      `;
       tbody.appendChild(row);
-
-      // Thêm event listeners cho các nút hành động
-      row
-        .querySelector(".edit-medicine")
-        .addEventListener("click", function () {
-          const medicineId = this.getAttribute("data-id");
-          populateEditForm(medicineId);
-          $("#editMedicineModal").modal("show");
-        });
-
-      row
-        .querySelector(".delete-medicine")
-        .addEventListener("click", function () {
-          const medicineId = this.getAttribute("data-id");
-          const medicineName = this.getAttribute("data-name");
-
-          document.getElementById("deleteMedicineId").value = medicineId;
-          document.getElementById("deleteMedicineName").textContent =
-            medicineName;
-
-          $("#deleteMedicineModal").modal("show");
-        });
-    });
-  }
-
-  /**
-   * Áp dụng bộ lọc vào danh sách thuốc
-   * @param {Array} medicines Danh sách thuốc gốc
-   * @return {Array} Danh sách thuốc đã lọc
-   */
-  function filterMedicines(medicines) {
-    console.log("🔍 Bắt đầu lọc với:", currentFilters);
-
-    // Kiểm tra đầu vào
-    if (!medicines || !Array.isArray(medicines)) {
-      console.error("❌ Dữ liệu đầu vào không hợp lệ:", medicines);
-      return [];
-    }
-
-    if (!currentFilters.expiry && !currentFilters.amount) {
-      console.log("ℹ️ Không có bộ lọc nào được áp dụng, giữ nguyên danh sách");
-      return medicines;
-    }
-
-    const results = medicines.filter((medicine) => {
-      let keepItem = true;
-
-      // Lọc theo hạn sử dụng
-      if (currentFilters.expiry) {
-        const today = new Date();
-        try {
-          console.log(
-            `🔍 Kiểm tra hạn thuốc ${medicine.medicine_id}, EXP:`,
-            medicine.EXP
-          );
-
-          // Sử dụng hàm parseDate để xử lý ngày dd-mm-yyyy
-          const expDate = parseDate(medicine.EXP);
-
-          // Kiểm tra nếu ngày không hợp lệ
-          if (!expDate) {
-            console.warn(
-              `⚠️ Thuốc ${medicine.medicine_id} có hạn sử dụng không hợp lệ:`,
-              medicine.EXP
-            );
-            return false;
-          }
-
-          // Tính số ngày còn lại
-          const daysRemaining = Math.floor(
-            (expDate - today) / (1000 * 60 * 60 * 24)
-          );
-          console.log(
-            `📅 Thuốc ${medicine.medicine_id} còn ${daysRemaining} ngày`
-          );
-
-          // Logic lọc
-          if (
-            currentFilters.expiry === "near" &&
-            (daysRemaining < 0 || daysRemaining > 7)
-          ) {
-            console.log(
-              `❌ Loại bỏ thuốc ${medicine.medicine_id}: không phải sắp hết hạn (${daysRemaining} ngày)`
-            );
-            keepItem = false;
-          } else if (
-            currentFilters.expiry === "expired" &&
-            daysRemaining >= 0
-          ) {
-            console.log(
-              `❌ Loại bỏ thuốc ${medicine.medicine_id}: chưa hết hạn`
-            );
-            keepItem = false;
-          } else if (currentFilters.expiry === "valid" && daysRemaining < 0) {
-            console.log(`❌ Loại bỏ thuốc ${medicine.medicine_id}: đã hết hạn`);
-            keepItem = false;
-          }
-        } catch (error) {
-          console.error(
-            `❌ Lỗi khi xử lý hạn sử dụng cho thuốc ${medicine.medicine_id}:`,
-            error
-          );
-          keepItem = false;
-        }
-      }
-
-      // Lọc theo số lượng
-      if (keepItem && currentFilters.amount) {
-        console.log(
-          `🔢 Kiểm tra số lượng thuốc ${medicine.medicine_id}, amount:`,
-          medicine.amount
-        );
-
-        if (currentFilters.amount === "low" && medicine.amount >= 10) {
-          console.log(
-            `❌ Loại bỏ thuốc ${medicine.medicine_id}: số lượng không thấp (${medicine.amount})`
-          );
-          keepItem = false;
-        } else if (currentFilters.amount === "out" && medicine.amount > 0) {
-          console.log(
-            `❌ Loại bỏ thuốc ${medicine.medicine_id}: còn hàng (${medicine.amount})`
-          );
-          keepItem = false;
-        } else if (
-          currentFilters.amount === "available" &&
-          medicine.amount <= 0
-        ) {
-          console.log(`❌ Loại bỏ thuốc ${medicine.medicine_id}: hết hàng`);
-          keepItem = false;
-        }
-      }
-
-      if (keepItem) {
-        console.log(
-          `✅ Giữ lại thuốc ${medicine.medicine_id}: phù hợp với bộ lọc`
-        );
-      }
-
-      return keepItem;
+      console.log(`✅ Added row for medicine ${medicine.medicine_id}`);
     });
 
-    console.log(
-      `🔍 Kết quả lọc: ${results.length}/${medicines.length} thuốc phù hợp`
-    );
-    return results;
+    console.log("🎉 Display medicines completed");
   }
 
-  /**
-   * Lấy trạng thái hạn sử dụng của thuốc
-   * @param {string} expDateStr Ngày hết hạn (dd-mm-yyyy)
-   * @return {Object} Trạng thái hạn sử dụng
-   */
   function getExpiryStatus(expDateStr) {
     const today = new Date();
     const expDate = parseDate(expDateStr);
 
-    // Kiểm tra date có hợp lệ không
     if (!expDate) {
-      console.warn("❗ Ngày hết hạn không hợp lệ:", expDateStr);
       return { code: "unknown", text: "Không xác định" };
     }
 
-    // Tính số ngày còn lại
     const daysRemaining = Math.floor((expDate - today) / (1000 * 60 * 60 * 24));
 
     if (daysRemaining < 0) {
@@ -713,11 +755,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  /**
-   * Lấy class CSS cho trạng thái hạn sử dụng
-   * @param {Object} status Trạng thái hạn sử dụng
-   * @return {Object} Các class CSS
-   */
   function getExpiryClass(status) {
     switch (status.code) {
       case "expired":
@@ -729,28 +766,18 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  /**
-   * Cập nhật thông tin phân trang
-   * @param {Object} data Dữ liệu từ API
-   */
   function updatePaginationInfo(data) {
-    // Cập nhật biến toàn cục
     totalPages = data.total_pages || 1;
     currentPage = data.page || 1;
 
-    // Hiển thị thông tin phân trang
     const paginationInfo = document.getElementById("paginationInfo");
     if (paginationInfo) {
       paginationInfo.textContent = `Hiển thị ${data.data.length} trên ${data.total} kết quả`;
     }
 
-    // Cập nhật UI phân trang
     updatePaginationUI();
   }
 
-  /**
-   * Cập nhật giao diện phân trang
-   */
   function updatePaginationUI() {
     const pagination = document.getElementById("pagination");
     const prevPageBtn = document.getElementById("prevPage");
@@ -772,7 +799,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // Thêm các trang mới
     const firstPageLi = prevPageBtn.parentElement;
 
-    // Tính toán phạm vi trang hiển thị
     let startPage = Math.max(1, currentPage - 2);
     let endPage = Math.min(totalPages, startPage + 4);
 
@@ -788,7 +814,6 @@ document.addEventListener("DOMContentLoaded", function () {
       a.className = "page-link";
       a.href = "#";
       a.textContent = i;
-
       a.addEventListener("click", function (e) {
         e.preventDefault();
         currentPage = i;
@@ -800,475 +825,30 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  /**
-   * Cập nhật giao diện sắp xếp
-   */
-  function updateSortUI() {
-    // Xóa tất cả các biểu tượng sắp xếp hiện tại
-    document.querySelectorAll(".sortable i").forEach((icon) => {
-      icon.className = "fas fa-sort text-muted ml-1";
-    });
-
-    // Thêm biểu tượng sắp xếp mới
-    const column = document.querySelector(
-      `.sortable[data-sort="${sortField}"]`
-    );
-    if (column) {
-      const icon = column.querySelector("i");
-      if (icon) {
-        icon.className = `fas fa-sort-${
-          sortDirection === "asc" ? "up" : "down"
-        } text-primary ml-1`;
-      }
-    }
-  }
-
-  /**
-   * Đặt lại các bộ lọc
-   */
-  function resetFilters() {
-    console.log("🔄 Đặt lại tất cả bộ lọc");
-
-    currentFilters = {
-      expiry: "",
-      amount: "",
-    };
-
-    // Đặt lại chế độ xem thuốc sắp hết hạn
-    viewingNearExpiry = false;
-
-    document.getElementById("expiry-filter").value = "";
-    document.getElementById("amount-filter").value = "";
-
-    console.log("✅ Đã reset bộ lọc:", currentFilters);
-  }
-
-  /**
-   * Tải chi tiết thuốc từ API
-   * @param {string} id ID của thuốc
-   */
-  function loadMedicineDetails(id) {
-    // Lưu ID thuốc đang xem
-    selectedMedicineId = id;
-
-    const detailsContainer = document.getElementById("medicineDetails");
-    detailsContainer.innerHTML = `
-      <div class="text-center py-3">
-        <div class="spinner-border text-primary" role="status">
-          <span class="sr-only">Đang tải...</span>
-        </div>
-      </div>
-    `;
-
-    fetch(`/UDPT-QLBN/Medicine/api_getMedicineById/${id}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`Lỗi HTTP: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((medicine) => {
-        console.log("✅ Tải chi tiết thuốc thành công:", medicine);
-
-        // Tính toán trạng thái hạn sử dụng
-        const expStatus = getExpiryStatus(medicine.EXP);
-        const expiryClass = getExpiryClass(expStatus);
-
-        // Tạo nội dung chi tiết
-        detailsContainer.innerHTML = `
-          <h3 class="mb-3">${medicine.name}</h3>
-          
-          <div class="mb-4">
-            <span class="badge ${expiryClass.badge}">
-              <i class="fas fa-clock mr-1"></i> ${expStatus.text}
-            </span>
-          </div>
-          
-          <div class="table-responsive">
-            <table class="table table-bordered">
-              <tbody>
-                <tr>
-                  <th class="bg-light">Mã thuốc</th>
-                  <td>${medicine.medicine_id}</td>
-                </tr>
-                <tr>
-                  <th class="bg-light">Ngày sản xuất</th>
-                  <td>${formatDate(medicine.MFG)}</td>
-                </tr>
-                <tr>
-                  <th class="bg-light">Hạn sử dụng</th>
-                  <td class="${expiryClass.text}">${formatDate(
-          medicine.EXP
-        )}</td>
-                </tr>
-                <tr>
-                  <th class="bg-light">Số lượng</th>
-                  <td>${medicine.amount.toLocaleString()} ${medicine.unit}</td>
-                </tr>
-                <tr>
-                  <th class="bg-light">Đơn giá</th>
-                  <td>${medicine.price.toLocaleString()} đ</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        `;
-      })
-      .catch((error) => {
-        console.error("❌ Lỗi khi tải chi tiết thuốc:", error);
-        detailsContainer.innerHTML = `
-          <div class="alert alert-danger">
-            <i class="fas fa-exclamation-circle mr-1"></i> 
-            Không thể tải thông tin thuốc. Vui lòng thử lại sau.
-          </div>
-        `;
-      });
-  }
-
-  /**
-   * Tải thông tin thuốc vào form chỉnh sửa
-   * @param {string} id ID của thuốc
-   */
-  function populateEditForm(id) {
-    console.log("📝 Đang tải thông tin thuốc để chỉnh sửa, ID:", id);
-
-    // Hiển thị loading nếu cần
-    document.getElementById("editMedicineForm").classList.add("loading");
-
-    fetch(`/UDPT-QLBN/Medicine/api_getMedicineById/${id}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`Lỗi HTTP: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((medicine) => {
-        console.log("✅ Tải chi tiết thuốc thành công:", medicine);
-
-        // Điền thông tin vào form
-        document.getElementById("editMedicineId").value = medicine.medicine_id;
-        document.getElementById("editMedicineName").value = medicine.name;
-        document.getElementById("editMedicineMFG").value = formatDateForInput(
-          medicine.MFG
-        );
-        document.getElementById("editMedicineEXP").value = formatDateForInput(
-          medicine.EXP
-        );
-        document.getElementById("editMedicineAmount").value = medicine.amount;
-        document.getElementById("editMedicineUnit").value = medicine.unit;
-        document.getElementById("editMedicinePrice").value = medicine.price;
-
-        // Bỏ loading state
-        document.getElementById("editMedicineForm").classList.remove("loading");
-      })
-      .catch((error) => {
-        console.error("❌ Lỗi khi tải thông tin thuốc:", error);
-        showAlert(
-          "Không thể tải thông tin thuốc. Vui lòng thử lại sau.",
-          "danger"
-        );
-        $("#editMedicineModal").modal("hide");
-      });
-  }
-
-  /**
-   * Thêm thuốc mới
-   */
-  function addMedicine() {
-    // Lấy dữ liệu từ form
-    const name = document.getElementById("medicineName").value;
-    const MFG = document.getElementById("medicineMFG").value;
-    const EXP = document.getElementById("medicineEXP").value;
-    const amount = document.getElementById("medicineAmount").value;
-    const unit = document.getElementById("medicineUnit").value;
-    const price = document.getElementById("medicinePrice").value;
-
-    // Kiểm tra dữ liệu hợp lệ
-    if (!validateMedicineForm("addMedicineForm")) {
-      return;
-    }
-
-    // Chuẩn bị dữ liệu gửi lên server
-    const medicineData = {
-      name,
-      MFG,
-      EXP,
-      amount: parseInt(amount),
-      unit,
-      price: parseFloat(price),
-    };
-
-    // Gửi request tạo thuốc mới
-    fetch("/UDPT-QLBN/Medicine/api_createMedicine", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(medicineData),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          return response.json().then((data) => {
-            throw new Error(data.error || `Lỗi HTTP: ${response.status}`);
-          });
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log("✅ Thêm thuốc thành công:", data);
-
-        // Đóng modal và reset form
-        $("#addMedicineModal").modal("hide");
-        document.getElementById("addMedicineForm").reset();
-
-        // Thông báo thành công
-        showAlert(`Đã thêm thuốc "${name}" thành công!`, "success");
-
-        // Tải lại danh sách thuốc
-        loadMedicines();
-      })
-      .catch((error) => {
-        console.error("❌ Lỗi khi thêm thuốc:", error);
-        showAlert(`Không thể thêm thuốc. Lỗi: ${error.message}`, "danger");
-      });
-  }
-
-  /**
-   * Cập nhật thông tin thuốc
-   */
-  function updateMedicine() {
-    // Lấy dữ liệu từ form
-    const id = document.getElementById("editMedicineId").value;
-    const MFG = document.getElementById("editMedicineMFG").value;
-    const EXP = document.getElementById("editMedicineEXP").value;
-    const amount = document.getElementById("editMedicineAmount").value;
-    const unit = document.getElementById("editMedicineUnit").value;
-    const price = document.getElementById("editMedicinePrice").value;
-
-    // Kiểm tra dữ liệu hợp lệ
-    if (!validateMedicineForm("editMedicineForm")) {
-      return;
-    }
-
-    // Chuẩn bị dữ liệu gửi lên server
-    const medicineData = {
-      MFG,
-      EXP,
-      amount: parseInt(amount),
-      unit,
-      price: parseFloat(price),
-    };
-
-    // Gửi request cập nhật thuốc
-    fetch(`/UDPT-QLBN/Medicine/api_updateMedicine/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(medicineData),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          return response.json().then((data) => {
-            throw new Error(data.error || `Lỗi HTTP: ${response.status}`);
-          });
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log("✅ Cập nhật thuốc thành công:", data);
-
-        // Đóng modal
-        $("#editMedicineModal").modal("hide");
-
-        // Thông báo thành công
-        showAlert(`Đã cập nhật thuốc thành công!`, "success");
-
-        // Tải lại danh sách thuốc
-        loadMedicines();
-      })
-      .catch((error) => {
-        console.error("❌ Lỗi khi cập nhật thuốc:", error);
-        showAlert(`Không thể cập nhật thuốc. Lỗi: ${error.message}`, "danger");
-      });
-  }
-
-  /**
-   * Xóa thuốc
-   */
-  function deleteMedicine() {
-    const id = document.getElementById("deleteMedicineId").value;
-    const name = document.getElementById("deleteMedicineName").textContent;
-
-    fetch(`/UDPT-QLBN/Medicine/api_deleteMedicine/${id}`, {
-      method: "DELETE",
-    })
-      .then((response) => {
-        if (!response.ok) {
-          return response.json().then((data) => {
-            throw new Error(data.error || `Lỗi HTTP: ${response.status}`);
-          });
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log("✅ Xóa thuốc thành công:", data);
-
-        // Đóng modal
-        $("#deleteMedicineModal").modal("hide");
-
-        // Thông báo thành công
-        showAlert(`Đã xóa thuốc "${name}" thành công!`, "success");
-
-        // Tải lại danh sách thuốc
-        loadMedicines();
-      })
-      .catch((error) => {
-        console.error("❌ Lỗi khi xóa thuốc:", error);
-        showAlert(`Không thể xóa thuốc. Lỗi: ${error.message}`, "danger");
-
-        // Đóng modal
-        $("#deleteMedicineModal").modal("hide");
-      });
-  }
-
-  /**
-   * Kiểm tra dữ liệu form thuốc
-   * @param {string} formId ID của form cần kiểm tra
-   * @return {boolean} Dữ liệu form hợp lệ hay không
-   */
-  function validateMedicineForm(formId) {
-    const form = document.getElementById(formId);
-
-    // Đặt class was-validated để hiển thị thông báo lỗi
-    form.classList.add("was-validated");
-
-    // Kiểm tra các trường bắt buộc
-    const requiredFields = form.querySelectorAll("[required]");
-    let isValid = true;
-
-    requiredFields.forEach((field) => {
-      if (!field.value.trim()) {
-        field.classList.add("is-invalid");
-        isValid = false;
-      } else {
-        field.classList.remove("is-invalid");
-      }
-    });
-
-    // Kiểm tra ngày sản xuất và hạn sử dụng
-    if (formId === "addMedicineForm") {
-      const mfg = new Date(document.getElementById("medicineMFG").value);
-      const exp = new Date(document.getElementById("medicineEXP").value);
-
-      if (mfg >= exp) {
-        document.getElementById("medicineEXP").classList.add("is-invalid");
-        document.getElementById("medicineEXP").nextElementSibling.textContent =
-          "Hạn sử dụng phải sau ngày sản xuất";
-        isValid = false;
-      }
-    } else if (formId === "editMedicineForm") {
-      const mfg = new Date(document.getElementById("editMedicineMFG").value);
-      const exp = new Date(document.getElementById("editMedicineEXP").value);
-
-      if (mfg >= exp) {
-        document.getElementById("editMedicineEXP").classList.add("is-invalid");
-        document.getElementById(
-          "editMedicineEXP"
-        ).nextElementSibling.textContent = "Hạn sử dụng phải sau ngày sản xuất";
-        isValid = false;
-      }
-    }
-
-    return isValid;
-  }
-
-  /**
-   * Hiển thị thông báo
-   * @param {string} message Nội dung thông báo
-   * @param {string} type Loại thông báo (success, danger, warning, info)
-   * @param {number} duration Thời gian hiển thị (ms)
-   */
-  function showAlert(message, type = "info", duration = 5000) {
-    const alertContainer = document.getElementById("alert-container");
-
-    // Tạo alert
-    const alert = document.createElement("div");
-    alert.className = `alert alert-${type} alert-dismissible fade show`;
-    alert.innerHTML = `
-      ${message}
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    `;
-
-    // Thêm alert vào container
-    alertContainer.appendChild(alert);
-
-    // Tự động ẩn alert sau thời gian chỉ định
-    if (duration > 0) {
-      setTimeout(() => {
-        alert.classList.remove("show");
-        setTimeout(() => {
-          alert.remove();
-        }, 150);
-      }, duration);
-    }
-  }
-
-  /**
-   * Hiển thị/ẩn loading indicator
-   * @param {boolean} show Hiển thị loading hay không
-   */
-  function showLoading(show) {
-    const loadingIndicator = document.getElementById("loadingIndicator");
-
-    if (show) {
-      loadingIndicator.classList.remove("d-none");
-    } else {
-      loadingIndicator.classList.add("d-none");
-    }
-  }
-
-  /**
-   * Parse date từ chuỗi dd-mm-yyyy thành đối tượng Date hợp lệ
-   * @param {string} dateStr Chuỗi ngày định dạng dd-mm-yyyy
-   * @return {Date|null} Đối tượng Date hoặc null nếu không hợp lệ
-   */
   function parseDate(dateStr) {
     if (!dateStr) return null;
 
-    // Kiểm tra định dạng dd-mm-yyyy
     const ddmmyyyyRegex = /^(\d{2})-(\d{2})-(\d{4})$/;
     const match = dateStr.match(ddmmyyyyRegex);
 
     if (match) {
       const [, day, month, year] = match;
-      // Chuyển thành yyyy-mm-dd cho JS parse
       const isoDate = `${year}-${month}-${day}`;
       const date = new Date(isoDate);
       return isNaN(date.getTime()) ? null : date;
     }
 
-    // Nếu là định dạng khác, thử parse trực tiếp
     const date = new Date(dateStr);
     return isNaN(date.getTime()) ? null : date;
   }
 
-  /**
-   * Format date từ chuỗi dd-mm-yyyy sang dd-mm-yyyy (giữ nguyên)
-   * @param {string} dateStr Date string từ API (dd-mm-yyyy)
-   * @return {string} Date string đã format (dd-mm-yyyy)
-   */
   function formatDate(dateStr) {
     if (!dateStr) return "";
 
-    // Nếu đã đúng định dạng dd-mm-yyyy, giữ nguyên
     if (/^\d{2}-\d{2}-\d{4}$/.test(dateStr)) {
       return dateStr;
     }
 
-    // Trường hợp khác, thử parse và format lại
     const date = parseDate(dateStr);
     if (date) {
       const day = String(date.getDate()).padStart(2, "0");
@@ -1277,19 +857,12 @@ document.addEventListener("DOMContentLoaded", function () {
       return `${day}-${month}-${year}`;
     }
 
-    console.warn("❗ Không thể format ngày:", dateStr);
     return dateStr;
   }
 
-  /**
-   * Format date từ dd-mm-yyyy sang yyyy-mm-dd (cho input type="date")
-   * @param {string} dateStr Date string từ API (dd-mm-yyyy)
-   * @return {string} Date string cho input (yyyy-mm-dd)
-   */
   function formatDateForInput(dateStr) {
     if (!dateStr) return "";
 
-    // Xử lý định dạng dd-mm-yyyy
     const ddmmyyyyRegex = /^(\d{2})-(\d{2})-(\d{4})$/;
     const match = dateStr.match(ddmmyyyyRegex);
 
@@ -1298,12 +871,10 @@ document.addEventListener("DOMContentLoaded", function () {
       return `${year}-${month}-${day}`;
     }
 
-    // Nếu đã đúng định dạng yyyy-mm-dd, trả về luôn
     if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
       return dateStr;
     }
 
-    // Thử parse và format lại
     const date = parseDate(dateStr);
     if (date) {
       const day = String(date.getDate()).padStart(2, "0");
@@ -1312,7 +883,251 @@ document.addEventListener("DOMContentLoaded", function () {
       return `${year}-${month}-${day}`;
     }
 
-    console.warn("❗ Không thể format ngày cho input:", dateStr);
     return "";
   }
+
+  // Global functions để gọi từ HTML
+  window.editMedicine = function (medicineId) {
+    console.log("Editing medicine:", medicineId);
+
+    // Validate medicineId
+    if (!medicineId || medicineId === "" || medicineId === "undefined") {
+      showAlert("ID thuốc không hợp lệ", "danger");
+      return;
+    }
+
+    selectedMedicineId = medicineId;
+
+    fetch(`/UDPT-QLBN/Medicine/api_getMedicineById/${medicineId}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Lỗi HTTP: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((responseData) => {
+        console.log("Raw response:", responseData);
+
+        // ✅ Handle wrapped response format
+        let medicine;
+        if (responseData.data) {
+          medicine = responseData.data;
+        } else if (responseData.medicine_id) {
+          medicine = responseData;
+        } else {
+          throw new Error("Dữ liệu thuốc không hợp lệ");
+        }
+
+        console.log("Medicine data:", medicine);
+
+        // Clear validation classes and reset form
+        const form = document.getElementById("editMedicineForm");
+        if (form) {
+          form.reset();
+          form.classList.remove("was-validated");
+          form
+            .querySelectorAll(".is-invalid")
+            .forEach((el) => el.classList.remove("is-invalid"));
+        }
+
+        // ✅ Show modal first
+        $("#editMedicineModal").modal("show");
+
+        // ✅ Try immediate populate (without delay)
+        console.log("🔧 Immediate populate attempt...");
+        populateEditForm(medicine, medicineId);
+
+        // ✅ Use multiple strategies to populate data
+        forcePopulateEditModal(medicine, medicineId);
+
+        // ✅ Also set up modal shown event
+        $("#editMedicineModal")
+          .off("shown.bs.modal.editMedicine")
+          .on("shown.bs.modal.editMedicine", function () {
+            console.log("🔧 Modal shown event - populate again...");
+            populateEditForm(medicine, medicineId);
+            forcePopulateEditModal(medicine, medicineId);
+          });
+      })
+      .catch((error) => {
+        console.error("Edit error:", error);
+        showAlert(`Không thể tải thông tin thuốc: ${error.message}`, "danger");
+      });
+  };
+
+  window.showDeleteModal = function (medicineId, medicineName) {
+    document.getElementById("deleteMedicineId").value = medicineId;
+    document.getElementById("deleteMedicineName").textContent = medicineName;
+    $("#deleteMedicineModal").modal("show");
+  };
+
+  // ✅ Simple populate function
+  function populateEditForm(medicine, medicineId) {
+    console.log("📝 Simple populate with:", medicine);
+
+    // Set values directly
+    const editMedicineId = document.getElementById("editMedicineId");
+    const editMedicineName = document.getElementById("editMedicineName");
+    const editMedicineMFG = document.getElementById("editMedicineMFG");
+    const editMedicineEXP = document.getElementById("editMedicineEXP");
+    const editMedicineAmount = document.getElementById("editMedicineAmount");
+    const editMedicineUnit = document.getElementById("editMedicineUnit");
+    const editMedicinePrice = document.getElementById("editMedicinePrice");
+
+    if (editMedicineId) {
+      editMedicineId.value = medicine.medicine_id || medicineId;
+      console.log("📝 Set ID:", editMedicineId.value);
+    }
+
+    if (editMedicineName) {
+      editMedicineName.value = medicine.name || "";
+      console.log("📝 Set Name:", editMedicineName.value);
+    }
+
+    if (editMedicineMFG) {
+      const mfgValue = formatDateForInput(medicine.MFG || "");
+      editMedicineMFG.value = mfgValue;
+      console.log("📝 Set MFG:", mfgValue, "→", editMedicineMFG.value);
+    }
+
+    if (editMedicineEXP) {
+      const expValue = formatDateForInput(medicine.EXP || "");
+      editMedicineEXP.value = expValue;
+      console.log("📝 Set EXP:", expValue, "→", editMedicineEXP.value);
+    }
+
+    if (editMedicineAmount) {
+      editMedicineAmount.value = medicine.amount || 0;
+      console.log("📝 Set Amount:", editMedicineAmount.value);
+    }
+
+    if (editMedicineUnit) {
+      editMedicineUnit.value = medicine.unit || "";
+      console.log("📝 Set Unit:", editMedicineUnit.value);
+    }
+
+    if (editMedicinePrice) {
+      editMedicinePrice.value = medicine.price || 0;
+      console.log("📝 Set Price:", editMedicinePrice.value);
+    }
+
+    console.log("📝 Simple populate completed");
+  }
+
+  // ✅ DEBUG: Force populate function
+  function forcePopulateEditModal(medicine, medicineId) {
+    console.log("🔧 Force populating modal with:", medicine);
+
+    // ✅ Tạo bản copy của medicine object để tránh closure bug
+    const medicineCopy = {
+      medicine_id: medicine.data.medicine_id,
+      name: medicine.data.name,
+      MFG: medicine.data.MFG,
+      EXP: medicine.data.EXP,
+      amount: medicine.data.amount,
+      unit: medicine.data.unit,
+      price: medicine.data.price,
+    };
+
+    console.log("🔧 Medicine copy before setTimeout:", medicineCopy);
+
+    // Wait a bit for DOM to be ready
+    setTimeout(() => {
+      console.log("🔧 Medicine copy inside setTimeout:", medicineCopy);
+
+      const fields = {
+        editMedicineId: medicineCopy.medicine_id || medicineId,
+        editMedicineName: medicineCopy.name || "",
+        editMedicineMFG: formatDateForInput(medicineCopy.MFG || ""),
+        editMedicineEXP: formatDateForInput(medicineCopy.EXP || ""),
+        editMedicineAmount: medicineCopy.amount || 0,
+        editMedicineUnit: medicineCopy.unit || "",
+        editMedicinePrice: medicineCopy.price || 0,
+      };
+
+      console.log("🔧 Fields to populate:", fields);
+
+      Object.keys(fields).forEach((fieldId) => {
+        const element = document.getElementById(fieldId);
+        console.log(`🔍 Looking for element ${fieldId}:`, element);
+
+        if (element) {
+          const oldValue = element.value;
+          element.value = fields[fieldId];
+
+          console.log(
+            `✅ Set ${fieldId}: "${oldValue}" → "${fields[fieldId]}"`
+          );
+          console.log(`✅ Current value after set: "${element.value}"`);
+
+          // Force trigger change event
+          element.dispatchEvent(new Event("change", { bubbles: true }));
+          element.dispatchEvent(new Event("input", { bubbles: true }));
+
+          // Special handling for readonly fields
+          if (element.readOnly || element.hasAttribute("readonly")) {
+            element.setAttribute("value", fields[fieldId]);
+            console.log(`🔒 Set readonly field ${fieldId} via attribute`);
+          }
+        } else {
+          console.error(`❌ Element ${fieldId} not found in DOM`);
+
+          // Debug: show all input elements in the modal
+          const modal = document.getElementById("editMedicineModal");
+          if (modal) {
+            const allInputs = modal.querySelectorAll("input");
+            console.log(
+              "🔍 All inputs in modal:",
+              Array.from(allInputs).map((inp) => ({
+                id: inp.id,
+                type: inp.type,
+                value: inp.value,
+              }))
+            );
+          }
+        }
+      });
+
+      console.log("🔧 Force populate completed");
+
+      // Verify population after a short delay
+      setTimeout(() => {
+        console.log("🔍 Verification after populate:");
+        Object.keys(fields).forEach((fieldId) => {
+          const element = document.getElementById(fieldId);
+          if (element) {
+            console.log(
+              `✅ ${fieldId}: "${element.value}" (expected: "${fields[fieldId]}")`
+            );
+          }
+        });
+      }, 100);
+    }, 200);
+  }
+
+  // Test function for debugging
+  window.testEditModal = function () {
+    console.log("🧪 Testing edit modal...");
+
+    const testMedicine = {
+      medicine_id: 1,
+      name: "Paracetamol Test",
+      MFG: "01-05-2024",
+      EXP: "01-05-2026",
+      amount: 71,
+      unit: "viên",
+      price: 10000,
+    };
+
+    console.log("🧪 Test medicine data:", testMedicine);
+
+    // Show modal
+    $("#editMedicineModal").modal("show");
+
+    // Populate after modal is shown
+    setTimeout(() => {
+      populateEditForm(testMedicine, 1);
+      forcePopulateEditModal(testMedicine, 1);
+    }, 500);
+  };
 });

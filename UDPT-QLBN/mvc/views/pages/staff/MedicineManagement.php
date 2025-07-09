@@ -10,6 +10,17 @@
         margin-right: -10px;
         margin-left: -10px;
     }
+
+    
+
+    .form-section h6 {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #6c757d;
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
     
     .form-layout .form-group {
         margin-bottom: 1rem;
@@ -107,44 +118,16 @@
                     </div>
                 </div>
                 <div class="col-md-6 text-right">
-                    <button type="button" class="btn btn-outline-secondary" data-toggle="collapse" data-target="#filterCollapse" aria-expanded="false">
-                        <i class="fas fa-filter mr-1"></i> Bộ lọc
+                    <button type="button" class="btn btn-outline-warning" id="toggleNearExpiry">
+                        <i class="fas fa-exclamation-triangle mr-1"></i>Thuốc sắp hết hạn
                     </button>
-                    <!-- <button type="button" class="btn btn-warning ml-2" id="btn-near-expiry">
-                        <i class="fas fa-exclamation-triangle mr-1"></i> Thuốc sắp hết hạn
-                    </button> -->
                     <button type="button" class="btn btn-primary ml-2" data-toggle="modal" data-target="#addMedicineModal">
-                        <i class="fas fa-plus-circle mr-1"></i> Thêm thuốc mới
+                        <i class="fas fa-plus-circle mr-1"></i>Thêm thuốc mới
                     </button>
-                </div>
-            </div>
-
-            <!-- Bộ lọc mở rộng -->
-            <div class="collapse" id="filterCollapse">
-                <div class="row">
-                    <div class="col-md-3 mb-3">
-                        <label for="expiry-filter">Hạn sử dụng</label>
-                        <select class="form-control" id="expiry-filter">
-                            <option value="">Tất cả</option>
-                            <option value="near">Sắp hết hạn (7 ngày)</option>
-                            <option value="expired">Đã hết hạn</option>
-                            <option value="valid">Còn hạn</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-3 mb-3">
-                        <label for="amount-filter">Số lượng</label>
-                        <select class="form-control" id="amount-filter">
-                            <option value="">Tất cả</option>
-                            <option value="low">Sắp hết (< 10)</option>
-                            <option value="out">Đã hết</option>
-                            <option value="available">Còn hàng</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="text-right">
-                    <button type="button" class="btn btn-secondary" id="reset-filter">Đặt lại</button>
-                    <button type="button" class="btn btn-primary ml-2" id="apply-filter">Áp dụng</button>
+                    <!-- Debug button -->
+                    <!-- <button type="button" class="btn btn-info ml-2" onclick="testEditModal()" id="testModalBtn">
+                        <i class="fas fa-cog mr-1"></i>Test Modal
+                    </button> -->
                 </div>
             </div>
         </div>
@@ -214,69 +197,78 @@
 
 <!-- Modal Thêm Thuốc -->
 <div class="modal fade" id="addMedicineModal" tabindex="-1" aria-labelledby="addMedicineModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-light">
+            <div class="modal-header">
                 <h5 class="modal-title" id="addMedicineModalLabel">Thêm thuốc mới</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="addMedicineForm" class="form-layout">
-                    <!-- Tên thuốc -->
-                    <div class="form-group">
-                        <label for="medicineName">Tên thuốc: <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="medicineName" required>
-                        <div class="invalid-feedback">Vui lòng nhập tên thuốc</div>
-                    </div>
-
-                    <!-- Ngày sản xuất và Hạn sử dụng -->
-                    <div class="form-row mb-3">
-                        <div class="col-md-6">
-                            <div class="form-group mb-0">
-                                <label for="medicineMFG">Ngày sản xuất: <span class="text-danger">*</span></label>
-                                <input type="date" class="form-control input-date" id="medicineMFG" required>
-                                <div class="invalid-feedback">Vui lòng chọn ngày sản xuất</div>
+                <form id="addMedicineForm">
+                    <!-- Thông tin cơ bản -->
+                    <div class="form-section">
+                        <h6>Thông tin cơ bản</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="medicineName">Tên thuốc: <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="medicineName" required
+                                           placeholder="Nhập tên thuốc">
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-0">
-                                <label for="medicineEXP">Hạn sử dụng: <span class="text-danger">*</span></label>
-                                <input type="date" class="form-control input-date" id="medicineEXP" required>
-                                <div class="invalid-feedback">Vui lòng chọn hạn sử dụng</div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="medicineUnit">Đơn vị: <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="medicineUnit" required
+                                           placeholder="viên, hộp, chai...">
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Số lượng, Đơn vị và Đơn giá -->
-                    <div class="form-row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="medicineAmount">Số lượng: <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control input-number" id="medicineAmount" min="0" required>
-                                <div class="invalid-feedback">Vui lòng nhập số lượng</div>
+                    <!-- Thông tin ngày tháng -->
+                    <div class="form-section">
+                        <h6>Thông tin ngày tháng</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="medicineMFG">Ngày sản xuất: <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" id="medicineMFG" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="medicineEXP">Hạn sử dụng: <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" id="medicineEXP" required>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="medicineUnit">Đơn vị: <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control input-unit" id="medicineUnit" required>
-                                <div class="invalid-feedback">Vui lòng nhập đơn vị</div>
+                    </div>
+
+                    <!-- Thông tin số lượng và giá -->
+                    <div class="form-section">
+                        <h6>Thông tin số lượng & giá cả</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="medicineAmount">Số lượng: <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" id="medicineAmount" 
+                                           min="0" required placeholder="0">
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="medicinePrice">Đơn giá (VNĐ): <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control input-price" id="medicinePrice" min="0" required>
-                                <div class="invalid-feedback">Vui lòng nhập giá thuốc</div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="medicinePrice">Đơn giá (VNĐ): <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" id="medicinePrice" 
+                                           min="0" required placeholder="0">
+                                </div>
                             </div>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 <button type="button" class="btn btn-primary" id="btnAddMedicine">Thêm thuốc</button>
             </div>
         </div>
@@ -285,70 +277,80 @@
 
 <!-- Modal Chỉnh sửa thuốc -->
 <div class="modal fade" id="editMedicineModal" tabindex="-1" aria-labelledby="editMedicineModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-light">
+            <div class="modal-header">
                 <h5 class="modal-title" id="editMedicineModalLabel">Chỉnh sửa thuốc</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="editMedicineForm" class="form-layout">
+                <form id="editMedicineForm">
                     <input type="hidden" id="editMedicineId">
                     
-                    <!-- Tên thuốc -->
-                    <div class="form-group">
-                        <label for="editMedicineName">Tên thuốc: <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="editMedicineName" readonly>
-                    </div>
-
-                    <!-- Ngày sản xuất và Hạn sử dụng -->
-                    <div class="form-row mb-3">
-                        <div class="col-md-6">
-                            <div class="form-group mb-0">
-                                <label for="editMedicineMFG">Ngày sản xuất: <span class="text-danger">*</span></label>
-                                <input type="date" class="form-control input-date" id="editMedicineMFG" required>
-                                <div class="invalid-feedback">Vui lòng chọn ngày sản xuất</div>
+                    <!-- Thông tin cơ bản -->
+                    <div class="form-section">
+                        <h6>Thông tin cơ bản</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="editMedicineName">Tên thuốc: <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="editMedicineName" 
+                                           name="editMedicineName" required placeholder="Nhập tên thuốc">
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-0">
-                                <label for="editMedicineEXP">Hạn sử dụng: <span class="text-danger">*</span></label>
-                                <input type="date" class="form-control input-date" id="editMedicineEXP" required>
-                                <div class="invalid-feedback">Vui lòng chọn hạn sử dụng</div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="editMedicineUnit">Đơn vị: <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="editMedicineUnit" 
+                                           required placeholder="viên, hộp, chai...">
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Số lượng, Đơn vị và Đơn giá -->
-                    <div class="form-row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="editMedicineAmount">Số lượng: <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control input-number" id="editMedicineAmount" min="0" required>
-                                <div class="invalid-feedback">Vui lòng nhập số lượng</div>
+                    <!-- Thông tin ngày tháng -->
+                    <div class="form-section">
+                        <h6>Thông tin ngày tháng</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="editMedicineMFG">Ngày sản xuất: <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" id="editMedicineMFG" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="editMedicineEXP">Hạn sử dụng: <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" id="editMedicineEXP" required>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="editMedicineUnit">Đơn vị: <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control input-unit" id="editMedicineUnit" required>
-                                <div class="invalid-feedback">Vui lòng nhập đơn vị</div>
+                    </div>
+
+                    <!-- Thông tin số lượng và giá -->
+                    <div class="form-section">
+                        <h6>Thông tin số lượng & giá cả</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="editMedicineAmount">Số lượng: <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" id="editMedicineAmount" 
+                                           min="0" required placeholder="0">
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="editMedicinePrice">Đơn giá (VNĐ): <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control input-price" id="editMedicinePrice" min="0" required>
-                                <div class="invalid-feedback">Vui lòng nhập giá thuốc</div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="editMedicinePrice">Đơn giá (VNĐ): <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" id="editMedicinePrice" 
+                                           min="0" required placeholder="0">
+                                </div>
                             </div>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btnCancelEdit">Hủy</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCancelEdit">Hủy</button>
                 <button type="button" class="btn btn-primary" id="btnSaveEdit">Lưu thay đổi</button>
             </div>
         </div>
@@ -361,16 +363,15 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="deleteMedicineModalLabel">Xác nhận xóa</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Bạn có chắc chắn muốn xóa thuốc <span id="deleteMedicineName" class="font-weight-bold"></span>? Hành động này không thể hoàn tác.</p>
+                <p>Bạn có chắc chắn muốn xóa thuốc <span id="deleteMedicineName" class="font-weight-bold"></span>? 
+                   Hành động này không thể hoàn tác.</p>
                 <input type="hidden" id="deleteMedicineId">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btnCancelDelete">Hủy</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCancelDelete">Hủy</button>
                 <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Xóa</button>
             </div>
         </div>

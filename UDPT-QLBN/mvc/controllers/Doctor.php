@@ -49,4 +49,24 @@ class Doctor extends Controller {
         // Thêm header/footer nếu cần
         $this->view("pages/doctor/Dashboard", $data);
     }
+    
+    public function profileAjax() {
+        header('Content-Type: application/json');
+        try {
+            if (!isset($_SESSION['doctor_id'])) {
+                echo json_encode(['success' => false, 'message' => 'Không tìm thấy doctor_id trong session']);
+                return;
+            }
+            require_once __DIR__ . '/../services/DoctorService.php';
+            $doctorService = new DoctorService();
+            $doctor = $doctorService->getDoctorById($_SESSION['doctor_id']);
+            if (isset($doctor['fullname'])) {
+                echo json_encode(['success' => true, 'doctor' => $doctor]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Không tìm thấy thông tin bác sĩ']);
+            }
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
 }

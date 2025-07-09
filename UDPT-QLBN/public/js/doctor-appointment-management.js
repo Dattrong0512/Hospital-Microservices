@@ -2046,7 +2046,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 body: JSON.stringify(medicineDetailData),
               }
             );
-
+            conswe
             console.log(
               "💊 [SAVE_EXAM] Medicine detail response status:",
               addMedicineResponse.status
