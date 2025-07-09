@@ -135,7 +135,7 @@ Hướng dẫn này sẽ giúp bạn chạy các dịch vụ AppointmentService,
 3. **Chạy container ReportService:**
    - Chạy lệnh sau để khởi động container từ image vừa build:
      ```
-     docker run -d -p 8089:8089 --name reportservice -e ASPNETCORE_ENVIRONMENT=Development reportservice:latest
+    docker run -d -p 5163:8080 --name reportservice -e ASPNETCORE_ENVIRONMENT=Development reportservice:latest
 
      ```
 4. **Kiểm tra dịch vụ:**
