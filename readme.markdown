@@ -106,13 +106,14 @@ Hướng dẫn này sẽ giúp bạn chạy các dịch vụ AppointmentService,
 2. **Build Docker image cho NotificatinService:**
    - Chạy lệnh sau để build image rabbitmq-cloud-listener:
      ```
-        docker-compose build
+     docker-compose build  
      ```
 
 3. **Chạy container NotificatinService:**
    - Chạy lệnh sau để khởi động container từ image vừa build:
      ```
-        docker-compose up -d
+
+     docker-compose up -d
      
      ```
 4. **Kiểm tra dịch vụ:**
