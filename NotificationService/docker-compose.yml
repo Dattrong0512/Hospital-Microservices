@@ -55,7 +55,7 @@ services:
       - rabbitmq
       - mongodb
     environment:
-      SendGrid__ApiKey: "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"
+      SendGrid__ApiKey: "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"
       SendGrid__SenderEmail: "kantruong11@gmail.com"
       SendGrid__SenderName: "ABC Hospital App"
     restart: unless-stopped
