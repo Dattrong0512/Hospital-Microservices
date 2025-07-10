@@ -1017,13 +1017,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // ✅ Tạo bản copy của medicine object để tránh closure bug
     const medicineCopy = {
-      medicine_id: medicine.data.medicine_id,
-      name: medicine.data.name,
-      MFG: medicine.data.MFG,
-      EXP: medicine.data.EXP,
-      amount: medicine.data.amount,
-      unit: medicine.data.unit,
-      price: medicine.data.price,
+      medicine_id: medicine.medicine_id,
+      name: medicine.name,
+      MFG: medicine.MFG,
+      EXP: medicine.EXP,
+      amount: medicine.amount,
+      unit: medicine.unit,
+      price: medicine.price,
     };
 
     console.log("🔧 Medicine copy before setTimeout:", medicineCopy);
