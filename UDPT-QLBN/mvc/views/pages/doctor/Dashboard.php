@@ -61,7 +61,7 @@
                             </div>
                         </div>
                         <div class="col-md-4 d-flex align-items-end justify-content-end">
-                            <button class="btn btn-secondary mr-2" id="resetFilterBtn">Đặt lại</button>
+                            <button class="btn btn-secondary mr-2" style="margin-right: 10px;" id="resetFilterBtn">Đặt lại</button>
                             <button class="btn btn-primary" id="applyFilterBtn">Áp dụng</button>
                         </div>
                     </div>
@@ -90,7 +90,7 @@
                     </table>
                     
                     <!-- Loading spinner -->
-                    <div class="loading-spinner" id="appointmentsLoading">
+                    <div class="loading-spinner" id="loadingIndicator">
                         <div class="spinner-border text-primary" role="status">
                             <span class="sr-only">Đang tải...</span>
                         </div>
@@ -198,9 +198,6 @@
                 <h5 class="modal-title" id="examModalLabel">
                     <i class="fas fa-stethoscope mr-2"></i>Khám bệnh - <span id="examPatientName">Bệnh nhân</span>
                 </h5>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
             </div>
             <div class="modal-body">
                 <!-- Loading state -->
@@ -378,9 +375,6 @@
                 <h5 class="modal-title" id="medicineSelectionModalLabel">
                     <i class="fas fa-search mr-2"></i>Chọn thuốc
                 </h5>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
             </div>
             <div class="modal-body">
                 <!-- Tìm kiếm thuốc -->
@@ -452,9 +446,6 @@
                 <h5 class="modal-title" id="viewExamModalLabel">
                     <i class="fas fa-eye mr-2"></i>Chi tiết lịch khám - <span id="viewExamPatientName">Bệnh nhân</span>
                 </h5>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
             </div>
             <div class="modal-body">
                 <!-- Loading state -->
@@ -607,9 +598,6 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">
                     <i class="fas fa-times mr-1"></i>Đóng
-                </button>
-                <button type="button" class="btn btn-info" id="printExamReport">
-                    <i class="fas fa-print mr-1"></i>In báo cáo
                 </button>
             </div>
         </div>

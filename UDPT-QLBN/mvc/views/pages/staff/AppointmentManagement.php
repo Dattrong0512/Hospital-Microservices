@@ -170,7 +170,7 @@
         <!-- ✅ BỘ LỌC: Chỉ 3 bộ lọc chính -->
         <div class="filter-section m-3">
             <div class="filter-title">
-                <i class="fas fa-filter mr-2"></i>Bộ lọc lịch khám
+                <i class="fas fa-filter mr-2"></i> Bộ lọc lịch khám
             </div>
             <div class="row">
                 <!-- Trạng thái -->
@@ -179,7 +179,6 @@
                     <select class="form-control" id="status-filter">
                         <option value="">Tất cả trạng thái</option>
                         <option value="Chưa khám">Chưa khám</option>
-                        <option value="Đang khám">Đang khám</option>
                         <option value="Đã khám">Đã khám</option>
                         <option value="Đã hủy">Đã hủy</option>
                     </select>
@@ -204,13 +203,13 @@
             <div class="row">
                 <div class="col-12 text-right">
                     <button type="button" class="btn btn-secondary mr-2" id="reset-filter">
-                        <i class="fas fa-redo mr-1"></i>Đặt lại
+                        <i class="fas fa-redo mr-1"></i> Đặt lại
                     </button>
                     <button type="button" class="btn btn-primary mr-2" id="apply-filter">
-                        <i class="fas fa-search mr-1"></i>Áp dụng lọc
+                        <i class="fas fa-search mr-1"></i> Áp dụng lọc
                     </button>
                     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addAppointmentModal">
-                        <i class="fas fa-plus-circle mr-1"></i>Thêm lịch khám
+                        <i class="fas fa-plus-circle mr-1"></i> Thêm lịch khám
                     </button>
                 </div>
             </div>
@@ -228,12 +227,12 @@
             <table class="table table-hover" id="appointmentsTable">
                 <thead class="bg-light">
                     <tr>
-                        <th class="sortable align-middle" data-sort="appointment_id" width="7%">Mã LK <i class="fas fa-sort text-muted ml-1"></i></th>
-                        <th class="sortable align-middle" data-sort="doctor_name">Bác sĩ <i class="fas fa-sort text-muted ml-1"></i></th>
-                        <th class="sortable align-middle" data-sort="patient_name">Bệnh nhân <i class="fas fa-sort text-muted ml-1"></i></th>
-                        <th class="sortable align-middle" data-sort="date" width="12%">Ngày khám <i class="fas fa-sort text-muted ml-1"></i></th>
-                        <th class="sortable align-middle" data-sort="started_time" width="12%">Giờ khám <i class="fas fa-sort text-muted ml-1"></i></th>
-                        <th class="sortable align-middle" data-sort="status" width="10%">Trạng thái <i class="fas fa-sort text-muted ml-1"></i></th>
+                        <th class="sortable align-middle" data-sort="appointment_id" width="7%">Mã LK </th>
+                        <th class="sortable align-middle" data-sort="doctor_name">Bác sĩ </th>
+                        <th class="sortable align-middle" data-sort="patient_name">Bệnh nhân </th>
+                        <th class="sortable align-middle" data-sort="date" width="12%">Ngày khám </th>
+                        <th class="sortable align-middle" data-sort="started_time" width="12%">Giờ khám </th>
+                        <th class="sortable align-middle" data-sort="status" width="10%">Trạng thái </th>
                         <th class="align-middle" width="12%">Thao tác</th>
                     </tr>
                 </thead>
@@ -285,9 +284,6 @@
         <div class="modal-content">
             <div class="modal-header bg-light">
                 <h5 class="modal-title" id="addAppointmentModalLabel">Tạo lịch khám mới</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
             </div>
             <div class="modal-body">
                 <form id="addAppointmentForm" class="form-spacing">
@@ -388,19 +384,30 @@
 
 <!-- Modal Chi tiết lịch khám -->
 <div class="modal fade" id="viewAppointmentModal" tabindex="-1" aria-labelledby="viewAppointmentModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-light">
                 <h5 class="modal-title" id="viewAppointmentModalLabel">Chi tiết lịch khám</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
             </div>
             <div class="modal-body">
                 <div id="appointmentDetails">
                     <div class="text-center py-3">
                         <div class="spinner-border text-primary" role="status">
                             <span class="sr-only">Đang tải...</span>
+                        </div>
+                    </div>
+                    <!-- Prescription details will be loaded here -->
+                    <div id="prescriptionDetails" class="mt-4 d-none">
+                        <h6 class="font-weight-bold text-info mb-3">
+                            <i class="fas fa-prescription mr-2"></i>Thông tin đơn thuốc
+                        </h6>
+                        <div class="card border-0 bg-light">
+                            <div class="card-body p-3">
+                                <div id="prescriptionStatus" class="mb-3"></div>
+                                <div id="prescriptionContent">
+                                    <p class="text-muted">Đang tải thông tin đơn thuốc...</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -419,9 +426,6 @@
         <div class="modal-content">
             <div class="modal-header bg-light">
                 <h5 class="modal-title" id="editAppointmentModalLabel">Chỉnh sửa lịch khám</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
             </div>
             <div class="modal-body">
                 <form id="editAppointmentForm" class="form-spacing">
@@ -453,6 +457,14 @@
                             <option value="Chưa khám">Chưa khám</option>
                             <option value="Đã khám">Đã khám</option>
                             <option value="Đã hủy">Đã hủy</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group mb-4">
+                        <label for="editPrescriptionStatus">Trạng thái đơn thuốc</label>
+                        <select class="form-control" id="editPrescriptionStatus" required>
+                            <option value="Chưa lấy">Chưa lấy</option>
+                            <option value="Đã lấy">Đã lấy</option>
                         </select>
                     </div>
                     

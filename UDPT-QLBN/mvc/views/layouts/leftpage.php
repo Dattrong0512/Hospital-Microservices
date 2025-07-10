@@ -29,12 +29,6 @@
                     <span>Quản lý thuốc</span>
                 </a>
             </li>
-            <li class="nav-item <?php echo (strpos($current_url, 'reports') !== false) ? 'active' : ''; ?>">
-                <a href="/UDPT-QLBN/staff/reports" class="nav-link">
-                    <i class="fas fa-chart-bar"></i>
-                    <span>Báo cáo & thống kê</span>
-                </a>
-            </li>
         </ul>
     </div>
 </div>

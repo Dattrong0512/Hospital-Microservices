@@ -5,7 +5,7 @@ class ReportService
 
     public function __construct()
     {
-        $this->baseUrl = "https://konggateway.hospitalmicroservices.live/api/v0";
+        $this->baseUrl = "https://konggateway.hospitalmicroservices.live/api/v0/Report";
     }
 
     public function getMonthlyPatientStatistics($year)

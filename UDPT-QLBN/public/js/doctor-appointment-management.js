@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const appointmentsTableBody = document.getElementById(
     "appointmentsTableBody"
   );
-  const appointmentsLoading = document.getElementById("appointmentsLoading");
+  const appointmentsLoading = document.getElementById("loadingIndicator");
   const appointmentsEmpty = document.getElementById("appointmentsEmpty");
   const appointmentsPagination = document.getElementById(
     "appointmentsPagination"
@@ -102,6 +102,13 @@ document.addEventListener("DOMContentLoaded", function () {
       statusFilterSelect.value = "";
       startDateFilterInput.valueAsDate = sevenDaysAgo;
       endDateFilterInput.valueAsDate = today;
+      
+      // ✅ THÊM: Reset filters và reload
+      config.filters.status = "";
+      config.filters.startDate = startDateFilterInput.value;
+      config.filters.endDate = endDateFilterInput.value;
+      config.currentPage = 1;
+      loadAppointments();
     });
 
     // Xử lý nút áp dụng bộ lọc
@@ -119,7 +126,7 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log("=== DEBUG loadAppointments START ===");
     console.log("Doctor ID being used:", config.doctorId);
     console.log("Config object:", config);
-
+    showLoading();
     try {
       const url = buildApiUrl();
       console.log("🌐 Full URL being called:", url);
@@ -226,12 +233,15 @@ document.addEventListener("DOMContentLoaded", function () {
   // Hiển thị loading
   function showLoading() {
     appointmentsTableBody.innerHTML = "";
+    appointmentsLoading.classList.remove("d-none");
     appointmentsLoading.style.display = "flex";
     appointmentsEmpty.style.display = "none";
   }
 
   // Ẩn loading
   function hideLoading() {
+    // ✅ SỬA: Thêm class d-none
+    appointmentsLoading.classList.add("d-none");
     appointmentsLoading.style.display = "none";
   }
 
@@ -246,6 +256,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Hiển thị trạng thái trống
   function showEmpty() {
+    appointmentsTableBody.innerHTML = ""; 
     appointmentsEmpty.style.display = "block";
   }
 
@@ -1541,7 +1552,7 @@ document.addEventListener("DOMContentLoaded", function () {
       unitDisplay.textContent !== "-" ? unitDisplay.textContent : "viên";
 
     // ✅ VALIDATION: Kiểm tra thuốc đã được chọn
-    if (name && !selectedMedicineId) {
+    if (name && !selectedMedicineId && amount && amount > 0 && note.length > 0) {
       // Highlight input with error
       nameInput.classList.add("is-invalid");
 
@@ -1605,10 +1616,10 @@ document.addEventListener("DOMContentLoaded", function () {
     // Update header to show completed status
     const header = formDiv.querySelector(".medicine-form-header h6");
     header.innerHTML = `
-        <i class="fas fa-check-circle mr-2 text-success"></i>
-        ${medicine.name}
-        <span class="medicine-form-counter ml-2" style="background-color: #28a745;">Đã thêm</span>
-    `;
+      <i class="fas fa-check-circle mr-2 text-success"></i>
+      ${medicine.name}
+      <span class="medicine-form-counter ml-2" style="background-color: #28a745; color: white; border-radius: 12px; padding: 2px 8px; font-size: 11px;">Đã thêm</span>
+  `;
 
     // Make all inputs readonly
     const inputs = formDiv.querySelectorAll("input");
@@ -1966,7 +1977,7 @@ document.addEventListener("DOMContentLoaded", function () {
         };
 
         console.log("💊 [SAVE_EXAM] Prescription data:", prescriptionData);
-
+        console.log("💊 [SAVE_EXAM] Sending prescription data:", JSON.stringify(prescriptionData));
         const createPrescriptionResponse = await fetch(
           "/UDPT-QLBN/Prescription/api_createPrescription",
           {
@@ -2046,7 +2057,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 body: JSON.stringify(medicineDetailData),
               }
             );
-            conswe
             console.log(
               "💊 [SAVE_EXAM] Medicine detail response status:",
               addMedicineResponse.status
@@ -2585,9 +2595,6 @@ document.addEventListener("DOMContentLoaded", function () {
           type === "success" ? "check-circle" : "info-circle"
         } mr-2"></i>
         ${message}
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
     `;
 
     document.body.appendChild(toast);

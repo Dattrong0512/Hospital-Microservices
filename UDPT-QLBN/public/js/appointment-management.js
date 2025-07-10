@@ -9,6 +9,7 @@ class AppointmentManager {
     // Biến toàn cục
     this.appointments = [];
     this.selectedAppointment = null;
+    this.currentPrescriptionId = null;
 
     // Cấu hình phân trang
     this.currentPage = 1;
@@ -298,9 +299,14 @@ class AppointmentManager {
   async updateAppointment() {
     const appointmentId = document.getElementById("editAppointmentId").value;
     const formData = this.getEditFormData();
+    const prescriptionStatusElement = document.getElementById("editPrescriptionStatus");
     const saveBtn = document.getElementById("btnSaveEdit");
 
+    console.log("📝 [UPDATE] Appointment ID:", appointmentId);
+    console.log("📝 [UPDATE] Form Data:", formData);
+
     if (!formData.date || !formData.started_time) {
+      console.warn("⚠️ [UPDATE] Missing required fields: date or started_time");
       this.showAlert("danger", "Vui lòng điền đầy đủ thông tin bắt buộc!");
       return;
     }
@@ -308,7 +314,8 @@ class AppointmentManager {
     try {
       this.setButtonLoading(saveBtn, true);
 
-      const response = await fetch(
+      console.log("🔄 [UPDATE_APPOINTMENT] Sending request to update appointment...");
+      const appointmentResponse = await fetch(
         `/UDPT-QLBN/Appointment/api_updateAppointment/${appointmentId}`,
         {
           method: "PUT",
@@ -317,22 +324,48 @@ class AppointmentManager {
         }
       );
 
-      const data = await response.json();
+      const appointmentData = await appointmentResponse.json();
+      console.log("📡 [UPDATE_APPOINTMENT] Response data:", appointmentData);
 
-      if (data.success) {
-        $("#editAppointmentModal").modal("hide");
-        this.showAlert("success", "Cập nhật lịch khám thành công!");
-        this.fetchAppointments();
-      } else {
-        this.showAlert("danger", data.message || "Có lỗi xảy ra khi cập nhật");
+      if (!appointmentData.success) {
+        throw new Error(appointmentData.message || "Có lỗi xảy ra khi cập nhật lịch khám");
       }
+
+      if (prescriptionStatusElement.style.display !== "none" && this.currentPrescriptionId) {
+        const prescriptionStatus = prescriptionStatusElement.value;
+        console.log("💊 [UPDATE_PRESCRIPTION] Prescription ID:", this.currentPrescriptionId);
+        console.log("💊 [UPDATE_PRESCRIPTION] Status to update:", prescriptionStatus);
+
+        const prescriptionResponse = await fetch(
+          `/UDPT-QLBN/Prescription/api_updatePrescription/${this.currentPrescriptionId}`,
+          {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ status: prescriptionStatus }),
+          }
+        );
+
+        const prescriptionData = await prescriptionResponse.json();
+        console.log("📡 [UPDATE_PRESCRIPTION] Response data:", prescriptionData);
+
+        if (!prescriptionData.success) {
+          throw new Error(prescriptionData.message || "Có lỗi xảy ra khi cập nhật đơn thuốc");
+        }
+      } else {
+        console.log("ℹ️ [UPDATE_PRESCRIPTION] Bỏ qua cập nhật đơn thuốc do không hiển thị hoặc không có ID");
+      }
+
+      $("#editAppointmentModal").modal("hide");
+      this.showAlert("success", "Cập nhật lịch khám thành công!");
+      this.fetchAppointments();
     } catch (error) {
-      console.error("Error:", error);
-      this.showAlert("danger", "Lỗi kết nối khi cập nhật lịch khám");
+      console.error("❌ [UPDATE] Error:", error);
+      this.showAlert("danger", `Lỗi khi cập nhật: ${error.message}`);
     } finally {
       this.setButtonLoading(saveBtn, false);
     }
   }
+
 
   formatTimeForAPI(timeString) {
     if (!timeString) return "";
@@ -587,11 +620,6 @@ class AppointmentManager {
                         }">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button type="button" class="btn btn-outline-secondary edit-btn" data-id="${
-                          appointment.appointment_id
-                        }">
-                            <i class="fas fa-edit"></i>
-                        </button>
                     </div>
                 </td>
             `;
@@ -775,11 +803,7 @@ class AppointmentManager {
     const alertElement = document.createElement("div");
     alertElement.className = `alert alert-${type} alert-dismissible fade show`;
     alertElement.innerHTML = `
-            ${message}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        `;
+            ${message}`;
 
     alertContainer.appendChild(alertElement);
 
@@ -828,6 +852,7 @@ class AppointmentManager {
       started_time: this.formatTimeForAPI(editTime), // Tự động thêm :00
       status: document.getElementById("editStatus").value,
       description: document.getElementById("editDescription").value,
+      prescription_status: document.getElementById("editPrescriptionStatus").value,
     };
   }
 
@@ -1269,29 +1294,66 @@ class AppointmentManager {
     console.log("✅ [PATIENT_SELECT] Patient selection completed");
   }
 
-  populateEditForm(appointment) {
-    document.getElementById("editAppointmentId").value =
-      appointment.appointment_id;
+  async populateEditForm(appointment) {
+    console.log("📥 [POPULATE_FORM] Appointment Data:", appointment);
 
-    // Format date from DD-MM-YYYY to YYYY-MM-DD
+    document.getElementById("editAppointmentId").value = appointment.appointment_id;
+
     const dateParts = appointment.date.split("-");
     const formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+    console.log("📅 [POPULATE_FORM] Formatted Date:", formattedDate);
 
     document.getElementById("editDate").value = formattedDate;
     document.getElementById("editTime").value = appointment.started_time;
     document.getElementById("editStatus").value = appointment.status;
-    document.getElementById("editDescription").value =
-      appointment.description || "";
+    document.getElementById("editDescription").value = appointment.description || "";
 
-    // Update flatpickr if exists
+    const prescriptionStatusElement = document.getElementById("editPrescriptionStatus");
+    const prescriptionStatusContainer = prescriptionStatusElement.closest(".form-group");
+
+    try {
+      console.log("🔍 [POPULATE_FORM] Fetching prescription by appointment ID:", appointment.appointment_id);
+      const prescriptionResponse = await fetch(
+        `/UDPT-QLBN/Prescription/api_getPrescriptionByAppointment/${appointment.appointment_id}`
+      );
+
+      if (!prescriptionResponse.ok) {
+        console.warn("❌ [PRESCRIPTION] Cannot fetch prescription, status:", prescriptionResponse.status);
+        prescriptionStatusContainer.style.display = "none";
+        this.currentPrescriptionId = null;
+      } else {
+        const prescriptionData = await prescriptionResponse.json();
+        console.log("💊 [PRESCRIPTION] API Response:", prescriptionData);
+
+        if (!prescriptionData.data || !prescriptionData.data.status) {
+          console.warn("⚠️ [PRESCRIPTION] No valid prescription data");
+          prescriptionStatusContainer.style.display = "none";
+          this.currentPrescriptionId = null;
+          prescriptionStatusElement.value = "";
+        } else {
+          prescriptionStatusContainer.style.display = "";
+          const prescriptionStatus = prescriptionData.data.status || "Chưa lấy";
+          this.currentPrescriptionId = prescriptionData.data.prescription_id || null;
+          prescriptionStatusElement.value = prescriptionStatus;
+          console.log("✅ [PRESCRIPTION] Status:", prescriptionStatus, "| ID:", this.currentPrescriptionId);
+        }
+      }
+    } catch (error) {
+      console.error("❌ [PRESCRIPTION] Error fetching prescription:", error);
+      prescriptionStatusContainer.style.display = "none";
+      this.currentPrescriptionId = null;
+      prescriptionStatusElement.value = "";
+    }
+
     const timeInput = document.getElementById("editTime");
     if (timeInput._flatpickr) {
-      setTimeout(
-        () => timeInput._flatpickr.setDate(appointment.started_time),
-        100
-      );
+      setTimeout(() => {
+        console.log("⏰ [POPULATE_FORM] Setting time via flatpickr:", appointment.started_time);
+        timeInput._flatpickr.setDate(appointment.started_time);
+      }, 100);
     }
   }
+
 
   //=========================================================
   // DETAIL VIEW METHODS
@@ -1328,7 +1390,12 @@ class AppointmentManager {
 
       if (data.success && data.data) {
         this.selectedAppointment = data.data;
-        this.renderAppointmentDetails(data.data);
+        await this.renderAppointmentDetails(data.data);
+        
+        // Load prescription details if appointment status is "Đã khám"
+        if (data.data.status === "Đã khám") {
+          await this.loadPrescriptionDetails(id);
+        }
       } else {
         throw new Error(data.message || "Không thể tải thông tin lịch khám");
       }
@@ -1343,7 +1410,7 @@ class AppointmentManager {
     }
   }
 
-  renderAppointmentDetails(appointment) {
+  async renderAppointmentDetails(appointment) {
     const appointmentDetails = document.getElementById("appointmentDetails");
     if (!appointmentDetails) return;
 
@@ -1465,6 +1532,123 @@ class AppointmentManager {
         `;
 
     console.log("✅ [VIEW] Appointment details rendered successfully");
+  }
+
+  async loadPrescriptionDetails(appointmentId) {
+    try {
+      console.log("💊 [PRESCRIPTION] Loading prescription for appointment:", appointmentId);
+
+      // Tạo và hiển thị nội dung với cả prescription và details
+      const appointmentDetails = document.getElementById('appointmentDetails');
+      if (!appointmentDetails) {
+        console.error("❌ [DOM] Element 'appointmentDetails' not found");
+        throw new Error('Phần tử appointmentDetails không tồn tại trong DOM');
+      }
+
+      // Gọi API đầu tiên để lấy thông tin prescription (status, no_days)
+      const prescriptionResponse = await fetch(`/UDPT-QLBN/Prescription/api_getPrescriptionByAppointment/${appointmentId}`);
+      if (!prescriptionResponse.ok) {
+        throw new Error(`HTTP Error (Prescription): ${prescriptionResponse.status} - ${prescriptionResponse.statusText}`);
+      }
+      const prescriptionData = await prescriptionResponse.json();
+      console.log("💊 [PRESCRIPTION] API Response (Prescription):", prescriptionData);
+      if (!prescriptionData.success) {
+        throw new Error(prescriptionData.message || 'Không thể lấy thông tin đơn thuốc');
+      }
+      const prescription = prescriptionData.data || {};
+      const status = prescription.status || 'Chưa xác định';
+      const no_days = prescription.no_days || 0;
+      console.log("💊 [PRESCRIPTION] Extracted Data:", { status, no_days });
+
+      // Gọi API thứ hai để lấy chi tiết thuốc
+      const detailsResponse = await fetch(`/UDPT-QLBN/Prescription/api_getPrescriptionDetailsByAppointment/${appointmentId}`);
+      if (!detailsResponse.ok) {
+        throw new Error(`HTTP Error (Details): ${detailsResponse.status} - ${detailsResponse.statusText}`);
+      }
+      const detailsData = await detailsResponse.json();
+      console.log("💊 [DETAILS] API Response (Details):", detailsData);
+      if (!detailsData.success) {
+        throw new Error(detailsData.message || 'Không thể lấy chi tiết thuốc');
+      }
+      const details = detailsData.data || [];
+      console.log("💊 [DETAILS] Extracted Details:", details);
+
+      // Tạo và hiển thị nội dung
+      const prescriptionDetails = document.createElement('div');
+      prescriptionDetails.id = 'prescriptionDetails';
+      prescriptionDetails.className = 'mt-4';
+      prescriptionDetails.innerHTML = `
+        <h6 class="font-weight-bold text-info mb-3">
+          <i class="fas fa-prescription mr-2"></i>Thông tin đơn thuốc
+        </h6>
+        <div class="card border-0 bg-light">
+          <div class="card-body p-3">
+            <div class="mb-3">
+              <p><strong>Trạng thái đơn thuốc:</strong> 
+                  ${status}
+              </p>
+              <p><strong>Số ngày dùng thuốc:</strong> ${no_days} ngày</p>
+            </div>
+            ${this.renderPrescriptionContent(details)}
+          </div>
+        </div>
+      `;
+
+      appointmentDetails.appendChild(prescriptionDetails);
+    } catch (error) {
+      console.error("❌ [PRESCRIPTION] Error loading prescription:", error);
+      const appointmentDetails = document.getElementById('appointmentDetails');
+      if (appointmentDetails) {
+        const errorElement = document.createElement('div');
+        errorElement.className = 'alert alert-danger mt-3';
+        errorElement.textContent = `Không thể tải thông tin đơn thuốc: ${error.message}`;
+        appointmentDetails.appendChild(errorElement);
+      } else {
+        console.error("❌ [DOM] Cannot display error: 'appointmentDetails' not found");
+      }
+    }
+  }
+
+  renderPrescriptionContent(prescription) {
+    let html = '';
+
+    // Handle both direct array response and nested data structure
+    const medicines = Array.isArray(prescription) ? prescription : 
+                    (prescription.details || prescription.data || []);
+    console.log("💊 [RENDER] Medicines Data:", medicines);
+
+    if (medicines.length > 0) {
+      html += `
+        <div class="table-responsive">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>STT</th>
+                <th>Tên thuốc</th>
+                <th>Số lượng</th>
+                <th>Đơn vị</th>
+                <th>Cách dùng</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${medicines.map((detail, index) => `
+                <tr>
+                  <td>${index + 1}</td>
+                  <td>${detail.medicine_name || detail.name || `Thuốc ID: ${detail.medicine_id || detail.id}`}</td>
+                  <td>${detail.amount || detail.quantity || 1}</td>
+                  <td>${detail.medicine_unit || detail.unit || 'viên'}</td>
+                  <td>${detail.usage || detail.note || 'Theo chỉ định bác sĩ'}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    } else {
+      html += '<p class="text-muted">Không có chi tiết thuốc trong đơn</p>';
+    }
+
+    return html;
   }
 
   //=========================================================

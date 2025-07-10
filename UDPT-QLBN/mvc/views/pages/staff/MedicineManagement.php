@@ -144,13 +144,13 @@
             <table class="table table-hover" id="medicinesTable">
                 <thead class="bg-light">
                     <tr>
-                        <th class="sortable align-middle" data-sort="medicine_id" width="7%">Mã thuốc <i class="fas fa-sort text-muted ml-1"></i></th>
-                        <th class="sortable align-middle" data-sort="name">Tên thuốc <i class="fas fa-sort text-muted ml-1"></i></th>
-                        <th class="sortable align-middle" data-sort="MFG" width="12%">Ngày SX <i class="fas fa-sort text-muted ml-1"></i></th>
-                        <th class="sortable align-middle" data-sort="EXP" width="12%">Hạn SD <i class="fas fa-sort text-muted ml-1"></i></th>
-                        <th class="sortable align-middle" data-sort="amount" width="10%">Số lượng <i class="fas fa-sort text-muted ml-1"></i></th>
-                        <th class="sortable align-middle" data-sort="unit" width="8%">Đơn vị <i class="fas fa-sort text-muted ml-1"></i></th>
-                        <th class="sortable align-middle" data-sort="price" width="12%">Giá (VNĐ) <i class="fas fa-sort text-muted ml-1"></i></th>
+                        <th class="sortable align-middle" data-sort="medicine_id" width="7%">Mã thuốc </th>
+                        <th class="sortable align-middle" data-sort="name">Tên thuốc </th>
+                        <th class="sortable align-middle" data-sort="MFG" width="12%">Ngày SX </th>
+                        <th class="sortable align-middle" data-sort="EXP" width="12%">Hạn SD </th>
+                        <th class="sortable align-middle" data-sort="amount" width="10%">Số lượng </th>
+                        <th class="sortable align-middle" data-sort="unit" width="8%">Đơn vị </th>
+                        <th class="sortable align-middle" data-sort="price" width="12%">Giá (VNĐ) </th>
                         <th class="align-middle" width="12%">Thao tác</th>
                     </tr>
                 </thead>

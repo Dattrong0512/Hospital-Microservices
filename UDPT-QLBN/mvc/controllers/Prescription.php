@@ -96,6 +96,7 @@ class Prescription extends Controller
             echo json_encode(['success' => false, 'message' => $e->getMessage()]);
         }
     }
+
     
     /**
      * API: Tạo đơn thuốc mới
@@ -253,11 +254,19 @@ class Prescription extends Controller
             
             error_log("💊 [ADD_DETAIL] Adding prescription detail: " . json_encode($input));
             
+            // Debug: Log service call
+            error_log("🔍 [DEBUG] Calling PrescriptionService->addPrescriptionDetail()");
+            
             $result = $this->prescriptionService->addPrescriptionDetail($input);
+            
+            // Debug: Log service response
+            error_log("🔍 [DEBUG] Service response: " . json_encode($result));
+            
             echo json_encode(['success' => true, 'data' => $result]);
             
         } catch (Exception $e) {
             error_log("❌ [ADD_DETAIL] Error: " . $e->getMessage());
+            error_log("❌ [DEBUG] Error trace: " . $e->getTraceAsString());
             http_response_code(500);
             echo json_encode(['success' => false, 'message' => $e->getMessage()]);
         }

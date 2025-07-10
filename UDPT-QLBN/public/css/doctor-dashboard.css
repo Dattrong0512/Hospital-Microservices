@@ -1098,3 +1098,43 @@
   max-height: 300px; /* Điều chỉnh theo ý muốn */
   overflow-y: auto; /* Thêm thanh cuộn nếu nội dung vượt quá */
 }
+
+.table-fixed {
+    table-layout: fixed !important;
+    width: 100% !important;
+}
+.table-fixed th,
+.table-fixed td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 20% !important; /* Chia đều 5 cột = 20% mỗi cột */
+}
+
+/* Riêng cho bảng lịch khám - 5 cột đều nhau */
+#appointmentsTable.table-fixed th,
+#appointmentsTable.table-fixed td {
+    width: 20% !important;
+}
+
+/* Riêng cho bảng thuốc - chia theo tỷ lệ hợp lý */
+#medicinesTable.table-fixed th:nth-child(1),
+#medicinesTable.table-fixed td:nth-child(1) {
+    width: 10% !important; /* Mã */
+}
+#medicinesTable.table-fixed th:nth-child(2),
+#medicinesTable.table-fixed td:nth-child(2) {
+    width: 40% !important; /* Tên thuốc */
+}
+#medicinesTable.table-fixed th:nth-child(3),
+#medicinesTable.table-fixed td:nth-child(3) {
+    width: 15% !important; /* Đơn vị */
+}
+#medicinesTable.table-fixed th:nth-child(4),
+#medicinesTable.table-fixed td:nth-child(4) {
+    width: 20% !important; /* Giá */
+}
+#medicinesTable.table-fixed th:nth-child(5),
+#medicinesTable.table-fixed td:nth-child(5) {
+    width: 15% !important; /* Tồn kho */
+}

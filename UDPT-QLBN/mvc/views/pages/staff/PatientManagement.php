@@ -49,16 +49,16 @@
                 <thead class="bg-light">
                   <tr>
                       <th class="sortable align-middle" data-sort="id">
-                          Mã BN <i class="fas fa-sort text-muted ml-1"></i>
+                          Mã BN 
                       </th>
                       <th class="sortable align-middle" data-sort="fullname">
-                          Tên bệnh nhân <i class="fas fa-sort text-muted ml-1"></i>
+                          Tên bệnh nhân 
                       </th>
                       <th class="sortable align-middle" data-sort="email">
-                          Email <i class="fas fa-sort text-muted ml-1"></i>
+                          Email 
                       </th>
                       <th class="sortable align-middle" data-sort="phone_number">
-                          Số điện thoại <i class="fas fa-sort text-muted ml-1"></i>
+                          Số điện thoại 
                       </th>
                       <th class="align-middle">Thao tác</th>
                   </tr>

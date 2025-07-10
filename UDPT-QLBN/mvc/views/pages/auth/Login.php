@@ -29,7 +29,7 @@
                     <div class="form-group">
                         <label for="username">Tên đăng nhập</label>
                         <input type="text" id="username" name="username" required 
-                            placeholder="Nhập email, số điện thoại hoặc mã nhân viên"
+                            placeholder="Nhập tên tài khoản"
                             value="<?= isset($_POST['username']) ? htmlspecialchars($_POST['username']) : '' ?>">
                     </div>
                     
