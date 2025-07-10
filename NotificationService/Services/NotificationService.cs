@@ -1,54 +1,40 @@
-using MailKit.Net.Smtp;
-using MailKit.Security;
 using Microsoft.Extensions.Options;
-using MimeKit;
 using MongoDB.Driver;
 using NotificationService.Models;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 
 namespace NotificationService.Services
 {
     public class NotificationService : INotificationService
     {
         private readonly IMongoCollection<Notification> _notificationsCollection;
-        private readonly MailSettings _mailSettings;
+        private readonly SendGridSettings _sendGridSettings;
         private readonly ILogger<NotificationService> _logger;
 
         public NotificationService(
             IOptions<MongoDBSettings> mongoDBSettings,
-            IOptions<MailSettings> mailSettings,
+            IOptions<SendGridSettings> sendGridSettings,
             ILogger<NotificationService> logger)
         {
             if (mongoDBSettings?.Value == null)
-            {
                 throw new ArgumentNullException(nameof(mongoDBSettings), "MongoDB settings are not configured.");
-            }
-            if (string.IsNullOrEmpty(mongoDBSettings.Value.ConnectionString) || string.IsNullOrEmpty(mongoDBSettings.Value.DatabaseName) || string.IsNullOrEmpty(mongoDBSettings.Value.CollectionName))
-            {
-                //_logger.LogError("MongoDB settings are incomplete. ConnectionString, DatabaseName, or CollectionName is missing.");
+            if (string.IsNullOrEmpty(mongoDBSettings.Value.ConnectionString) ||
+                string.IsNullOrEmpty(mongoDBSettings.Value.DatabaseName) ||
+                string.IsNullOrEmpty(mongoDBSettings.Value.CollectionName))
                 throw new InvalidOperationException("Incomplete MongoDB settings configuration.");
-            }
 
             var mongoClient = new MongoClient(mongoDBSettings.Value.ConnectionString);
             var mongoDatabase = mongoClient.GetDatabase(mongoDBSettings.Value.DatabaseName);
-
-            // Kiểm tra và tạo collection nếu chưa tồn tại
             var collectionNames = mongoDatabase.ListCollectionNames().ToList();
             if (!collectionNames.Contains(mongoDBSettings.Value.CollectionName))
-            {
                 mongoDatabase.CreateCollection(mongoDBSettings.Value.CollectionName);
-            }
+            _notificationsCollection = mongoDatabase.GetCollection<Notification>(mongoDBSettings.Value.CollectionName);
 
-            _notificationsCollection = mongoDatabase.GetCollection<Notification>(
-                mongoDBSettings.Value.CollectionName);
-            
-            if (mailSettings?.Value == null)
-            {
-                throw new ArgumentNullException(nameof(mailSettings), "Mail settings are not configured.");
-            }
-            _mailSettings = mailSettings.Value;
+            _sendGridSettings = sendGridSettings.Value ?? throw new ArgumentNullException(nameof(sendGridSettings), "SendGrid settings are not configured.");
             _logger = logger;
         }
 
@@ -62,7 +48,6 @@ namespace NotificationService.Services
             string subject;
             string content;
 
-            // Xây dựng nội dung email dựa trên loại người nhận
             if (recipientType.Equals("PATIENT", StringComparison.OrdinalIgnoreCase))
             {
                 subject = "Nhắc nhở lịch khám của bạn";
@@ -112,7 +97,6 @@ namespace NotificationService.Services
             string subject,
             string content)
         {
-            // Khởi tạo đối tượng Notification để lưu trữ
             var notification = new Notification
             {
                 RecipientEmail = recipientEmail,
@@ -124,21 +108,25 @@ namespace NotificationService.Services
 
             try
             {
-                var email = new MimeMessage();
-                email.From.Add(new MailboxAddress(_mailSettings.SenderName, _mailSettings.SenderEmail));
-                email.To.Add(MailboxAddress.Parse(recipientEmail));
-                email.Subject = subject;
-                email.Body = new TextPart("plain") { Text = content };
+                _logger.LogDebug("[SendGrid DEBUG] SenderEmail: {SenderEmail}, SenderName: {SenderName}, ApiKeyPrefix: {ApiKeyPrefix}", _sendGridSettings.SenderEmail, _sendGridSettings.SenderName, _sendGridSettings.ApiKey?.Substring(0, 8));
+                _logger.LogDebug("Đang gửi mail bằng SendGrid tới: {RecipientEmail}, subject: {Subject}", recipientEmail, subject);
+                var client = new SendGridClient(_sendGridSettings.ApiKey);
+                var from = new EmailAddress(_sendGridSettings.SenderEmail, _sendGridSettings.SenderName);
+                var to = new EmailAddress(recipientEmail);
+                var msg = MailHelper.CreateSingleEmail(from, to, subject, content, null);
+                var response = await client.SendEmailAsync(msg);
 
-                using var smtp = new SmtpClient();
-                await smtp.ConnectAsync(_mailSettings.SmtpHost, _mailSettings.SmtpPort, SecureSocketOptions.StartTls);
-                await smtp.AuthenticateAsync(_mailSettings.SmtpUsername, _mailSettings.SmtpPassword);
-                // Gửi email
-                await smtp.SendAsync(email);
-                await smtp.DisconnectAsync(true);
-
-                notification.SentSuccessfully = true;
-                _logger.LogInformation("Email sent successfully to: {RecipientEmail} for type: {RecipientType}. Subject: {Subject}", recipientEmail, recipientType, subject);
+                if (response.IsSuccessStatusCode)
+                {
+                    notification.SentSuccessfully = true;
+                    _logger.LogInformation("Email sent successfully to: {RecipientEmail} for type: {RecipientType}. Subject: {Subject}", recipientEmail, recipientType, subject);
+                }
+                else
+                {
+                    notification.SentSuccessfully = false;
+                    notification.ErrorMessage = $"SendGrid response: {response.StatusCode}";
+                    _logger.LogError("Failed to send email to: {RecipientEmail} for type: {RecipientType}. SendGrid response: {StatusCode}", recipientEmail, recipientType, response.StatusCode);
+                }
             }
             catch (Exception ex)
             {

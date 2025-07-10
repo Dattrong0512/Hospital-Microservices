@@ -9,6 +9,8 @@ using System.Threading;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 
 class Program
 {
@@ -57,7 +59,7 @@ class Program
                 var appointment = JsonSerializer.Deserialize<AppointmentNotificationMessage>(message, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 if (appointment != null)
                 {
-                    // Gửi email cho bệnh nhân
+                    // Gửi email cho bệnh nhân nếu có
                     if (!string.IsNullOrEmpty(appointment.patient_email))
                     {
                         var subject = "Nhắc nhở lịch khám bệnh";
@@ -68,7 +70,7 @@ class Program
                     {
                         Console.WriteLine(" [!] Appointment message thiếu Patient_email.");
                     }
-                    // Gửi email cho bác sĩ
+                    // Gửi email cho bác sĩ nếu có
                     if (!string.IsNullOrEmpty(appointment.doctor_email))
                     {
                         var subject = "Nhắc nhở lịch khám bệnh";
@@ -135,21 +137,40 @@ class Program
         };
         try
         {
-            var email = new MimeMessage();
-            email.From.Add(new MailboxAddress("ABC Hospital App", "kantruong11@gmail.com"));
-            email.To.Add(MailboxAddress.Parse(toEmail));
-            email.Subject = subject;
-            email.Body = new TextPart("plain") { Text = content };
+            // Lấy thông tin SendGrid từ biến môi trường
+            var sendGridApiKey = Environment.GetEnvironmentVariable("SendGrid__ApiKey") ?? "";
+            var senderEmail = Environment.GetEnvironmentVariable("SendGrid__SenderEmail") ?? "";
+            var senderName = Environment.GetEnvironmentVariable("SendGrid__SenderName") ?? "";
 
-            using var smtp = new SmtpClient();
-            smtp.Connect("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
-            smtp.Authenticate("kantruong11@gmail.com", "jvwq swtn icua jlde");
-            smtp.Send(email);
-            smtp.Disconnect(true);
-
-            log.SentSuccessfully = true;
-            log.ErrorMessage = null;
-            Console.WriteLine($" [>] Đã gửi email tới {toEmail}");
+            if (string.IsNullOrWhiteSpace(sendGridApiKey) || string.IsNullOrWhiteSpace(senderEmail))
+            {
+                Console.WriteLine($"[SendGrid ERROR] Chưa cấu hình ApiKey hoặc SenderEmail. Không gửi mail tới {toEmail}");
+                log.SentSuccessfully = false;
+                log.ErrorMessage = "SendGrid config missing";
+            }
+            else
+            {
+                Console.WriteLine($"[SendGrid DEBUG] Gửi mail bằng SendGrid tới: {toEmail}, subject: {subject}, sender: {senderEmail}, ApiKeyPrefix: {sendGridApiKey.Substring(0, 8)}");
+                var client = new SendGridClient(sendGridApiKey);
+                var from = new EmailAddress(senderEmail, senderName);
+                var to = new EmailAddress(toEmail);
+                var msg = MailHelper.CreateSingleEmail(from, to, subject, content, null);
+                var response = client.SendEmailAsync(msg).GetAwaiter().GetResult();
+                var responseBody = response.Body.ReadAsStringAsync().GetAwaiter().GetResult();
+                Console.WriteLine($"[SendGrid DEBUG] Response Status: {response.StatusCode}, Body: {responseBody}");
+                if (response.IsSuccessStatusCode)
+                {
+                    log.SentSuccessfully = true;
+                    log.ErrorMessage = null;
+                    Console.WriteLine($" [>] Đã gửi email tới {toEmail} (SendGrid)");
+                }
+                else
+                {
+                    log.SentSuccessfully = false;
+                    log.ErrorMessage = $"SendGrid response: {response.StatusCode}";
+                    Console.WriteLine($" [!] Lỗi gửi email tới {toEmail} (SendGrid): {response.StatusCode}");
+                }
+            }
         }
         catch (Exception ex)
         {

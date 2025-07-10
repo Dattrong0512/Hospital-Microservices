@@ -23,14 +23,6 @@ services:
       RabbitMQ__AmqpConnectionString: "amqps://errymwix:JCnl3C8qXN32qdFwK7B9hM-Dfn9SLrNb@armadillo.rmq.cloudamqp.com/errymwix"
       "QueueName": "appointment_queue"
 
-      # Cấu hình cài đặt Email
-      MailSettings__SenderName: "ABC Hospital App"
-      MailSettings__SenderEmail: "kantruong11@gmail.com"
-      MailSettings__SmtpHost: "smtp.gmail.com"
-      MailSettings__SmtpPort: 587
-      MailSettings__SmtpUsername: "kantruong11@gmail.com"
-      MailSettings__SmtpPassword: "jvwq swtn icua jlde"
-    
     depends_on:
       - mongodb
       - rabbitmq
@@ -62,7 +54,10 @@ services:
     depends_on:
       - rabbitmq
       - mongodb
-    environment: {}
+    environment:
+      SendGrid__ApiKey: "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"
+      SendGrid__SenderEmail: "kantruong11@gmail.com"
+      SendGrid__SenderName: "ABC Hospital App"
     restart: unless-stopped
 
 volumes:
