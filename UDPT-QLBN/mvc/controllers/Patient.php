@@ -120,7 +120,7 @@ class Patient extends Controller {
             }
         } catch (Exception $e) {
             error_log("Error in api_getPatientByIdentityCard: " . $e->getMessage());
-            http_response_code(500);
+            http_response_code(404);
             echo json_encode(['success' => false, 'message' => $e->getMessage()]);
         }
     }

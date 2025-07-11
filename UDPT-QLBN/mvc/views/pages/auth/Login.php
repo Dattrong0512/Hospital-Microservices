@@ -48,7 +48,7 @@
                 </form>
             </div>
             <div class="login-footer">
-                <p>Bạn chưa có tài khoản? <a href="/UDPT-QLBN/Auth/register">Đăng ký</a></p>
+                <p>Đăng ký tài khoản bác sĩ ? <a href="/UDPT-QLBN/Auth/register">Đăng ký</a></p>
             </div>
         </div>
     </div>

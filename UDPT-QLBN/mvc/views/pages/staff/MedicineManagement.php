@@ -159,11 +159,7 @@
                     <tr class="text-center" id="no-results-row" style="display: none;">
                         <td colspan="8" class="py-4">
                             <div class="d-flex flex-column align-items-center">
-                                <i class="fas fa-filter fa-3x text-muted mb-3"></i>
-                                <h5 class="font-weight-normal text-muted">Không tìm thấy thuốc nào phù hợp với bộ lọc</h5>
-                                <button class="btn btn-outline-secondary mt-3" id="clear-filters">
-                                    <i class="fas fa-times mr-1"></i> Xóa bộ lọc
-                                </button>
+                                <h5 class="font-weight-normal text-muted">Không tìm thấy thuốc phù hợp</h5>
                             </div>
                         </td>
                     </tr>

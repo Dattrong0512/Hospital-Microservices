@@ -211,22 +211,23 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Kiểm tra ngày sản xuất và hạn sử dụng
+    let mfg, exp;
     if (formId === "addMedicineForm") {
-      const mfg = new Date(document.getElementById("medicineMFG").value);
-      const exp = new Date(document.getElementById("medicineEXP").value);
-
-      if (mfg >= exp) {
-        document.getElementById("medicineEXP").classList.add("is-invalid");
-        isValid = false;
-      }
+        mfg = new Date(document.getElementById("medicineMFG").value);
+        exp = new Date(document.getElementById("medicineEXP").value);
     } else if (formId === "editMedicineForm") {
-      const mfg = new Date(document.getElementById("editMedicineMFG").value);
-      const exp = new Date(document.getElementById("editMedicineEXP").value);
+        mfg = new Date(document.getElementById("editMedicineMFG").value);
+        exp = new Date(document.getElementById("editMedicineEXP").value);
+    }
 
-      if (mfg >= exp) {
-        document.getElementById("editMedicineEXP").classList.add("is-invalid");
+    if (mfg && exp && mfg >= exp) {
+        if (formId === "addMedicineForm") {
+            document.getElementById("medicineEXP").classList.add("is-invalid");
+        } else {
+            document.getElementById("editMedicineEXP").classList.add("is-invalid");
+        }
+        showAlert("Ngày sản xuất phải trước ngày hết hạn!", "danger", 3000);
         isValid = false;
-      }
     }
 
     return isValid;

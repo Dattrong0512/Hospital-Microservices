@@ -501,7 +501,7 @@ class AppointmentManager {
       console.log("📡 [PATIENT_SEARCH] Response status:", response.status);
 
       if (!response.ok) {
-        throw new Error("Lỗi tìm kiếm bệnh nhân: " + response.status);
+        throw new Error("Không tìm thấy bệnh nhân tương ứng: ");
       }
 
       const data = await response.json();
@@ -530,7 +530,7 @@ class AppointmentManager {
       resultsContainer.innerHTML = `
         <div class="dropdown-item text-danger">
           <i class="fas fa-exclamation-triangle mr-1"></i>
-          Không thể tìm kiếm bệnh nhân: ${error.message}
+          Không tìm thấy bệnh nhân tương ứng
         </div>
       `;
     }
@@ -891,6 +891,21 @@ class AppointmentManager {
         checkElement?.classList.remove("is-invalid");
       }
     });
+
+    const appointmentDateInput = document.getElementById("appointmentDate");
+    if (appointmentDateInput && appointmentDateInput.value) {
+      const selectedDate = new Date(appointmentDateInput.value);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Đặt về đầu ngày
+
+      if (selectedDate < today) {
+        appointmentDateInput.classList.add("is-invalid");
+        isValid = false;
+        this.showAlert("danger", "Ngày khám phải từ hôm nay trở đi!");
+      } else {
+        appointmentDateInput.classList.remove("is-invalid");
+      }
+    }
 
     // Validate identity card format (nếu có nhập nhưng không chọn bệnh nhân)
     const patientSearch = document.getElementById("patientSearch");

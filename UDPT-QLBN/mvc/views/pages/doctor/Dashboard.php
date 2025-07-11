@@ -196,7 +196,7 @@
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title" id="examModalLabel">
-                    <i class="fas fa-stethoscope mr-2"></i>Khám bệnh - <span id="examPatientName">Bệnh nhân</span>
+                    <i class="fas fa-stethoscope mr-2"></i> Khám bệnh - <span id="examPatientName">Bệnh nhân</span>
                 </h5>
             </div>
             <div class="modal-body">
@@ -432,7 +432,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                    <i class="fas fa-times mr-1"></i>Đóng
+                    <i class="fas fa-times mr-1"></i> Đóng
                 </button>
             </div>
         </div>
@@ -444,7 +444,7 @@
         <div class="modal-content">
             <div class="modal-header bg-info text-white">
                 <h5 class="modal-title" id="viewExamModalLabel">
-                    <i class="fas fa-eye mr-2"></i>Chi tiết lịch khám - <span id="viewExamPatientName">Bệnh nhân</span>
+                    <i class="fas fa-eye mr-2"></i> Chi tiết lịch khám - <span id="viewExamPatientName">Bệnh nhân</span>
                 </h5>
             </div>
             <div class="modal-body">
@@ -462,7 +462,7 @@
                     <h6>Không thể tải thông tin</h6>
                     <p class="text-muted small" id="viewExamModalErrorMessage">Đã xảy ra lỗi khi tải dữ liệu.</p>
                     <button type="button" class="btn btn-sm btn-primary" id="retryLoadViewExam">
-                        <i class="fas fa-redo mr-1"></i>Thử lại
+                        <i class="fas fa-redo mr-1"></i> Thử lại
                     </button>
                 </div>
 
@@ -472,7 +472,7 @@
                     <div class="card mb-3">
                         <div class="card-header bg-light">
                             <h6 class="mb-0">
-                                <i class="fas fa-user mr-2"></i>Thông tin bệnh nhân
+                                <i class="fas fa-user mr-2"></i> Thông tin bệnh nhân
                             </h6>
                         </div>
                         <div class="card-body">
@@ -507,7 +507,7 @@
                     <div class="card mb-3">
                         <div class="card-header bg-light">
                             <h6 class="mb-0">
-                                <i class="fas fa-file-medical-alt mr-2"></i>Kết quả khám bệnh
+                                <i class="fas fa-file-medical-alt mr-2"></i> Kết quả khám bệnh
                             </h6>
                         </div>
                         <div class="card-body">
@@ -534,7 +534,7 @@
                     <div class="card">
                         <div class="card-header bg-light d-flex justify-content-between align-items-center">
                             <h6 class="mb-0">
-                                <i class="fas fa-prescription-bottle-alt mr-2"></i>Đơn thuốc
+                                <i class="fas fa-prescription-bottle-alt mr-2"></i> Đơn thuốc
                             </h6>
                             <div>
                                 <span class="badge badge-info mr-2" id="viewPrescriptionStatus">Chưa lấy</span>
@@ -597,7 +597,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                    <i class="fas fa-times mr-1"></i>Đóng
+                    <i class="fas fa-times mr-1"></i> Đóng
                 </button>
             </div>
         </div>

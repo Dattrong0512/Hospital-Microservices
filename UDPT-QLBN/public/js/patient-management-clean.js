@@ -16,15 +16,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Load patients on page load
   loadPatients();
+  let debounceTimeout = null;
 
-  // Event Listeners for search by identity card only
   searchInput.addEventListener("input", function () {
     const identityCard = this.value.trim();
-    if (identityCard.length >= 3) {
-      searchPatientByIdentityCard(identityCard);
-    } else if (identityCard.length === 0) {
-      loadPatients(); // Load all patients when search is empty
-    }
+    clearTimeout(debounceTimeout);
+    debounceTimeout = setTimeout(() => {
+      if (identityCard.length >= 3) {
+        searchPatientByIdentityCard(identityCard);
+      } else if (identityCard.length === 0) {
+        loadPatients(); // Load all patients when search is empty
+      }
+    }, 1000); // Chờ 350ms sau khi người dùng dừng gõ mới gửi request
   });
 
   // Save patient button
@@ -102,12 +105,6 @@ document.addEventListener("DOMContentLoaded", function () {
           showMessage("Không tìm thấy bệnh nhân với CMND/CCCD này", "warning");
         }
       })
-      .catch((error) => {
-        console.error("Error searching patient:", error);
-        showLoading(false);
-        showError("Lỗi khi tìm kiếm bệnh nhân");
-        renderTable([]);
-      });
   }
 
   /**
